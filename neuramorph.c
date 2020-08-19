@@ -391,3 +391,62 @@ float NMUnitGetCoeff(
   return coeff;
 
 }
+
+// ----- NeuraMorph
+
+// ================ Functions implementation ====================
+
+// Create a new NeuraMorph with 'nbInput' inputs and 'nbOutput' outputs
+NeuraMorph* NeuraMorphCreate(
+  long nbInput,
+  long nbOutput) {
+
+  // Allocate memory for the NeuraMorph
+  NeuraMorph* that =
+    PBErrMalloc(
+      NeuraMorphErr,
+      sizeof(NeuraMorph));
+
+  // Init properties
+  that->nbInput = nbInput;
+  that->nbOutput = nbOutput;
+  that->inputs = VecFloatCreate(nbInput);
+  that->outputs = VecFloatCreate(nbOutput);
+  that->hiddens = NULL;
+  that->units = GSetCreateStatic();
+
+  // Return the NeuraMorph
+  return that;
+
+}
+
+// Free the memory used by the NeuraMorph 'that'
+void NeuraMorphFree(NeuraMorph** that) {
+
+  // Check the input
+  if (that == NULL || *that == NULL) {
+
+    return;
+
+  }
+
+  // Free memory
+  VecFree(&((*that)->inputs));
+  VecFree(&((*that)->outputs));
+  if ((*that)->hiddens != NULL) {
+
+    VecFree(&((*that)->hiddens));
+
+  }
+
+  while (GSetNbElem(&((*that)->units)) > 0) {
+
+    NeuraMorphUnit* unit = GSetPop(&((*that)->units));
+    NeuraMorphUnitFree(&unit);
+
+  }
+
+  free(*that);
+  *that = NULL;
+
+}

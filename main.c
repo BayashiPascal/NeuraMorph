@@ -256,9 +256,116 @@ void UnitTestNeuraMorphUnit() {
 
 }
 
+void UnitTestNeuraMorphCreateFree() {
+
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      3,
+      2);
+  if (
+    nm->nbInput != 3 ||
+    nm->nbOutput != 2 ||
+    VecGetDim(nm->inputs) != 3 ||
+    VecGetDim(nm->outputs) != 2 ||
+    nm->hiddens != NULL ||
+    GSetNbElem(&(nm->units)) != 0) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphCreate failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NeuraMorphFree(&nm);
+  if (nm != NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphFree failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  printf("UnitTestNeuraMorphCreateFree OK\n");
+
+}
+
+void UnitTestNeuraMorphGetSet() {
+
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      3,
+      2);
+  if (NeuraMorphGetNbInput(nm) != 3) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphGetNbInput failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NeuraMorphGetNbOutput(nm) != 2) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphGetNbOutput failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NeuraMorphInputs(nm) != nm->inputs) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphInputs failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NeuraMorphOutputs(nm) != nm->outputs) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphOutputs failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NeuraMorphFree(&nm);
+  if (nm != NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphFree failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  printf("UnitTestNeuraMorphCreateFree OK\n");
+
+}
+
+void UnitTestNeuraMorph() {
+
+  UnitTestNeuraMorphCreateFree();
+  UnitTestNeuraMorphGetSet();
+  printf("UnitTestNeuraMorph OK\n");
+
+}
+
 void UnitTestAll() {
 
   UnitTestNeuraMorphUnit();
+  UnitTestNeuraMorph();
   printf("UnitTestAll OK\n");
 
 }
