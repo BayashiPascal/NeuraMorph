@@ -1,0 +1,6 @@
+*.o
+main
+Doc/*.aux
+Doc/*.log
+Doc/*.gz
+Doc/*.toc
