@@ -13,6 +13,7 @@
 #include "pberr.h"
 #include "pbmath.h"
 #include "gset.h"
+#include "gdataset.h"
 
 // ----- NeuraMorphUnit
 
