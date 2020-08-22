@@ -84,7 +84,7 @@ const VecFloat* NMUnitOutputs(const NeuraMorphUnit* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-long NeuraMorphGetNbInput(NeuraMorph* that) {
+long NMGetNbInput(NeuraMorph* that) {
 
 #if BUILDMODE == 0
 
@@ -108,7 +108,7 @@ long NeuraMorphGetNbInput(NeuraMorph* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-long NeuraMorphGetNbOutput(NeuraMorph* that) {
+long NMGetNbOutput(NeuraMorph* that) {
 
 #if BUILDMODE == 0
 
@@ -132,7 +132,7 @@ long NeuraMorphGetNbOutput(NeuraMorph* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-VecFloat* NeuraMorphInputs(NeuraMorph* that) {
+VecFloat* NMInputs(NeuraMorph* that) {
 
 #if BUILDMODE == 0
 
@@ -156,7 +156,7 @@ VecFloat* NeuraMorphInputs(NeuraMorph* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-const VecFloat* NeuraMorphOutputs(const NeuraMorph* that) {
+const VecFloat* NMOutputs(const NeuraMorph* that) {
 
 #if BUILDMODE == 0
 
@@ -173,5 +173,79 @@ const VecFloat* NeuraMorphOutputs(const NeuraMorph* that) {
 #endif
 
   return that->outputs;
+
+}
+
+// Get the number of hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMGetNbHidden(NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  long nb = 0;
+  if (that->hiddens != NULL) {
+
+    nb = VecGetDim(that->hiddens);
+
+  }
+
+  return nb;
+
+}
+
+// Set the number of hidden values of the NeuraMorph 'that' to 'nb'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMSetNbHidden(
+  NeuraMorph* that,
+         long nb) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (nb <= 0) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'nb' is invalid (%ld>0)",
+      nb);
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  if (that->hiddens != NULL) {
+
+    VecFree(&(that->hiddens));
+
+  }
+
+  that->hiddens = VecFloatCreate(nb);
 
 }

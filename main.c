@@ -299,42 +299,65 @@ void UnitTestNeuraMorphGetSet() {
     NeuraMorphCreate(
       3,
       2);
-  if (NeuraMorphGetNbInput(nm) != 3) {
+  if (NMGetNbInput(nm) != 3) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NeuraMorphGetNbInput failed");
+      "NMGetNbInput failed");
     PBErrCatch(NeuraMorphErr);
 
   }
 
-  if (NeuraMorphGetNbOutput(nm) != 2) {
+  if (NMGetNbOutput(nm) != 2) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NeuraMorphGetNbOutput failed");
+      "NMGetNbOutput failed");
     PBErrCatch(NeuraMorphErr);
 
   }
 
-  if (NeuraMorphInputs(nm) != nm->inputs) {
+  if (NMGetNbHidden(nm) != 0) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NeuraMorphInputs failed");
+      "NMGetNbHidden failed");
     PBErrCatch(NeuraMorphErr);
 
   }
 
-  if (NeuraMorphOutputs(nm) != nm->outputs) {
+  NMSetNbHidden(
+    nm,
+    5);
+  if (NMGetNbHidden(nm) != 5) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NeuraMorphOutputs failed");
+      "NMSetNbHidden failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NMInputs(nm) != nm->inputs) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMInputs failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NMOutputs(nm) != nm->outputs) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMOutputs failed");
     PBErrCatch(NeuraMorphErr);
 
   }

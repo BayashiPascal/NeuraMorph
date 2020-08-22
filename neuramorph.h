@@ -115,25 +115,39 @@ void NeuraMorphFree(NeuraMorph** that);
 #if BUILDMODE != 0
 static inline
 #endif
-long NeuraMorphGetNbInput(NeuraMorph* that);
+long NMGetNbInput(NeuraMorph* that);
 
 // Get the number of output values of the NeuraMorph 'that'
 #if BUILDMODE != 0
 static inline
 #endif
-long NeuraMorphGetNbOutput(NeuraMorph* that);
+long NMGetNbOutput(NeuraMorph* that);
 
 // Get the input values of the NeuraMorph 'that'
 #if BUILDMODE != 0
 static inline
 #endif
-VecFloat* NeuraMorphInputs(NeuraMorph* that);
+VecFloat* NMInputs(NeuraMorph* that);
 
 // Get the output values of the NeuraMorph 'that'
 #if BUILDMODE != 0
 static inline
 #endif
-const VecFloat* NeuraMorphOutputs(const NeuraMorph* that);
+const VecFloat* NMOutputs(const NeuraMorph* that);
+
+// Get the number of hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMGetNbHidden(NeuraMorph* that);
+
+// Set the number of hidden values of the NeuraMorph 'that' to 'nb'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMSetNbHidden(
+  NeuraMorph* that,
+         long nb);
 
 // ================ static inliner ====================
 
