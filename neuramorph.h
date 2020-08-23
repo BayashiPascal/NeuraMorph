@@ -31,6 +31,10 @@ typedef struct NeuraMorphUnit {
   VecFloat* lowFilters;
   VecFloat* highFilters;
 
+  // Lowest and highest values of outputs
+  VecFloat* lowOutputs;
+  VecFloat* highOutputs;
+
   // Vector to memorize the output values
   VecFloat* outputs;
 

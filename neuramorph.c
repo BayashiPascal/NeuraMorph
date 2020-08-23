@@ -69,6 +69,8 @@ NeuraMorphUnit* NeuraMorphUnitCreate(
   that->iOutputs = VecClone(iOutputs);
   that->lowFilters = VecFloatCreate(nbIn);
   that->highFilters = VecFloatCreate(nbIn);
+  that->lowOutputs = NULL;
+  that->highOutputs = NULL;
   that->outputs = VecFloatCreate(nbOut);
   that->coeffs =
     PBErrMalloc(
@@ -115,6 +117,17 @@ void NeuraMorphUnitFree(NeuraMorphUnit** that) {
   VecFree(&((*that)->iOutputs));
   VecFree(&((*that)->lowFilters));
   VecFree(&((*that)->highFilters));
+  if ((*that)->lowOutputs != NULL) {
+
+    VecFree(&((*that)->lowOutputs));
+
+  }
+  if ((*that)->highOutputs != NULL) {
+
+    VecFree(&((*that)->highOutputs));
+
+  }
+
   VecFree(&((*that)->outputs));
   for (
     long iOut = nbOut;
@@ -195,6 +208,19 @@ void NMUnitEvaluate(
 
   // Reset the outputs
   VecSetNull(that->outputs);
+
+  // Allocate memory for the low and high values if necessary
+  if (that->lowOutputs == NULL) {
+
+    that->lowOutputs = VecFloatCreate(VecGetDim(that->iOutputs));
+
+  }
+
+  if (that->highOutputs == NULL) {
+
+    that->highOutputs = VecFloatCreate(VecGetDim(that->iOutputs));
+
+  }
 
   // Update the active flags  and scaled inputs (skip the constant)
   for (

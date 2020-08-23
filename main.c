@@ -40,7 +40,9 @@ void UnitTestNeuraMorphUnitCreateFree() {
     VecGetDim(unit->outputs) != 2 ||
     VecGetDim(unit->lowFilters) != 4 ||
     VecGetDim(unit->highFilters) != 4 ||
-    VecGetDim(unit->scaledInputs) != 4) {
+    VecGetDim(unit->scaledInputs) != 4 ||
+    unit->lowOutputs != NULL ||
+    unit->highOutputs != NULL) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
