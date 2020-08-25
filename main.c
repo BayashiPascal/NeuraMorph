@@ -217,6 +217,16 @@ void UnitTestNeuraMorphUnitEvaluate() {
   check[0] = 1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z;
   check[1] =
     x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z;
+  VecFloat2D checkHigh = VecFloatCreateStatic2D();
+  VecSet(
+    &checkHigh,
+    0,
+    check[0]);
+  VecSet(
+    &checkHigh,
+    1,
+    check[1]);
+  VecFloat2D checkLow = checkHigh;
   for (
     long iOutput = 2;
     iOutput--;) {
@@ -234,10 +244,30 @@ void UnitTestNeuraMorphUnitEvaluate() {
       NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
       sprintf(
         NeuraMorphErr->_msg,
-        "NMUnitEvaluate failed");
+        "NMUnitEvaluate failed (1)");
       PBErrCatch(NeuraMorphErr);
 
     }
+
+  }
+
+  bool sameLow =
+    VecIsEqual(
+      &checkLow,
+      unit->lowOutputs);
+  bool sameHigh =
+    VecIsEqual(
+      &checkHigh,
+      unit->highOutputs);
+  if (
+    sameLow == false ||
+    sameHigh == false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMUnitEvaluate failed (2)");
+    PBErrCatch(NeuraMorphErr);
 
   }
 

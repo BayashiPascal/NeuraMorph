@@ -122,6 +122,7 @@ void NeuraMorphUnitFree(NeuraMorphUnit** that) {
     VecFree(&((*that)->lowOutputs));
 
   }
+
   if ((*that)->highOutputs != NULL) {
 
     VecFree(&((*that)->highOutputs));
@@ -208,19 +209,6 @@ void NMUnitEvaluate(
 
   // Reset the outputs
   VecSetNull(that->outputs);
-
-  // Allocate memory for the low and high values if necessary
-  if (that->lowOutputs == NULL) {
-
-    that->lowOutputs = VecFloatCreate(VecGetDim(that->iOutputs));
-
-  }
-
-  if (that->highOutputs == NULL) {
-
-    that->highOutputs = VecFloatCreate(VecGetDim(that->iOutputs));
-
-  }
 
   // Update the active flags  and scaled inputs (skip the constant)
   for (
@@ -316,6 +304,58 @@ void NMUnitEvaluate(
           }
 
         }
+
+      }
+
+    }
+
+  }
+
+  // If the low and high values for outputs don't exist yet
+  if (that->lowOutputs == NULL) {
+
+    // Create the low and high values by cloning the current output
+    that->lowOutputs = VecClone(that->outputs);
+    that->highOutputs = VecClone(that->outputs);
+
+  // Else, the low and high values for outputs exist
+  } else {
+
+    // Loop on the outputs
+    for (
+      long iOutput = 0;
+      iOutput < VecGetDim(that->outputs);
+      ++iOutput) {
+
+      // Update the low and high values for this output
+      float val =
+        VecGet(
+          that->outputs,
+          iOutput);
+
+      float curLow =
+        VecGet(
+          that->lowOutputs,
+          iOutput);
+      if (curLow > val) {
+
+        VecSet(
+          that->lowOutputs,
+          iOutput,
+          val);
+
+      }
+
+      float curHigh =
+        VecGet(
+          that->highOutputs,
+          iOutput);
+      if (curHigh < val) {
+
+        VecSet(
+          that->highOutputs,
+          iOutput,
+          val);
 
       }
 
