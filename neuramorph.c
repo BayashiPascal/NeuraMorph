@@ -679,3 +679,42 @@ void NMBurryUnits(
   }
 
 }
+
+// Get a new vector with indices of the outputs in the NeuraMorph 'that'
+VecLong* NMGetVecIOutputs(const NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Allocate memory for the result
+  VecLong* iOutputs = VecLongCreate(NMGetNbOutput(that));
+
+  // Loop on indices
+  for (
+    long iOutput = 0;
+    iOutput < NMGetNbOutput(that);
+    ++iOutput) {
+
+    // Set the indice of this output
+    VecSet(
+      iOutputs,
+      iOutput,
+      iOutput + NMGetNbHidden(that));
+
+  }
+
+  // Return the result
+  return iOutputs;
+
+}

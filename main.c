@@ -374,6 +374,33 @@ void UnitTestNeuraMorphGetSet() {
 
   }
 
+  VecLong* iOuts = NMGetVecIOutputs(nm);
+  VecLong2D checkOuts =
+    VecLongCreateStatic2D();
+  VecSet(
+    &checkOuts,
+    0,
+    5);
+  VecSet(
+    &checkOuts,
+    1,
+    6);
+  bool isSame =
+    VecIsEqual(
+      &checkOuts,
+      iOuts);
+  if (isSame == false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMGetVecIOutputs failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  VecFree(&iOuts);
+
   if (NMInputs(nm) != nm->inputs) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;

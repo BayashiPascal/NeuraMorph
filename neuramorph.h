@@ -119,13 +119,13 @@ void NeuraMorphFree(NeuraMorph** that);
 #if BUILDMODE != 0
 static inline
 #endif
-long NMGetNbInput(NeuraMorph* that);
+long NMGetNbInput(const NeuraMorph* that);
 
 // Get the number of output values of the NeuraMorph 'that'
 #if BUILDMODE != 0
 static inline
 #endif
-long NMGetNbOutput(NeuraMorph* that);
+long NMGetNbOutput(const NeuraMorph* that);
 
 // Get the input values of the NeuraMorph 'that'
 #if BUILDMODE != 0
@@ -143,7 +143,7 @@ const VecFloat* NMOutputs(const NeuraMorph* that);
 #if BUILDMODE != 0
 static inline
 #endif
-long NMGetNbHidden(NeuraMorph* that);
+long NMGetNbHidden(const NeuraMorph* that);
 
 // Set the number of hidden values of the NeuraMorph 'that' to 'nb'
 #if BUILDMODE != 0
@@ -177,6 +177,9 @@ void NMRemoveUnit(
 void NMBurryUnits(
   NeuraMorph* that,
         GSet* units);
+
+// Get a new vector with indices of the outputs in the NeuraMorph 'that'
+VecLong* NMGetVecIOutputs(const NeuraMorph* that);
 
 // ================ static inliner ====================
 

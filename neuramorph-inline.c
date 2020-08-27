@@ -84,7 +84,7 @@ const VecFloat* NMUnitOutputs(const NeuraMorphUnit* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-long NMGetNbInput(NeuraMorph* that) {
+long NMGetNbInput(const NeuraMorph* that) {
 
 #if BUILDMODE == 0
 
@@ -108,7 +108,7 @@ long NMGetNbInput(NeuraMorph* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-long NMGetNbOutput(NeuraMorph* that) {
+long NMGetNbOutput(const NeuraMorph* that) {
 
 #if BUILDMODE == 0
 
@@ -180,7 +180,7 @@ const VecFloat* NMOutputs(const NeuraMorph* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-long NMGetNbHidden(NeuraMorph* that) {
+long NMGetNbHidden(const NeuraMorph* that) {
 
 #if BUILDMODE == 0
 

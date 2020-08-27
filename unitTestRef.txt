@@ -2,4 +2,9 @@ UnitTestNeuraMorphUnitCreateFree OK
 UnitTestNeuraMorphUnitGetSet OK
 UnitTestNeuraMorphUnitEvaluate OK
 UnitTestNeuraMorphUnit OK
+UnitTestNeuraMorphCreateFree OK
+UnitTestNeuraMorphGetSet OK
+UnitTestNeuraMorphAddRemoveUnit OK
+UnitTestNeuraMorphBurryUnits OK
+UnitTestNeuraMorph OK
 UnitTestAll OK
