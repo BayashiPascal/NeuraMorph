@@ -153,6 +153,14 @@ void NMSetNbHidden(
   NeuraMorph* that,
          long nb);
 
+// Add one NeuraMorphUnit with input and output indices 'iInputs'
+// and 'iOutputs' to the NeuraMorph 'that'
+// Return the created NeuraMorphUnit
+NeuraMorphUnit* NMAddUnit(
+     NeuraMorph* that,
+  const VecLong* iInputs,
+  const VecLong* iOutputs);
+
 // ================ static inliner ====================
 
 #if BUILDMODE != 0

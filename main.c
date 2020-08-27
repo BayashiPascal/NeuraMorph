@@ -395,17 +395,72 @@ void UnitTestNeuraMorphGetSet() {
   }
 
   NeuraMorphFree(&nm);
-  if (nm != NULL) {
+
+  printf("UnitTestNeuraMorphGetSet OK\n");
+
+}
+
+void UnitTestNeuraMorphAddRemoveUnit() {
+
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      3,
+      2);
+
+  VecLong3D iInputs = VecLongCreateStatic3D();
+  VecSet(
+    &iInputs,
+    0,
+    0);
+  VecSet(
+    &iInputs,
+    1,
+    1);
+  VecSet(
+    &iInputs,
+    2,
+    2);
+  VecLong2D iOutputs = VecLongCreateStatic2D();
+  VecSet(
+    &iOutputs,
+    0,
+    0);
+  VecSet(
+    &iOutputs,
+    1,
+    1);
+
+  NeuraMorphUnit* unit =
+    NMAddUnit(
+      nm,
+      (VecLong*)&iInputs,
+      (VecLong*)&iOutputs);
+
+  bool isSameA =
+    VecIsEqual(
+      &iInputs,
+      unit->iInputs);
+  bool isSameB =
+    VecIsEqual(
+      &iOutputs,
+      unit->iOutputs);
+  if (
+    GSetNbElem(&(nm->units)) != 1 ||
+    GSetHead(&(nm->units)) != unit ||
+    isSameA == false ||
+    isSameB == false) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NeuraMorphFree failed");
+      "NMAddUnit failed");
     PBErrCatch(NeuraMorphErr);
 
   }
 
-  printf("UnitTestNeuraMorphCreateFree OK\n");
+  NeuraMorphFree(&nm);
+
+  printf("UnitTestNeuraMorphAddRemoveUnit OK\n");
 
 }
 
@@ -413,6 +468,7 @@ void UnitTestNeuraMorph() {
 
   UnitTestNeuraMorphCreateFree();
   UnitTestNeuraMorphGetSet();
+  UnitTestNeuraMorphAddRemoveUnit();
   printf("UnitTestNeuraMorph OK\n");
 
 }

@@ -516,3 +516,61 @@ void NeuraMorphFree(NeuraMorph** that) {
   *that = NULL;
 
 }
+
+// Add one NeuraMorphUnit with input and output indices 'iInputs'
+// and 'iOutputs' to the NeuraMorph 'that'
+// Return the created NeuraMorphUnit
+NeuraMorphUnit* NMAddUnit(
+     NeuraMorph* that,
+  const VecLong* iInputs,
+  const VecLong* iOutputs) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (iInputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'iInputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (iOutputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'iOutputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Create the NeuraMorphUnit
+  NeuraMorphUnit* unit =
+    NeuraMorphUnitCreate(
+      iInputs,
+      iOutputs);
+
+  // Append the new NeuraorphUnit to the set of NeuraMorphUnit
+  GSetAppend(
+    &(that->units),
+    unit);
+
+  // Return the new unit
+  return unit;
+
+}
