@@ -402,11 +402,6 @@ void UnitTestNeuraMorphGetSet() {
 
 void UnitTestNeuraMorphAddRemoveUnit() {
 
-  NeuraMorph* nm =
-    NeuraMorphCreate(
-      3,
-      2);
-
   VecLong3D iInputs = VecLongCreateStatic3D();
   VecSet(
     &iInputs,
@@ -429,6 +424,11 @@ void UnitTestNeuraMorphAddRemoveUnit() {
     &iOutputs,
     1,
     1);
+
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      3,
+      2);
 
   NeuraMorphUnit* unit =
     NMAddUnit(
@@ -458,6 +458,34 @@ void UnitTestNeuraMorphAddRemoveUnit() {
 
   }
 
+  NeuraMorphFree(&nm);
+
+  nm =
+    NeuraMorphCreate(
+      3,
+      2);
+
+  unit =
+    NMAddUnit(
+      nm,
+      (VecLong*)&iInputs,
+      (VecLong*)&iOutputs);
+
+  NMRemoveUnit(
+    nm,
+    unit);
+
+  if (GSetNbElem(&(nm->units)) != 0) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMRemoveUnit failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NeuraMorphUnitFree(&unit);
   NeuraMorphFree(&nm);
 
   printf("UnitTestNeuraMorphAddRemoveUnit OK\n");

@@ -574,3 +574,30 @@ NeuraMorphUnit* NMAddUnit(
   return unit;
 
 }
+
+// Remove the NeuraMorphUnit 'unit' from the NeuraMorph 'that'
+// The NeuraMorphUnit is not freed
+void NMRemoveUnit(
+      NeuraMorph* that,
+  NeuraMorphUnit* unit) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Remove the NeuraorphUnit from the set of NeuraMorphUnit
+  GSetRemoveAll(
+    &(that->units),
+    unit);
+
+}

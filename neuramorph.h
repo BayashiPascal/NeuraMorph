@@ -161,6 +161,12 @@ NeuraMorphUnit* NMAddUnit(
   const VecLong* iInputs,
   const VecLong* iOutputs);
 
+// Remove the NeuraMorphUnit 'unit' from the NeuraMorph 'that'
+// The NeuraMorphUnit is not freed
+void NMRemoveUnit(
+      NeuraMorph* that,
+  NeuraMorphUnit* unit);
+
 // ================ static inliner ====================
 
 #if BUILDMODE != 0
