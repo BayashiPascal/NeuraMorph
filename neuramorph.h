@@ -167,6 +167,17 @@ void NMRemoveUnit(
       NeuraMorph* that,
   NeuraMorphUnit* unit);
 
+// Burry the NeuraMorphUnits in the 'units' set into the
+// NeuraMorph 'that'
+// 'units' is empty after calling this function
+// The NeuraMorphUnits iOutputs must point toward the NeuraMorph
+// outputs
+// NeuraMorphUnits' iOutputs are redirected toward new hidden values
+// 'that->hiddens' is resized as necessary
+void NMBurryUnits(
+  NeuraMorph* that,
+        GSet* units);
+
 // ================ static inliner ====================
 
 #if BUILDMODE != 0

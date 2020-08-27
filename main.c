@@ -492,11 +492,122 @@ void UnitTestNeuraMorphAddRemoveUnit() {
 
 }
 
+void UnitTestNeuraMorphBurryUnits() {
+
+  VecLong3D iInputs = VecLongCreateStatic3D();
+  VecSet(
+    &iInputs,
+    0,
+    0);
+  VecSet(
+    &iInputs,
+    1,
+    1);
+  VecSet(
+    &iInputs,
+    2,
+    2);
+  VecLong2D iOutputs = VecLongCreateStatic2D();
+  VecSet(
+    &iOutputs,
+    0,
+    0);
+  VecSet(
+    &iOutputs,
+    1,
+    1);
+
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      3,
+      2);
+
+  NeuraMorphUnit* unitA =
+    NeuraMorphUnitCreate(
+      (VecLong*)&iInputs,
+      (VecLong*)&iOutputs);
+
+  NeuraMorphUnit* unitB =
+    NeuraMorphUnitCreate(
+      (VecLong*)&iInputs,
+      (VecLong*)&iOutputs);
+
+  GSet units = GSetCreateStatic();
+  GSetAppend(
+    &units,
+    unitA);
+  GSetAppend(
+    &units,
+    unitB);
+
+  NMBurryUnits(
+    nm,
+    &units);
+
+  if (
+    GSetNbElem(&units) != 0 ||
+    nm->hiddens == NULL ||
+    VecGetDim(nm->hiddens) != 4) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMBurryUnits failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  VecLong2D checkA = VecLongCreateStatic2D();
+  VecSet(
+    &checkA,
+    0,
+    0);
+  VecSet(
+    &checkA,
+    1,
+    1);
+  VecLong2D checkB = VecLongCreateStatic2D();
+  VecSet(
+    &checkB,
+    0,
+    2);
+  VecSet(
+    &checkB,
+    1,
+    3);
+
+  bool isSameA =
+    VecIsEqual(
+      &checkA,
+      unitA->iOutputs);
+  bool isSameB =
+    VecIsEqual(
+      &checkB,
+      unitB->iOutputs);
+  if (
+    isSameA == false ||
+    isSameB == false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMBurryUnits failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NeuraMorphFree(&nm);
+
+  printf("UnitTestNeuraMorphBurryUnits OK\n");
+
+}
+
 void UnitTestNeuraMorph() {
 
   UnitTestNeuraMorphCreateFree();
   UnitTestNeuraMorphGetSet();
   UnitTestNeuraMorphAddRemoveUnit();
+  UnitTestNeuraMorphBurryUnits();
   printf("UnitTestNeuraMorph OK\n");
 
 }

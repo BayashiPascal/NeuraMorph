@@ -601,3 +601,81 @@ void NMRemoveUnit(
     unit);
 
 }
+
+// Burry the NeuraMorphUnits in the 'units' set into the
+// NeuraMorph 'that'
+// 'units' is empty after calling this function
+// The NeuraMorphUnits iOutputs must point toward the NeuraMorph
+// outputs
+// NeuraMorphUnits' iOutputs are redirected toward new hidden values
+// 'that->hiddens' is resized as necessary
+void NMBurryUnits(
+  NeuraMorph* that,
+        GSet* units) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare a variable to memorize the number of hidden values
+  // to add
+  long nbHiddenValues = 0;
+
+  // While there are units to burry
+  while (GSetNbElem(units) > 0) {
+
+    // Get the unit
+    NeuraMorphUnit* unit = GSetPop(units);
+
+    // Loop on the iOutputs of the unit
+    for (
+      long iOutput = 0;
+      iOutput < VecGetDim(NMUnitIOutputs(unit));
+      ++iOutput) {
+
+      long indice =
+        VecGet(
+          NMUnitIOutputs(unit),
+          iOutput);
+      VecSet(
+        unit->iOutputs,
+        iOutput,
+        indice + nbHiddenValues);
+
+    }
+
+    // Append the unit to the set of NeuraMorphUnit
+    GSetAppend(
+      &(that->units),
+      unit);
+
+    // Update the number of new hidden values
+    nbHiddenValues += VecGetDim(NMUnitIOutputs(unit));
+
+  }
+
+  // Resize the hiddens value vector
+  if (that->hiddens != NULL) {
+
+    nbHiddenValues += VecGetDim(that->hiddens);
+    VecFree(&(that->hiddens));
+
+  }
+
+  if (nbHiddenValues > 0) {
+
+    that->hiddens = VecFloatCreate(nbHiddenValues);
+
+  }
+
+}
