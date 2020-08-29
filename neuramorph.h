@@ -100,6 +100,10 @@ typedef struct NeuraMorph {
   // Internal values
   VecFloat* hiddens;
 
+  // Lowest and highest values for internal values
+  VecFloat* lowHiddens;
+  VecFloat* highHiddens;
+
   // GSet of NeuraMorphUnit
   GSet units;
 

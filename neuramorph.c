@@ -22,6 +22,10 @@ float NMUnitGetCoeff(
                    long iInputB,
                    long iOutput);
 
+// Update the low and high of the hiddens of the NeuraMorph 'that' with
+// the low and high of its units
+void NMUpdateLowHighHiddens(NeuraMorph* that);
+
 // ================ Functions implementation ====================
 
 // Create a new NeuraMorphUnit between the input 'iInputs' and the
@@ -478,6 +482,8 @@ NeuraMorph* NeuraMorphCreate(
   that->inputs = VecFloatCreate(nbInput);
   that->outputs = VecFloatCreate(nbOutput);
   that->hiddens = NULL;
+  that->lowHiddens = NULL;
+  that->highHiddens = NULL;
   that->units = GSetCreateStatic();
 
   // Return the NeuraMorph
@@ -501,6 +507,8 @@ void NeuraMorphFree(NeuraMorph** that) {
   if ((*that)->hiddens != NULL) {
 
     VecFree(&((*that)->hiddens));
+    VecFree(&((*that)->lowHiddens));
+    VecFree(&((*that)->highHiddens));
 
   }
 
@@ -663,17 +671,30 @@ void NMBurryUnits(
 
   }
 
-  // Resize the hiddens value vector
+  // If there is already hidden values
   if (that->hiddens != NULL) {
 
+    // Add the previous number of hidden values
     nbHiddenValues += VecGetDim(that->hiddens);
+
+    // Free memory
     VecFree(&(that->hiddens));
+    VecFree(&(that->lowHiddens));
+    VecFree(&(that->highHiddens));
 
   }
 
+  // If there are hidden values after burrying
   if (nbHiddenValues > 0) {
 
+    // Resize the hiddens value vector
     that->hiddens = VecFloatCreate(nbHiddenValues);
+    that->lowHiddens = VecFloatCreate(nbHiddenValues);
+    that->highHiddens = VecFloatCreate(nbHiddenValues);
+
+    // Update the low and high of the hiddens with the low and high
+    // of the units
+    NMUpdateLowHighHiddens(that);
 
   }
 
@@ -715,5 +736,79 @@ VecLong* NMGetVecIOutputs(const NeuraMorph* that) {
 
   // Return the result
   return iOutputs;
+
+}
+
+// Update the low and high of the hiddens of the NeuraMorph 'that' with
+// the low and high of its units
+void NMUpdateLowHighHiddens(NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Loop on the units
+  GSetIterForward iter =
+    GSetIterForwardCreateStatic(&(that->units));
+  do {
+
+    // Get the unit
+    NeuraMorphUnit* unit = GSetIterGet(&iter);
+
+    // Loop on the iOutputs of the unit
+    for (
+      long iOutput = 0;
+      iOutput < VecGetDim(NMUnitIOutputs(unit));
+      ++iOutput) {
+
+      // Get the indice
+      long indice =
+        VecGet(
+          NMUnitIOutputs(unit),
+          iOutput);
+
+      // If the indice points to a hidden value
+      if (indice < NMGetNbHidden(that)) {
+
+        // If the low and high exist
+        if (
+          unit->lowOutputs != NULL &&
+          unit->highOutputs != NULL) {
+
+          // Update the low and high
+          float low =
+            VecGet(
+              unit->lowOutputs,
+              iOutput);
+          float high =
+            VecGet(
+              unit->highOutputs,
+              iOutput);
+          VecSet(
+            that->lowHiddens,
+            indice,
+            low);
+          VecSet(
+            that->highHiddens,
+            indice,
+            high);
+
+        }
+
+      }
+
+    }
+
+  } while (GSetIterStep(&iter));
 
 }
