@@ -44,7 +44,7 @@ typedef struct NeuraMorphUnit {
 
   // Working variables to avoid reallocation of memory at each Evaluate()
   bool* activeInputs;
-  VecFloat* scaledInputs;
+  VecFloat* unitInputs;
 
 } NeuraMorphUnit;
 

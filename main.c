@@ -40,7 +40,7 @@ void UnitTestNeuraMorphUnitCreateFree() {
     VecGetDim(unit->outputs) != 2 ||
     VecGetDim(unit->lowFilters) != 4 ||
     VecGetDim(unit->highFilters) != 4 ||
-    VecGetDim(unit->scaledInputs) != 4 ||
+    VecGetDim(unit->unitInputs) != 4 ||
     unit->lowOutputs != NULL ||
     unit->highOutputs != NULL) {
 
@@ -211,9 +211,9 @@ void UnitTestNeuraMorphUnitEvaluate() {
     inputs);
 
   float check[2];
-  float x = 2.0 * (1.0 - 0.0) / (2.0 - 0.0) - 1.0;
-  float y = 0.0; //2.0 * (3.0 - 0.0) / (2.0 - 0.0) - 1.0;
-  float z = 2.0 * (1.5 - 0.0) / (2.0 - 0.0) - 1.0;
+  float x = 1.0;
+  float y = 0.0;
+  float z = 1.5;
   check[0] = 1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z;
   check[1] =
     x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z;

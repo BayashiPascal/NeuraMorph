@@ -87,11 +87,11 @@ NeuraMorphUnit* NeuraMorphUnitCreate(
     PBErrMalloc(
       NeuraMorphErr,
       sizeof(bool) * nbIn);
-  that->scaledInputs = VecFloatCreate(nbIn);
+  that->unitInputs = VecFloatCreate(nbIn);
 
   // Set the input value, filters and active flag for the constant
   VecSet(
-    that->scaledInputs,
+    that->unitInputs,
     0,
     1.0);
   that->activeInputs[0] = true;
@@ -136,7 +136,7 @@ void NeuraMorphUnitFree(NeuraMorphUnit** that) {
     VecFree((*that)->coeffs + iOut));
   free((*that)->coeffs);
   free((*that)->activeInputs);
-  VecFree(&((*that)->scaledInputs));
+  VecFree(&((*that)->unitInputs));
   free(*that);
   *that = NULL;
 
@@ -210,10 +210,10 @@ void NMUnitEvaluate(
   // Reset the outputs
   VecSetNull(that->outputs);
 
-  // Update the active flags  and scaled inputs (skip the constant)
+  // Update the active flags and scaled inputs (skip the constant)
   for (
     long iInput = 1;
-    iInput < VecGetDim(that->scaledInputs);
+    iInput < VecGetDim(that->unitInputs);
     ++iInput) {
 
     // Get the input value and its low/high filters
@@ -239,12 +239,11 @@ void NMUnitEvaluate(
       // Set this value as active
       that->activeInputs[iInput] = true;
 
-      // Scale the value according to the filter
-      float scaled = 2.0 * (val - low) / (high - low) - 1.0;
+      // Set the value in the unit inputs
       VecSet(
-        that->scaledInputs,
+        that->unitInputs,
         iInput,
-        scaled);
+        val);
 
     // Else the value is outside the filter
     } else {
@@ -259,7 +258,7 @@ void NMUnitEvaluate(
   // Loop on the pair of active inputs
   for (
     long iInputA = 0;
-    iInputA < VecGetDim(that->scaledInputs);
+    iInputA < VecGetDim(that->unitInputs);
     ++iInputA) {
 
     if (that->activeInputs[iInputA] == true) {
@@ -280,10 +279,10 @@ void NMUnitEvaluate(
             // Calculate the components for this output and pair of inputs
             float comp =
               VecGet(
-                that->scaledInputs,
+                that->unitInputs,
                 iInputA) *
               VecGet(
-                that->scaledInputs,
+                that->unitInputs,
                 iInputB) *
               NMUnitGetCoeff(
                 that,
@@ -387,28 +386,28 @@ float NMUnitGetCoeff(
 
   if (
     iInputA < 0 ||
-    iInputA >= VecGetDim(that->scaledInputs)) {
+    iInputA >= VecGetDim(that->unitInputs)) {
 
     NeuraMorphErr->_type = PBErrTypeInvalidArg;
     sprintf(
       NeuraMorphErr->_msg,
       "'iInputA' is invalid (0<=%ld<%ld)",
       iInputA,
-      VecGetDim(that->scaledInputs));
+      VecGetDim(that->unitInputs));
     PBErrCatch(NeuraMorphErr);
 
   }
 
   if (
     iInputB < 0 ||
-    iInputB >= VecGetDim(that->scaledInputs)) {
+    iInputB >= VecGetDim(that->unitInputs)) {
 
     NeuraMorphErr->_type = PBErrTypeInvalidArg;
     sprintf(
       NeuraMorphErr->_msg,
       "'iInputB' is invalid (0<=%ld<%ld)",
       iInputB,
-      VecGetDim(that->scaledInputs));
+      VecGetDim(that->unitInputs));
     PBErrCatch(NeuraMorphErr);
 
   }
