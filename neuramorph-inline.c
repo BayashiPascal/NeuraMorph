@@ -76,6 +76,56 @@ const VecFloat* NMUnitOutputs(const NeuraMorphUnit* that) {
 
 }
 
+// Get the number of input values of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMUnitGetNbInputs(const NeuraMorphUnit* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return VecGetDim(that->iInputs);
+
+}
+
+
+// Get the number of output values of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMUnitGetNbOutputs(const NeuraMorphUnit* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return VecGetDim(that->iOutputs);
+
+}
+
+
 // ----- NeuraMorph
 
 // ================ Functions implementation ====================

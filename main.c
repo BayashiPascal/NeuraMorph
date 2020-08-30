@@ -136,6 +136,26 @@ void UnitTestNeuraMorphUnitGetSet() {
 
   }
 
+  if (NMUnitGetNbInputs(unit) != 3) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMUnitGetNbInputs failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NMUnitGetNbOutputs(unit) != 2) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMUnitGetNbOutputs failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   NeuraMorphUnitFree(&unit);
   VecFree(&iIn);
   VecFree(&iOut);

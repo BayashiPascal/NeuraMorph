@@ -12,7 +12,7 @@
 // ================ Functions declaration ====================
 
 // Return the number of coefficients of a NeuraMorphUnit having 'nbIn' inputs
-long NMUnitGetNBCoeff(long nbIn);
+long NMUnitGetNbCoeff(long nbIn);
 
 // Get the coefficient for the pair of inputs 'iInputA', 'iInputB' in the
 // NeuraMorphUnit 'that' for the output 'iOutput'
@@ -80,7 +80,7 @@ NeuraMorphUnit* NeuraMorphUnitCreate(
     PBErrMalloc(
       NeuraMorphErr,
       sizeof(VecFloat*) * nbOut);
-  long nbCoeff = NMUnitGetNBCoeff(nbIn);
+  long nbCoeff = NMUnitGetNbCoeff(nbIn);
   for (
     long iOut = nbOut;
     iOut--;
@@ -147,7 +147,7 @@ void NeuraMorphUnitFree(NeuraMorphUnit** that) {
 }
 
 // Return the number of coefficients of a NeuraMorphUnit having 'nbIn' inputs
-long NMUnitGetNBCoeff(long nbIn) {
+long NMUnitGetNbCoeff(long nbIn) {
 
 #if BUILDMODE == 0
 
@@ -804,6 +804,148 @@ void NMUpdateLowHighHiddens(NeuraMorph* that) {
             high);
 
         }
+
+      }
+
+    }
+
+  } while (GSetIterStep(&iter));
+
+}
+
+// Evaluate the NeuraMorph 'that' on the 'inputs' values
+void NMEvaluate(
+  NeuraMorph* that,
+  VecFloat* inputs) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (inputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'inputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (VecGetDim(inputs) != VecGetDim(that->inputs)) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'inputs' has invalid size (%ld==%ld)",
+      VecGetDim(inputs),
+      VecGetDim(that->inputs));
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Copy the inputs into the internal inputs
+  VecCopy(
+    that->inputs,
+    inputs);
+
+  // Reset the internal outputs
+  VecSetNull(that->outputs);
+
+  // Loop on the units
+  GSetIterForward iter = GSetIterForwardCreateStatic(&(that->units));
+  do {
+
+    // Get the unit
+    NeuraMorphUnit* unit = GSetIterGet(&iter);
+
+    // Allocate memory for unit inputs
+    VecFloat* unitInputs = VecFloatCreate(NMUnitGetNbInputs(unit));
+
+    // Loop on the input indices of the unit
+    for (
+      long iInput = 0;
+      iInput < NMUnitGetNbInputs(unit);
+      ++iInput) {
+
+      // Declare a variable to memorize the input value
+      float val = 0.0;
+
+      // If this indice points toward an input
+      if (iInput < NMGetNbInput(that)) {
+
+        // Get the input value of the NeuraMorph for this indice
+        val =
+          VecGet(
+            NMInputs(that),
+            iInput);
+
+      // Else, the indice points toward a hidden value
+      } else {
+
+        // Get the hidden value of the NeuraMorph for this indice
+        val =
+          VecGet(
+            that->hiddens,
+            iInput - NMGetNbInput(that));
+        
+      }
+      
+      // Set the input value of the unit for this indice
+      VecSet(
+        unit->unitInputs,
+        iInput,
+        val);
+
+    }
+
+    // Evaluate the unit
+    NMUnitEvaluate(
+      unit,
+      unitInputs);
+
+    // Free the memory used by the unit input
+    VecFree(&unitInputs);
+
+    // Loop on the output indices of the unit
+    for (
+      long iOutput = 0;
+      iOutput < NMUnitGetNbOutputs(unit);
+      ++iOutput) {
+
+      // Get the output value of the unit for this indice
+      float val =
+        VecGet(
+          NMUnitOutputs(unit),
+          iOutput);
+
+      // If the indice points toward a hidden
+      if (iOutput < NMGetNbHidden(that)) {
+
+        // Set the hidden value of the NeuraMorph for this indice
+        VecSet(
+          that->hiddens,
+          iOutput,
+          val);
+
+      // Else, the indice points toward an output
+      } else {
+
+        // Set the output value of the NeuraMorph for this indice
+        VecSet(
+          that->outputs,
+          iOutput - NMGetNbHidden(that),
+          val);
 
       }
 

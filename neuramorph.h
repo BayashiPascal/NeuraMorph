@@ -83,6 +83,18 @@ void NMUnitEvaluate(
   NeuraMorphUnit* that,
   const VecFloat* inputs);
 
+// Get the number of input values of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMUnitGetNbInputs(const NeuraMorphUnit* that);
+
+// Get the number of output values of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMUnitGetNbOutputs(const NeuraMorphUnit* that);
+
 // ----- NeuraMorph
 
 // ================= Data structure ===================
@@ -184,6 +196,11 @@ void NMBurryUnits(
 
 // Get a new vector with indices of the outputs in the NeuraMorph 'that'
 VecLong* NMGetVecIOutputs(const NeuraMorph* that);
+
+// Evaluate the NeuraMorph 'that' on the 'inputs' values
+void NMEvaluate(
+  NeuraMorph* that,
+  VecFloat* inputs);
 
 // ================ static inliner ====================
 
