@@ -200,7 +200,7 @@ VecLong* NMGetVecIOutputs(const NeuraMorph* that);
 // Evaluate the NeuraMorph 'that' on the 'inputs' values
 void NMEvaluate(
   NeuraMorph* that,
-  VecFloat* inputs);
+    VecFloat* inputs);
 
 // ================ static inliner ====================
 

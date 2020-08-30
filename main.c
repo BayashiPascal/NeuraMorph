@@ -539,7 +539,7 @@ void UnitTestNeuraMorphAddRemoveUnit() {
 
 }
 
-void UnitTestNeuraMorphBurryUnits() {
+void UnitTestNeuraMorphBurryUnitsEvaluate() {
 
   VecLong3D iInputs = VecLongCreateStatic3D();
   VecSet(
@@ -579,6 +579,87 @@ void UnitTestNeuraMorphBurryUnits() {
       (VecLong*)&iInputs,
       (VecLong*)&iOutputs);
 
+  for (
+    long iInput = 3;
+    iInput--;) {
+
+    VecSet(
+      unitA->lowFilters,
+      iInput + 1,
+      0.0);
+    VecSet(
+      unitA->highFilters,
+      iInput + 1,
+      2.0);
+    VecSet(
+      unitB->lowFilters,
+      iInput + 1,
+      0.0);
+    VecSet(
+      unitB->highFilters,
+      iInput + 1,
+      2.0);
+
+  }
+
+  float coeffsA[2][10] = {
+
+    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0},
+    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0}
+
+  };
+  float coeffsB[2][10] = {
+
+    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0},
+    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0}
+
+  };
+  for (
+    long iOutput = 2;
+    iOutput--;) {
+
+    for (
+      long iCoeff = 10;
+      iCoeff--;) {
+
+      VecSet(
+        unitA->coeffs[iOutput],
+        iCoeff,
+        coeffsA[iOutput][iCoeff]);
+
+      VecSet(
+        unitB->coeffs[iOutput],
+        iCoeff,
+        coeffsB[iOutput][iCoeff]);
+
+    }
+
+  }
+
+  float x = 1.0;
+  float y = 0.5;
+  float z = 1.5;
+  VecFloat* evalInputs = VecFloatCreate(3);
+  VecSet(
+    evalInputs,
+    0,
+    x);
+  VecSet(
+    evalInputs,
+    1,
+    y);
+  VecSet(
+    evalInputs,
+    2,
+    z);
+
+  NMUnitEvaluate(
+    unitA,
+    evalInputs);
+  NMUnitEvaluate(
+    unitB,
+    evalInputs);
+
   GSet units = GSetCreateStatic();
   GSetAppend(
     &units,
@@ -599,7 +680,7 @@ void UnitTestNeuraMorphBurryUnits() {
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NMBurryUnits failed");
+      "NMBurryUnits failed (1)");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -638,14 +719,299 @@ void UnitTestNeuraMorphBurryUnits() {
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
     sprintf(
       NeuraMorphErr->_msg,
-      "NMBurryUnits failed");
+      "NMBurryUnits failed (2)");
     PBErrCatch(NeuraMorphErr);
 
   }
 
+  float checkLowAa =
+    VecGet(
+      unitA->lowOutputs,
+      0);
+  checkLowAa -=
+    VecGet(
+      nm->lowHiddens,
+      0);
+  bool isSameLowAa =
+    ISEQUALF(
+      checkLowAa,
+      0.0);
+  float checkLowAb =
+    VecGet(
+      unitA->lowOutputs,
+      1);
+  checkLowAb -=
+    VecGet(
+      nm->lowHiddens,
+      1);
+  bool isSameLowAb =
+    ISEQUALF(
+      checkLowAb,
+      0.0);
+  float checkLowBa =
+    VecGet(
+      unitB->lowOutputs,
+      0);
+  checkLowBa -=
+    VecGet(
+      nm->lowHiddens,
+      2);
+  bool isSameLowBa =
+    ISEQUALF(
+      checkLowBa,
+      0.0);
+  float checkLowBb =
+    VecGet(
+      unitB->lowOutputs,
+      1);
+  checkLowBb -=
+    VecGet(
+      nm->lowHiddens,
+      3);
+  bool isSameLowBb =
+    ISEQUALF(
+      checkLowBb,
+      0.0);
+  float checkHighAa =
+    VecGet(
+      unitA->lowOutputs,
+      0);
+  checkHighAa -=
+    VecGet(
+      nm->lowHiddens,
+      0);
+  bool isSameHighAa =
+    ISEQUALF(
+      checkHighAa,
+      0.0);
+  float checkHighAb =
+    VecGet(
+      unitA->lowOutputs,
+      1);
+  checkHighAb -=
+    VecGet(
+      nm->lowHiddens,
+      1);
+  bool isSameHighAb =
+    ISEQUALF(
+      checkHighAb,
+      0.0);
+  float checkHighBa =
+    VecGet(
+      unitB->lowOutputs,
+      0);
+  checkHighBa -=
+    VecGet(
+      nm->lowHiddens,
+      2);
+  bool isSameHighBa =
+    ISEQUALF(
+      checkHighBa,
+      0.0);
+  float checkHighBb =
+    VecGet(
+      unitB->lowOutputs,
+      1);
+  checkHighBb -=
+    VecGet(
+      nm->lowHiddens,
+      3);
+  bool isSameHighBb =
+    ISEQUALF(
+      checkHighBb,
+      0.0);
+  if (
+    isSameLowAa == false ||
+    isSameLowAb == false ||
+    isSameLowBa == false ||
+    isSameLowBb == false ||
+    isSameHighAa == false ||
+    isSameHighAb == false ||
+    isSameHighBa == false ||
+    isSameHighBb == false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMBurryUnits failed (3)");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  VecSet(
+    &iInputs,
+    0,
+    3);
+  VecSet(
+    &iInputs,
+    1,
+    4);
+  VecSet(
+    &iInputs,
+    2,
+    5);
+  VecSet(
+    &iOutputs,
+    0,
+    4);
+  VecSet(
+    &iOutputs,
+    1,
+    5);
+  NeuraMorphUnit* unitC =
+    NMAddUnit(
+      nm,
+      (VecLong*)&iInputs,
+      (VecLong*)&iOutputs);
+
+  for (
+    long iInput = 3;
+    iInput--;) {
+
+    VecSet(
+      unitC->lowFilters,
+      iInput + 1,
+      0.0);
+    VecSet(
+      unitC->highFilters,
+      iInput + 1,
+      20.0);
+
+  }
+
+  float coeffsC[2][10] = {
+
+    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0},
+    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0}
+
+  };
+  for (
+    long iOutput = 2;
+    iOutput--;) {
+
+    for (
+      long iCoeff = 10;
+      iCoeff--;) {
+
+      VecSet(
+        unitC->coeffs[iOutput],
+        iCoeff,
+        coeffsC[iOutput][iCoeff]);
+
+    }
+
+  }
+
+  NMEvaluate(
+    nm,
+    evalInputs);
+
+  float checkAout[2];
+  checkAout[0] =
+    1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z -
+    VecGet(
+      nm->hiddens,
+      0);
+  checkAout[1] =
+    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z -
+    VecGet(
+      nm->hiddens,
+      1);
+  float checkBout[2];
+  checkBout[0] =
+    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z -
+    VecGet(
+      nm->hiddens,
+      2);
+  checkBout[1] =
+    1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z -
+    VecGet(
+      nm->hiddens,
+      3);
+
+  bool isSameAa =
+    ISEQUALF(
+      checkAout[0],
+      0.0);
+  bool isSameAb =
+    ISEQUALF(
+      checkAout[1],
+      0.0);
+  bool isSameBa =
+    ISEQUALF(
+      checkBout[0],
+      0.0);
+  bool isSameBb =
+    ISEQUALF(
+      checkBout[1],
+      0.0);
+  if (
+    isSameAa == false ||
+    isSameAb == false ||
+    isSameBa == false ||
+    isSameBb == false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMEvaluate failed (1)");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  x =
+    VecGet(
+      nm->hiddens,
+      0);
+  y =
+    VecGet(
+      nm->hiddens,
+      1);
+  z =
+    VecGet(
+      nm->hiddens,
+      2);
+  float checkCout[2];
+  checkCout[0] =
+    1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z -
+    VecGet(
+      unitC->outputs,
+      0);
+  checkCout[1] =
+    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z -
+    VecGet(
+      unitC->outputs,
+      1);
+
+  bool isSameCa =
+    ISEQUALF(
+      checkCout[0],
+      0.0);
+  bool isSameCb =
+    ISEQUALF(
+      checkCout[1],
+      0.0);
+  bool isSameCc =
+    VecIsEqual(
+      unitC->outputs,
+      nm->outputs);
+  if (
+    isSameCa == false ||
+    isSameCb == false ||
+    isSameCc == false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMEvaluate failed (2)");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  VecFree(&evalInputs);
   NeuraMorphFree(&nm);
 
-  printf("UnitTestNeuraMorphBurryUnits OK\n");
+  printf("UnitTestNeuraMorphBurryUnitsEvaluate OK\n");
 
 }
 
@@ -654,7 +1020,7 @@ void UnitTestNeuraMorph() {
   UnitTestNeuraMorphCreateFree();
   UnitTestNeuraMorphGetSet();
   UnitTestNeuraMorphAddRemoveUnit();
-  UnitTestNeuraMorphBurryUnits();
+  UnitTestNeuraMorphBurryUnitsEvaluate();
   printf("UnitTestNeuraMorph OK\n");
 
 }

@@ -816,7 +816,7 @@ void NMUpdateLowHighHiddens(NeuraMorph* that) {
 // Evaluate the NeuraMorph 'that' on the 'inputs' values
 void NMEvaluate(
   NeuraMorph* that,
-  VecFloat* inputs) {
+    VecFloat* inputs) {
 
 #if BUILDMODE == 0
 
@@ -869,7 +869,7 @@ void NMEvaluate(
     // Get the unit
     NeuraMorphUnit* unit = GSetIterGet(&iter);
 
-    // Allocate memory for unit inputs
+    // Allocate memory for inputs sent to the unit
     VecFloat* unitInputs = VecFloatCreate(NMUnitGetNbInputs(unit));
 
     // Loop on the input indices of the unit
@@ -878,17 +878,23 @@ void NMEvaluate(
       iInput < NMUnitGetNbInputs(unit);
       ++iInput) {
 
+      // Get the input indice
+      long indiceInput =
+        VecGet(
+          NMUnitIInputs(unit),
+          iInput);
+
       // Declare a variable to memorize the input value
       float val = 0.0;
 
       // If this indice points toward an input
-      if (iInput < NMGetNbInput(that)) {
+      if (indiceInput < NMGetNbInput(that)) {
 
         // Get the input value of the NeuraMorph for this indice
         val =
           VecGet(
             NMInputs(that),
-            iInput);
+            indiceInput);
 
       // Else, the indice points toward a hidden value
       } else {
@@ -897,13 +903,13 @@ void NMEvaluate(
         val =
           VecGet(
             that->hiddens,
-            iInput - NMGetNbInput(that));
-        
+            indiceInput - NMGetNbInput(that));
+
       }
-      
-      // Set the input value of the unit for this indice
+
+      // Set the input value for the unit for this indice
       VecSet(
-        unit->unitInputs,
+        unitInputs,
         iInput,
         val);
 
@@ -929,13 +935,19 @@ void NMEvaluate(
           NMUnitOutputs(unit),
           iOutput);
 
+      // Get the output indice
+      long indiceOutput =
+        VecGet(
+          NMUnitIOutputs(unit),
+          iOutput);
+
       // If the indice points toward a hidden
-      if (iOutput < NMGetNbHidden(that)) {
+      if (indiceOutput < NMGetNbHidden(that)) {
 
         // Set the hidden value of the NeuraMorph for this indice
         VecSet(
           that->hiddens,
-          iOutput,
+          indiceOutput,
           val);
 
       // Else, the indice points toward an output
@@ -944,7 +956,7 @@ void NMEvaluate(
         // Set the output value of the NeuraMorph for this indice
         VecSet(
           that->outputs,
-          iOutput - NMGetNbHidden(that),
+          indiceOutput - NMGetNbHidden(that),
           val);
 
       }

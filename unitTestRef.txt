@@ -5,6 +5,6 @@ UnitTestNeuraMorphUnit OK
 UnitTestNeuraMorphCreateFree OK
 UnitTestNeuraMorphGetSet OK
 UnitTestNeuraMorphAddRemoveUnit OK
-UnitTestNeuraMorphBurryUnits OK
+UnitTestNeuraMorphBurryUnitsEvaluate OK
 UnitTestNeuraMorph OK
 UnitTestAll OK

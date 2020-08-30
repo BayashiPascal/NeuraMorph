@@ -100,7 +100,6 @@ long NMUnitGetNbInputs(const NeuraMorphUnit* that) {
 
 }
 
-
 // Get the number of output values of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0
 static inline
@@ -124,7 +123,6 @@ long NMUnitGetNbOutputs(const NeuraMorphUnit* that) {
   return VecGetDim(that->iOutputs);
 
 }
-
 
 // ----- NeuraMorph
 
