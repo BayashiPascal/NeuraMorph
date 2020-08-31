@@ -7,4 +7,35 @@ UnitTestNeuraMorphGetSet OK
 UnitTestNeuraMorphAddRemoveUnit OK
 UnitTestNeuraMorphBurryUnitsEvaluate OK
 UnitTestNeuraMorph OK
+UnitTestNeuraMorphTrainerCreateFree OK
+UnitTestNeuraMorphTrainerGetSet OK
+Depth 1/2...
+Nb available inputs: 4
+Train units with 1 inputs
+Train units with configuration <0> -> <0,1,2>
+Train units with configuration <1> -> <0,1,2>
+Train units with configuration <2> -> <0,1,2>
+Train units with configuration <3> -> <0,1,2>
+Train units with 2 inputs
+Train units with configuration <0,1> -> <0,1,2>
+Train units with configuration <0,2> -> <0,1,2>
+Train units with configuration <0,3> -> <0,1,2>
+Train units with configuration <1,2> -> <0,1,2>
+Train units with configuration <1,3> -> <0,1,2>
+Train units with configuration <2,3> -> <0,1,2>
+Train units with 3 inputs
+Train units with configuration <0,1,2> -> <0,1,2>
+Train units with configuration <0,1,3> -> <0,1,2>
+Train units with configuration <0,2,3> -> <0,1,2>
+Train units with configuration <1,2,3> -> <0,1,2>
+Train units with 4 inputs
+Train units with configuration <0,1,2,3> -> <0,1,2>
+Depth 2/2...
+Nb available inputs: 4
+Train units with 1 inputs
+Train units with 2 inputs
+Train units with 3 inputs
+Train units with 4 inputs
+UnitTestNeuraMorphTrainerRun OK
+UnitTestNeuraMorphTrainer OK
 UnitTestAll OK

@@ -214,18 +214,69 @@ typedef struct NeuraMorphTrainer {
   // Training dataset
   GDataSetVecFloat* dataset;
 
+  // Index of the dataset's category used for training
+  unsigned int iCatTraining;
+
+  // Depth of the training
+  short depth;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
 // GDataSet 'dataset'
+// Default depth: 2
 NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
         NeuraMorph* neuraMorph,
   GDataSetVecFloat* dataset);
 
 // Free the memory used by the static NeuraMorphTrainer 'that'
 void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that);
+
+// Run the training process for the NeuraMorphTrainer 'that'
+void NMTrainerRun(NeuraMorphTrainer* that);
+
+// Get the depth of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+short NMTrainerGetDepth(const NeuraMorphTrainer* that);
+
+// Set the depth of the NeuraMorphTrainer 'that' to 'depth'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetDepth(
+  NeuraMorphTrainer* that,
+               short depth);
+
+// Get the index of the training category of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+unsigned int NMTrainerGetICatTraining(const NeuraMorphTrainer* that);
+
+// Set the index of the training category of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetICatTraining(
+  NeuraMorphTrainer* that,
+        unsigned int iCatTraining);
+
+// Get the NeuraMorph of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+NeuraMorph* NMTrainerNeuraMorph(const NeuraMorphTrainer* that);
+
+// Get the GDataSet of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+GDataSetVecFloat* NMTrainerDataset(const NeuraMorphTrainer* that);
 
 // ================ static inliner ====================
 

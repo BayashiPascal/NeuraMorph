@@ -969,10 +969,19 @@ void NMEvaluate(
 
 // ----- NeuraMorphTrainer
 
+// ================ Functions declaration ====================
+
+// Return true if the vector 'v' is a valid indices configuration
+// i.e. v[i]<v[j] for all i<j
+bool NMTrainerIsValidInputConfig(
+  const VecLong* v,
+            long iMinInput);
+
 // ================ Functions implemetation ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
 // GDataSet 'dataset'
+// Default depth: 2
 NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
         NeuraMorph* neuraMorph,
   GDataSetVecFloat* dataset) {
@@ -1007,6 +1016,8 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   // Init properties
   that.neuraMorph = neuraMorph;
   that.dataset = dataset;
+  that.depth = 2;
+  that.iCatTraining = 0;
 
   // Return the NeuraMorphTrainer
   return that;
@@ -1031,5 +1042,219 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
 #endif
 
   // Nothing to do
+
+}
+
+// Run the training process for the NeuraMorphTrainer 'that'
+void NMTrainerRun(NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare a variable to memorize the minimum index needed in the
+  // inputs of the new unit to ensure we do not train twice the same
+  // unit
+  long iMinInput = 0;
+
+  // Loop on training depth
+  for (
+    short iDepth = 1;
+    iDepth <= NMTrainerGetDepth(that);
+    ++iDepth) {
+
+    printf(
+      "Depth %d/%d...\n",
+      iDepth,
+      NMTrainerGetDepth(that));
+
+    // Get the number of available inputs for the new unit
+    long nbAvailInputs =
+      NMGetNbInput(NMTrainerNeuraMorph(that)) +
+      NMGetNbHidden(NMTrainerNeuraMorph(that));
+
+    printf(
+      "Nb available inputs: %ld\n",
+      nbAvailInputs);
+
+    // Get the output indices
+    VecLong* iOutputs = NMGetVecIOutputs(NMTrainerNeuraMorph(that));
+
+    // Declare a set to memorize the trained units
+    GSet trainedUnits = GSetCreateStatic();
+
+    // Loop on the number of inputs for the new unit
+    // TODO restrain nbUnitInput to a maximum
+    for (
+      long nbUnitInputs = 1;
+      nbUnitInputs <= nbAvailInputs;
+      ++nbUnitInputs) {
+
+      printf(
+        "Train units with %ld inputs\n",
+        nbUnitInputs);
+
+      // Loop on the possible input configurations for the new units
+      VecLong* iInputs = VecLongCreate(nbUnitInputs);
+      VecLong* iInputsBound = VecLongCreate(nbUnitInputs);
+      VecSetAll(
+        iInputsBound,
+        nbAvailInputs);
+      bool hasStepped = true;
+      do {
+
+        bool isValidInputConfig =
+          NMTrainerIsValidInputConfig(
+            iInputs,
+            iMinInput);
+        if (isValidInputConfig == true) {
+
+          printf("Train units with configuration ");
+          VecPrint(
+            iInputs,
+            stdout);
+          printf(" -> ");
+          VecPrint(
+            iOutputs,
+            stdout);
+          printf("\n");
+
+        }
+
+        // Create the unit
+        NeuraMorphUnit* unit =
+          NeuraMorphUnitCreate(
+            iInputs,
+            iOutputs);
+
+        // TODO Train the unit
+        GSetAppend(
+          &trainedUnits,
+          unit);
+
+        // Step to the next input configuration
+        hasStepped =
+          VecStep(
+            iInputs,
+            iInputsBound);
+
+      } while (hasStepped);
+
+      // Free memory
+      VecFree(&iInputs);
+      VecFree(&iInputsBound);
+
+    }
+
+    // If this is the last depth
+    if (iDepth == NMTrainerGetDepth(that)) {
+
+      // TODO Add the best of all units to the NeuraMorph
+      NeuraMorphUnit* bestUnit = GSetDrop(&trainedUnits);
+      GSetAppend(
+        &(NMTrainerNeuraMorph(that)->units),
+        bestUnit);
+
+      // Discard all other units
+      while (GSetNbElem(&trainedUnits) > 0) {
+
+        NeuraMorphUnit* unit = GSetPop(&trainedUnits);
+        NeuraMorphUnitFree(&unit);
+
+      }
+
+    // Else, this is not the last depth
+    } else {
+
+      // TODO Discard the weakest units
+      while (GSetNbElem(&trainedUnits) > 0) {
+
+        NeuraMorphUnit* unit = GSetPop(&trainedUnits);
+        NeuraMorphUnitFree(&unit);
+
+      }
+
+      // Burry the remaining units
+
+    }
+
+    // Update the minimum index of a valid configuration
+    iMinInput = nbAvailInputs;
+
+    // Free memory
+    VecFree(&iOutputs);
+
+  }
+
+}
+
+// Return true if the vector 'v' is a valid indices configuration
+// i.e. v[i]<v[j] for all i<j and there exists i such as
+// v[i]>=iMinInput
+bool NMTrainerIsValidInputConfig(
+  const VecLong* v,
+            long iMinInput) {
+
+#if BUILDMODE == 0
+
+  if (v == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'v' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  bool noveltyCond = false;
+  long a =
+    VecGet(
+      v,
+      0);
+  if (a >= iMinInput) {
+
+    noveltyCond = true;
+
+  }
+
+  for (
+    long i = 1;
+    i < VecGetDim(v);
+    ++i) {
+
+    long b =
+      VecGet(
+        v,
+        i);
+    if (a >= b) {
+
+      return false;
+
+    }
+
+    a = b;
+
+    if (a >= iMinInput) {
+
+      noveltyCond = true;
+
+    }
+
+  }
+
+  return noveltyCond;
 
 }

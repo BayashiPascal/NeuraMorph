@@ -1039,6 +1039,8 @@ void UnitTestNeuraMorphTrainerCreateFree() {
       &dataset);
   if (
     trainer.neuraMorph != nm ||
+    trainer.depth != 2 ||
+    trainer.iCatTraining != 0 ||
     trainer.dataset != &dataset) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
@@ -1057,9 +1059,100 @@ void UnitTestNeuraMorphTrainerCreateFree() {
 
 }
 
+void UnitTestNeuraMorphTrainerGetSet() {
+
+  GDataSetVecFloat dataset =
+    GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      GDSGetNbInputs(&dataset),
+      GDSGetNbOutputs(&dataset));
+  NeuraMorphTrainer trainer =
+    NeuraMorphTrainerCreateStatic(
+      nm,
+      &dataset);
+  if (NMTrainerGetDepth(&trainer) != 2) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerGetDepth failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NMTrainerGetICatTraining(&trainer) != 0) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerGetICatTraining failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMTrainerSetDepth(
+    &trainer,
+    3);
+  if (NMTrainerGetDepth(&trainer) != 3) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerSetDepth failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMTrainerSetICatTraining(
+    &trainer,
+    3);
+  if (NMTrainerGetICatTraining(&trainer) != 3) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerSetICatTraining failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NeuraMorphTrainerFreeStatic(&trainer);
+  NeuraMorphFree(&nm);
+  GDataSetVecFloatFreeStatic(&dataset);
+
+  printf("UnitTestNeuraMorphTrainerGetSet OK\n");
+
+}
+
+void UnitTestNeuraMorphTrainerRun() {
+
+  GDataSetVecFloat dataset =
+    GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      GDSGetNbInputs(&dataset),
+      GDSGetNbOutputs(&dataset));
+  NeuraMorphTrainer trainer =
+    NeuraMorphTrainerCreateStatic(
+      nm,
+      &dataset);
+
+  NMTrainerRun(&trainer);
+
+  NeuraMorphTrainerFreeStatic(&trainer);
+  NeuraMorphFree(&nm);
+  GDataSetVecFloatFreeStatic(&dataset);
+
+  printf("UnitTestNeuraMorphTrainerRun OK\n");
+
+}
+
 void UnitTestNeuraMorphTrainer() {
 
   UnitTestNeuraMorphTrainerCreateFree();
+  UnitTestNeuraMorphTrainerGetSet();
+  UnitTestNeuraMorphTrainerRun();
   printf("UnitTestNeuraMorphTrainer OK\n");
 
 }

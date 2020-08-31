@@ -297,3 +297,170 @@ void NMSetNbHidden(
   that->hiddens = VecFloatCreate(nb);
 
 }
+
+// ----- NeuraMorphTrainer
+
+// ================ Functions implementation ====================
+
+// Get the depth of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+short NMTrainerGetDepth(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->depth;
+
+}
+
+// Set the depth of the NeuraMorphTrainer 'that' to 'depth'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetDepth(
+  NeuraMorphTrainer* that,
+               short depth) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (depth < 1) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'depth' is invalid (%d>=1)",
+      depth);
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->depth = depth;
+
+}
+
+// Get the NeuraMorph of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+NeuraMorph* NMTrainerNeuraMorph(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->neuraMorph;
+
+}
+
+
+// Get the GDataSet of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+GDataSetVecFloat* NMTrainerDataset(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->dataset;
+
+}
+
+// Get the index of the training category of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+unsigned int NMTrainerGetICatTraining(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->iCatTraining;
+
+}
+
+
+// Set the index of the training category of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetICatTraining(
+  NeuraMorphTrainer* that,
+        unsigned int iCatTraining) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->iCatTraining = iCatTraining;
+
+}
+
