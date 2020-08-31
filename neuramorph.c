@@ -966,3 +966,70 @@ void NMEvaluate(
   } while (GSetIterStep(&iter));
 
 }
+
+// ----- NeuraMorphTrainer
+
+// ================ Functions implemetation ====================
+
+// Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
+// GDataSet 'dataset'
+NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
+        NeuraMorph* neuraMorph,
+  GDataSetVecFloat* dataset) {
+
+#if BUILDMODE == 0
+
+  if (neuraMorph == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'neuraMorph' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (dataset == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'dataset' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare the new NeuraMorphTrainer
+  NeuraMorphTrainer that;
+
+  // Init properties
+  that.neuraMorph = neuraMorph;
+  that.dataset = dataset;
+
+  // Return the NeuraMorphTrainer
+  return that;
+
+}
+
+// Free the memory used by the static NeuraMorphTrainer 'that'
+void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Nothing to do
+
+}

@@ -202,6 +202,31 @@ void NMEvaluate(
   NeuraMorph* that,
     VecFloat* inputs);
 
+// ----- NeuraMorphTrainer
+
+// ================= Data structure ===================
+
+typedef struct NeuraMorphTrainer {
+
+  // Trained NeuraMorph
+  NeuraMorph* neuraMorph;
+
+  // Training dataset
+  GDataSetVecFloat* dataset;
+
+} NeuraMorphTrainer;
+
+// ================ Functions declaration ====================
+
+// Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
+// GDataSet 'dataset'
+NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
+        NeuraMorph* neuraMorph,
+  GDataSetVecFloat* dataset);
+
+// Free the memory used by the static NeuraMorphTrainer 'that'
+void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that);
+
 // ================ static inliner ====================
 
 #if BUILDMODE != 0

@@ -1025,10 +1025,50 @@ void UnitTestNeuraMorph() {
 
 }
 
+void UnitTestNeuraMorphTrainerCreateFree() {
+
+  GDataSetVecFloat dataset =
+    GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
+  NeuraMorph* nm =
+    NeuraMorphCreate(
+      GDSGetNbInputs(&dataset),
+      GDSGetNbOutputs(&dataset));
+  NeuraMorphTrainer trainer =
+    NeuraMorphTrainerCreateStatic(
+      nm,
+      &dataset);
+  if (
+    trainer.neuraMorph != nm ||
+    trainer.dataset != &dataset) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerCreateStatic failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NeuraMorphTrainerFreeStatic(&trainer);
+  NeuraMorphFree(&nm);
+  GDataSetVecFloatFreeStatic(&dataset);
+
+  printf("UnitTestNeuraMorphTrainerCreateFree OK\n");
+
+}
+
+void UnitTestNeuraMorphTrainer() {
+
+  UnitTestNeuraMorphTrainerCreateFree();
+  printf("UnitTestNeuraMorphTrainer OK\n");
+
+}
+
 void UnitTestAll() {
 
   UnitTestNeuraMorphUnit();
   UnitTestNeuraMorph();
+  UnitTestNeuraMorphTrainer();
   printf("UnitTestAll OK\n");
 
 }
