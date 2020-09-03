@@ -35,12 +35,17 @@ void UnitTestNeuraMorphUnitCreateFree() {
     NeuraMorphUnitCreate(
       iIn,
       iOut);
+  bool isSame =
+    ISEQUALF(
+      unit->value,
+      0.0);
   if (
     VecGetDim(unit->coeffs[0]) != 10 ||
     VecGetDim(unit->outputs) != 2 ||
     VecGetDim(unit->lowFilters) != 4 ||
     VecGetDim(unit->highFilters) != 4 ||
     VecGetDim(unit->unitInputs) != 4 ||
+    isSame != true ||
     unit->lowOutputs != NULL ||
     unit->highOutputs != NULL) {
 
@@ -52,7 +57,7 @@ void UnitTestNeuraMorphUnitCreateFree() {
 
   }
 
-  bool isSame =
+  isSame =
     VecIsEqual(
       unit->iInputs,
       iIn);
@@ -97,7 +102,7 @@ void UnitTestNeuraMorphUnitCreateFree() {
 
 }
 
-void UnitTestNeuraMorphUnitGetSet() {
+void UnitTestNeuraMorphUnitGetSetPrint() {
 
   VecLong* iIn = VecLongCreate(3);
   VecLong* iOut = VecLongCreate(2);
@@ -156,10 +161,45 @@ void UnitTestNeuraMorphUnitGetSet() {
 
   }
 
+  bool isSame =
+    ISEQUALF(
+      NMUnitGetValue(unit),
+      0.0);
+  if (isSame != true) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMUnitGetValue failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMUnitSetValue(
+    unit,
+    0.5);
+  isSame =
+    ISEQUALF(
+      NMUnitGetValue(unit),
+      0.5);
+  if (isSame != true) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMUnitSetValue failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMUnitPrintln(
+    unit,
+    stdout);
+
   NeuraMorphUnitFree(&unit);
   VecFree(&iIn);
   VecFree(&iOut);
-  printf("UnitTestNeuraMorphUnitGetSet OK\n");
+  printf("UnitTestNeuraMorphUnitGetSetPrint OK\n");
 
 }
 
@@ -302,7 +342,7 @@ void UnitTestNeuraMorphUnitEvaluate() {
 void UnitTestNeuraMorphUnit() {
 
   UnitTestNeuraMorphUnitCreateFree();
-  UnitTestNeuraMorphUnitGetSet();
+  UnitTestNeuraMorphUnitGetSetPrint();
   UnitTestNeuraMorphUnitEvaluate();
   printf("UnitTestNeuraMorphUnit OK\n");
 
@@ -1037,9 +1077,14 @@ void UnitTestNeuraMorphTrainerCreateFree() {
     NeuraMorphTrainerCreateStatic(
       nm,
       &dataset);
+  bool isSame =
+    ISEQUALF(
+      trainer.weakUnitThreshold,
+      0.9);
   if (
     trainer.neuraMorph != nm ||
     trainer.depth != 2 ||
+    isSame != true ||
     trainer.iCatTraining != 0 ||
     trainer.dataset != &dataset) {
 
@@ -1091,6 +1136,20 @@ void UnitTestNeuraMorphTrainerGetSet() {
 
   }
 
+  bool isSame =
+    ISEQUALF(
+      NMTrainerGetWeakThreshold(&trainer),
+      0.9);
+  if (isSame != true) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerGetWeakThreshold failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   NMTrainerSetDepth(
     &trainer,
     3);
@@ -1113,6 +1172,23 @@ void UnitTestNeuraMorphTrainerGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NeuraMorphTrainerSetICatTraining failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMTrainerSetWeakThreshold(
+    &trainer,
+    0.5);
+  isSame =
+    ISEQUALF(
+      NMTrainerGetWeakThreshold(&trainer),
+      0.5);
+  if (isSame != true) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerSetWeakThreshold failed");
     PBErrCatch(NeuraMorphErr);
 
   }

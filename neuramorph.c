@@ -92,6 +92,7 @@ NeuraMorphUnit* NeuraMorphUnitCreate(
       NeuraMorphErr,
       sizeof(bool) * nbIn);
   that->unitInputs = VecFloatCreate(nbIn);
+  that->value = 0.0;
 
   // Set the input value, filters and active flag for the constant
   VecSet(
@@ -458,6 +459,51 @@ float NMUnitGetCoeff(
       that->coeffs[iOutput],
       iCoeff);
   return coeff;
+
+}
+
+// Print the NeuraMorphUnit 'that' on the 'stream'
+void NMUnitPrint(
+  const NeuraMorphUnit* that,
+                  FILE* stream) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (stream == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'stream' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  VecPrint(
+    NMUnitIInputs(that),
+    stream);
+  fprintf(
+    stream,
+    " -> ");
+  VecPrint(
+    NMUnitIOutputs(that),
+    stream);
+  fprintf(
+    stream,
+    " (%04.6f)",
+    NMUnitGetValue(that));
 
 }
 
@@ -977,6 +1023,14 @@ bool NMTrainerIsValidInputConfig(
   const VecLong* v,
             long iMinInput);
 
+// Train a new NeuraMorphUnit with the interface defined by 'iInputs'
+// and 'iOutputs', and add it to the set, sorted on its value
+void NMTrainerTrainUnit(
+  NeuraMorphTrainer* that,
+               GSet* trainedUnits,
+      const VecLong* iInputs,
+      const VecLong* iOutputs);
+
 // ================ Functions implemetation ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
@@ -1018,6 +1072,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.dataset = dataset;
   that.depth = 2;
   that.iCatTraining = 0;
+  that.weakUnitThreshold = 0.9;
 
   // Return the NeuraMorphTrainer
   return that;
@@ -1101,7 +1156,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
       ++nbUnitInputs) {
 
       printf(
-        "Train units with %ld inputs\n",
+        "Train units with %04ld inputs\n",
         nbUnitInputs);
 
       // Loop on the possible input configurations for the new units
@@ -1119,28 +1174,14 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
             iMinInput);
         if (isValidInputConfig == true) {
 
-          printf("Train units with configuration ");
-          VecPrint(
-            iInputs,
-            stdout);
-          printf(" -> ");
-          VecPrint(
-            iOutputs,
-            stdout);
-          printf("\n");
-
-        }
-
-        // Create the unit
-        NeuraMorphUnit* unit =
-          NeuraMorphUnitCreate(
+          // Train the unit
+          NMTrainerTrainUnit(
+            that,
+            &trainedUnits,
             iInputs,
             iOutputs);
 
-        // TODO Train the unit
-        GSetAppend(
-          &trainedUnits,
-          unit);
+          }
 
         // Step to the next input configuration
         hasStepped =
@@ -1159,11 +1200,16 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     // If this is the last depth
     if (iDepth == NMTrainerGetDepth(that)) {
 
-      // TODO Add the best of all units to the NeuraMorph
+      // Add the best of all units to the NeuraMorph
       NeuraMorphUnit* bestUnit = GSetDrop(&trainedUnits);
       GSetAppend(
         &(NMTrainerNeuraMorph(that)->units),
         bestUnit);
+
+      printf("Add the last unit\n");
+      NMUnitPrintln(
+        bestUnit,
+        stdout);
 
       // Discard all other units
       while (GSetNbElem(&trainedUnits) > 0) {
@@ -1176,15 +1222,43 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     // Else, this is not the last depth
     } else {
 
-      // TODO Discard the weakest units
-      while (GSetNbElem(&trainedUnits) > 0) {
+      // Get the value of the weakest and strongest units
+      float weakVal = GSetElemGetSortVal(GSetHeadElem(&trainedUnits));
+      float strongVal = GSetElemGetSortVal(GSetTailElem(&trainedUnits));
+
+      // Get the threshold to discard the weakest units
+      float threshold =
+        weakVal + (strongVal - weakVal) *
+        NMTrainerGetWeakThreshold(that);
+
+      // Discard the weakest units
+      long nbTrainedUnits = GSetNbElem(&trainedUnits);
+      while (
+        GSetElemGetSortVal(GSetHeadElem(&trainedUnits)) < threshold) {
 
         NeuraMorphUnit* unit = GSetPop(&trainedUnits);
         NeuraMorphUnitFree(&unit);
 
       }
 
+      printf(
+        "Burry %ld out of %ld units\n",
+        GSetNbElem(&trainedUnits),
+        nbTrainedUnits);
+      GSetIterForward iter = GSetIterForwardCreateStatic(&trainedUnits);
+      do {
+
+        NeuraMorphUnit* unit = GSetIterGet(&iter);
+        NMUnitPrintln(
+          unit,
+          stdout);
+
+      } while (GSetIterStep(&iter));
+
       // Burry the remaining units
+      NMBurryUnits(
+        NMTrainerNeuraMorph(that),
+        &trainedUnits);
 
     }
 
@@ -1256,5 +1330,76 @@ bool NMTrainerIsValidInputConfig(
   }
 
   return noveltyCond;
+
+}
+
+// Train a new NeuraMorphUnit with the interface defined by 'iInputs'
+// and 'iOutputs', and add it to the set, sorted on its value
+void NMTrainerTrainUnit(
+  NeuraMorphTrainer* that,
+               GSet* trainedUnits,
+      const VecLong* iInputs,
+      const VecLong* iOutputs) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (trainedUnits == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'trainedUnits' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (iInputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'iInputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (iOutputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'iOutputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Create the unit
+  NeuraMorphUnit* unit =
+    NeuraMorphUnitCreate(
+      iInputs,
+      iOutputs);
+
+  // TODO
+  NMUnitSetValue(
+    unit,
+    rand());
+
+  // Add the unit to the set of trained units
+  GSetAddSort(
+    trainedUnits,
+    unit,
+    NMUnitGetValue(unit));
 
 }

@@ -46,6 +46,9 @@ typedef struct NeuraMorphUnit {
   bool* activeInputs;
   VecFloat* unitInputs;
 
+  // Variable to memorize the value of the unit during training
+  float value;
+
 } NeuraMorphUnit;
 
 // ================ Functions declaration ====================
@@ -94,6 +97,27 @@ long NMUnitGetNbInputs(const NeuraMorphUnit* that);
 static inline
 #endif
 long NMUnitGetNbOutputs(const NeuraMorphUnit* that);
+
+// Get the value of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+float NMUnitGetValue(const NeuraMorphUnit* that);
+
+// Set the value of the NeuraMorphUnit 'that' to 'val'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMUnitSetValue(
+  NeuraMorphUnit* that,
+            float val);
+
+// Print the NeuraMorphUnit 'that' on the 'stream'
+void NMUnitPrint(
+  const NeuraMorphUnit* that,
+                  FILE* stream);
+#define NMUnitPrintln(T, S) \
+  NMUnitPrint(T, S);fprintf(S, "\n")
 
 // ----- NeuraMorph
 
@@ -220,6 +244,10 @@ typedef struct NeuraMorphTrainer {
   // Depth of the training
   short depth;
 
+  // Threshold used to discard weakest units during training
+  // in [0.0,1.0]
+  float weakUnitThreshold;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
@@ -250,6 +278,21 @@ static inline
 void NMTrainerSetDepth(
   NeuraMorphTrainer* that,
                short depth);
+
+// Get the weakness threshold of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+float NMTrainerGetWeakThreshold(const NeuraMorphTrainer* that);
+
+// Set the weakness threshold of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetWeakThreshold(
+  NeuraMorphTrainer* that,
+               float weakUnitThreshold);
 
 // Get the index of the training category of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0

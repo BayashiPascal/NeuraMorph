@@ -124,6 +124,56 @@ long NMUnitGetNbOutputs(const NeuraMorphUnit* that) {
 
 }
 
+// Get the value of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+float NMUnitGetValue(const NeuraMorphUnit* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->value;
+
+}
+
+// Set the value of the NeuraMorphUnit 'that' to 'val'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMUnitSetValue(
+  NeuraMorphUnit* that,
+            float val) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->value = val;
+
+}
+
 // ----- NeuraMorph
 
 // ================ Functions implementation ====================
@@ -387,7 +437,6 @@ NeuraMorph* NMTrainerNeuraMorph(const NeuraMorphTrainer* that) {
 
 }
 
-
 // Get the GDataSet of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
 static inline
@@ -436,7 +485,6 @@ unsigned int NMTrainerGetICatTraining(const NeuraMorphTrainer* that) {
 
 }
 
-
 // Set the index of the training category of the NeuraMorphTrainer 'that'
 // to 'iCat'
 #if BUILDMODE != 0
@@ -464,3 +512,53 @@ void NMTrainerSetICatTraining(
 
 }
 
+// Get the weakness threshold of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+float NMTrainerGetWeakThreshold(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->weakUnitThreshold;
+
+}
+
+// Set the weakness threshold of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetWeakThreshold(
+  NeuraMorphTrainer* that,
+               float weakUnitThreshold) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->weakUnitThreshold = weakUnitThreshold;
+
+}

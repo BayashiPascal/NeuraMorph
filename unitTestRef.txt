@@ -1,5 +1,6 @@
 UnitTestNeuraMorphUnitCreateFree OK
-UnitTestNeuraMorphUnitGetSet OK
+<0,0,0> -> <0,0> (0.500000)
+UnitTestNeuraMorphUnitGetSetPrint OK
 UnitTestNeuraMorphUnitEvaluate OK
 UnitTestNeuraMorphUnit OK
 UnitTestNeuraMorphCreateFree OK
@@ -11,31 +12,27 @@ UnitTestNeuraMorphTrainerCreateFree OK
 UnitTestNeuraMorphTrainerGetSet OK
 Depth 1/2...
 Nb available inputs: 4
-Train units with 1 inputs
-Train units with configuration <0> -> <0,1,2>
-Train units with configuration <1> -> <0,1,2>
-Train units with configuration <2> -> <0,1,2>
-Train units with configuration <3> -> <0,1,2>
-Train units with 2 inputs
-Train units with configuration <0,1> -> <0,1,2>
-Train units with configuration <0,2> -> <0,1,2>
-Train units with configuration <0,3> -> <0,1,2>
-Train units with configuration <1,2> -> <0,1,2>
-Train units with configuration <1,3> -> <0,1,2>
-Train units with configuration <2,3> -> <0,1,2>
-Train units with 3 inputs
-Train units with configuration <0,1,2> -> <0,1,2>
-Train units with configuration <0,1,3> -> <0,1,2>
-Train units with configuration <0,2,3> -> <0,1,2>
-Train units with configuration <1,2,3> -> <0,1,2>
-Train units with 4 inputs
-Train units with configuration <0,1,2,3> -> <0,1,2>
+Train units with 0001 inputs
+Train units with 0002 inputs
+Train units with 0003 inputs
+Train units with 0004 inputs
+Burry 2 out of 15 units
+<0,1> -> <0,1,2> (1957747840.000000)
+<0,1,2,3> -> <0,1,2> (2044897792.000000)
 Depth 2/2...
-Nb available inputs: 4
-Train units with 1 inputs
-Train units with 2 inputs
-Train units with 3 inputs
-Train units with 4 inputs
+Nb available inputs: 10
+Train units with 0001 inputs
+Train units with 0002 inputs
+Train units with 0003 inputs
+Train units with 0004 inputs
+Train units with 0005 inputs
+Train units with 0006 inputs
+Train units with 0007 inputs
+Train units with 0008 inputs
+Train units with 0009 inputs
+Train units with 0010 inputs
+Add the last unit
+<4,7,9> -> <6,7,8> (2147469824.000000)
 UnitTestNeuraMorphTrainerRun OK
 UnitTestNeuraMorphTrainer OK
 UnitTestAll OK
