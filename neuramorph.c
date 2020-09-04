@@ -908,6 +908,14 @@ void NMEvaluate(
   // Reset the internal outputs
   VecSetNull(that->outputs);
 
+  // If there are no units
+  if (GSetNbElem(&(that->units)) == 0) {
+
+    // Nothing else to do
+    return;
+
+  }
+
   // Loop on the units
   GSetIterForward iter = GSetIterForwardCreateStatic(&(that->units));
   do {
@@ -1031,11 +1039,20 @@ void NMTrainerTrainUnit(
       const VecLong* iInputs,
       const VecLong* iOutputs);
 
+// Precompute the hidden values of the NeuraMorph for each sample of the
+// GDataset for the NeuraMorphTrainer 'that'
+void NMTrainerPrecomputeHiddens(NeuraMorphTrainer* that);
+
+// Free the precomputed hidden values of the NeuraMorphTrainer 'that'
+void NMTrainerFreePrecomputed(NeuraMorphTrainer* that);
+
 // ================ Functions implemetation ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
 // GDataSet 'dataset'
 // Default depth: 2
+// Default iCatTraining: 0
+// Default weakUnitThreshold: 0.9
 NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
         NeuraMorph* neuraMorph,
   GDataSetVecFloat* dataset) {
@@ -1073,6 +1090,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.depth = 2;
   that.iCatTraining = 0;
   that.weakUnitThreshold = 0.9;
+  that.preCompInp = NULL;
 
   // Return the NeuraMorphTrainer
   return that;
@@ -1141,6 +1159,9 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     printf(
       "Nb available inputs: %ld\n",
       nbAvailInputs);
+
+    // Precompute the hidden values to speed up the training
+    NMTrainerPrecomputeHiddens(that);
 
     // Get the output indices
     VecLong* iOutputs = NMGetVecIOutputs(NMTrainerNeuraMorph(that));
@@ -1267,6 +1288,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
 
     // Free memory
     VecFree(&iOutputs);
+    NMTrainerFreePrecomputed(that);
 
   }
 
@@ -1401,5 +1423,152 @@ void NMTrainerTrainUnit(
     trainedUnits,
     unit,
     NMUnitGetValue(unit));
+
+}
+
+// Precompute the hidden values of the NeuraMorph for each sample of the
+// GDataset for the NeuraMorphTrainer 'that'
+void NMTrainerPrecomputeHiddens(NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Get the number of samples
+  long nbSample =
+    GDSGetSizeCat(
+      NMTrainerDataset(that),
+      NMTrainerGetICatTraining(that));
+
+  // Allocate memory
+  that->preCompInp =
+    PBErrMalloc(
+      NeuraMorphErr,
+      nbSample * sizeof(VecFloat*));
+
+  // Get the size of the precomputed vector
+  long sizeInp =
+    NMGetNbInput(NMTrainerNeuraMorph(that)) +
+    NMGetNbHidden(NMTrainerNeuraMorph(that));
+
+  // Loop on the samples
+  long iSample = 0;
+  bool flagStep = true;
+  GDSReset(
+    NMTrainerDataset(that),
+    NMTrainerGetICatTraining(that));
+  do {
+
+    // Get a clone of the sample
+    VecFloat* inputs =
+      GDSGetSampleInputs(
+        NMTrainerDataset(that),
+        NMTrainerGetICatTraining(that));
+
+    // Run the NeuraMorph on the sample
+    NMEvaluate(
+      NMTrainerNeuraMorph(that),
+      inputs);
+
+    // Allocate memory for the precomputed vector
+    that->preCompInp[iSample] = VecFloatCreate(sizeInp);
+
+    // Copy the inputs and hidden values into the precomputed vector
+    for (
+      long i = NMGetNbInput(NMTrainerNeuraMorph(that));
+      i--;) {
+
+      float val =
+        VecGet(
+          NMInputs(NMTrainerNeuraMorph(that)),
+          i);
+      VecSet(
+        that->preCompInp[iSample],
+        i,
+        val);
+
+    }
+
+    for (
+      long i = NMGetNbHidden(NMTrainerNeuraMorph(that));
+      i--;) {
+
+      float val =
+        VecGet(
+          NMHiddens(NMTrainerNeuraMorph(that)),
+          i);
+      VecSet(
+        that->preCompInp[iSample],
+        i + NMGetNbInput(NMTrainerNeuraMorph(that)),
+        val);
+
+    }
+
+    // Free memory
+    VecFree(&inputs);
+
+    // Move to the next sample
+    ++iSample;
+    flagStep =
+      GDSStepSample(
+        NMTrainerDataset(that),
+        NMTrainerGetICatTraining(that));
+
+  } while (flagStep);
+
+}
+
+// Free the precomputed hidden values of the NeuraMorphTrainer 'that'
+void NMTrainerFreePrecomputed(NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // If the hidden values are not precomputed
+  if (that->preCompInp == NULL) {
+
+    // Stop here
+    return;
+
+  }
+
+  // Get the number of samples
+  long nbSample =
+    GDSGetSizeCat(
+      NMTrainerDataset(that),
+      NMTrainerGetICatTraining(that));
+
+  // Free memory
+  for (
+    long iSample = nbSample;
+    iSample--;) {
+
+    VecFree(that->preCompInp + iSample);
+
+  }
+
+  free(that->preCompInp);
+  that->preCompInp = NULL;
 
 }

@@ -179,6 +179,12 @@ static inline
 #endif
 const VecFloat* NMOutputs(const NeuraMorph* that);
 
+// Get the hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat* NMHiddens(const NeuraMorph* that);
+
 // Get the number of hidden values of the NeuraMorph 'that'
 #if BUILDMODE != 0
 static inline
@@ -248,6 +254,9 @@ typedef struct NeuraMorphTrainer {
   // in [0.0,1.0]
   float weakUnitThreshold;
 
+  // Precomputed values to train the NeuraMorphUnit
+  VecFloat** preCompInp;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
@@ -255,6 +264,8 @@ typedef struct NeuraMorphTrainer {
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
 // GDataSet 'dataset'
 // Default depth: 2
+// Default iCatTraining: 0
+// Default weakUnitThreshold: 0.9
 NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
         NeuraMorph* neuraMorph,
   GDataSetVecFloat* dataset);

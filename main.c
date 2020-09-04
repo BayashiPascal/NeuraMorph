@@ -481,6 +481,16 @@ void UnitTestNeuraMorphGetSet() {
 
   }
 
+  if (NMHiddens(nm) != nm->hiddens) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMHiddens failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   NeuraMorphFree(&nm);
 
   printf("UnitTestNeuraMorphGetSet OK\n");

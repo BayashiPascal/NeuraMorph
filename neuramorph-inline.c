@@ -274,6 +274,30 @@ const VecFloat* NMOutputs(const NeuraMorph* that) {
 
 }
 
+// Get the hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat* NMHiddens(const NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->hiddens;
+
+}
+
 // Get the number of hidden values of the NeuraMorph 'that'
 #if BUILDMODE != 0
 static inline
