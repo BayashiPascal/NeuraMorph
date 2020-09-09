@@ -14,6 +14,7 @@
 #include "pbmath.h"
 #include "gset.h"
 #include "gdataset.h"
+#include "bcurve.h"
 
 // ----- NeuraMorphUnit
 
@@ -38,12 +39,10 @@ typedef struct NeuraMorphUnit {
   // Vector to memorize the output values
   VecFloat* outputs;
 
-  // Transfer function coefficients
-  // Seen as (nb output) triangular matrices of size (nb input + 1)
-  VecFloat** coeffs;
+  // Transfer function
+  BBody* transfer;
 
-  // Working variables to avoid reallocation of memory at each Evaluate()
-  bool* activeInputs;
+  // Working variable to avoid reallocation of memory at each Evaluate()
   VecFloat* unitInputs;
 
   // Variable to memorize the value of the unit during training

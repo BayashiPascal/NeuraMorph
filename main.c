@@ -40,11 +40,10 @@ void UnitTestNeuraMorphUnitCreateFree() {
       unit->value,
       0.0);
   if (
-    VecGetDim(unit->coeffs[0]) != 10 ||
     VecGetDim(unit->outputs) != 2 ||
-    VecGetDim(unit->lowFilters) != 4 ||
-    VecGetDim(unit->highFilters) != 4 ||
-    VecGetDim(unit->unitInputs) != 4 ||
+    VecGetDim(unit->lowFilters) != 3 ||
+    VecGetDim(unit->highFilters) != 3 ||
+    VecGetDim(unit->unitInputs) != 3 ||
     isSame != true ||
     unit->lowOutputs != NULL ||
     unit->highOutputs != NULL) {
@@ -218,39 +217,30 @@ void UnitTestNeuraMorphUnitEvaluate() {
 
     VecSet(
       unit->lowFilters,
-      iInput + 1,
+      iInput,
       0.0);
     VecSet(
       unit->highFilters,
-      iInput + 1,
+      iInput,
       2.0);
 
   }
 
-  // iOutput == 0 -> 1.0+x+y+z+x^2+xy+xz+y^2+yz+z^2
-  // iOutput == 1 -> x^2-xy+2xz+3y^2-4yz+5z^2
-  float coeffs[2][10] = {
-
-    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0},
-    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0}
-
-  };
-  for (
-    long iOutput = 2;
-    iOutput--;) {
-
-    for (
-      long iCoeff = 10;
-      iCoeff--;) {
-
-      VecSet(
-        unit->coeffs[iOutput],
-        iCoeff,
-        coeffs[iOutput][iCoeff]);
-
-    }
-
-  }
+  VecShort2D dim = VecShortCreateStatic2D();
+  VecSet(
+    &dim,
+    0,
+    3);
+  VecSet(
+    &dim,
+    1,
+    2);
+  unit->transfer =
+    BBodyCreate(
+      1,
+      &dim);
+  unit->transfer->_ctrl[0]->_val[0] = 1.0;
+  unit->transfer->_ctrl[0]->_val[1] = 2.0;
 
   VecFloat* inputs = VecFloatCreate(3);
   VecSet(
@@ -271,12 +261,8 @@ void UnitTestNeuraMorphUnitEvaluate() {
     inputs);
 
   float check[2];
-  float x = 1.0;
-  float y = 0.0;
-  float z = 1.5;
-  check[0] = 1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z;
-  check[1] =
-    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z;
+  check[0] = -0.0625;
+  check[1] = -0.125;
   VecFloat2D checkHigh = VecFloatCreateStatic2D();
   VecSet(
     &checkHigh,
@@ -635,56 +621,44 @@ void UnitTestNeuraMorphBurryUnitsEvaluate() {
 
     VecSet(
       unitA->lowFilters,
-      iInput + 1,
+      iInput,
       0.0);
     VecSet(
       unitA->highFilters,
-      iInput + 1,
+      iInput,
       2.0);
     VecSet(
       unitB->lowFilters,
-      iInput + 1,
+      iInput,
       0.0);
     VecSet(
       unitB->highFilters,
-      iInput + 1,
+      iInput,
       2.0);
 
   }
 
-  float coeffsA[2][10] = {
-
-    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0},
-    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0}
-
-  };
-  float coeffsB[2][10] = {
-
-    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0},
-    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0}
-
-  };
-  for (
-    long iOutput = 2;
-    iOutput--;) {
-
-    for (
-      long iCoeff = 10;
-      iCoeff--;) {
-
-      VecSet(
-        unitA->coeffs[iOutput],
-        iCoeff,
-        coeffsA[iOutput][iCoeff]);
-
-      VecSet(
-        unitB->coeffs[iOutput],
-        iCoeff,
-        coeffsB[iOutput][iCoeff]);
-
-    }
-
-  }
+  VecShort2D dim = VecShortCreateStatic2D();
+  VecSet(
+    &dim,
+    0,
+    3);
+  VecSet(
+    &dim,
+    1,
+    2);
+  unitA->transfer =
+    BBodyCreate(
+      1,
+      &dim);
+  unitA->transfer->_ctrl[0]->_val[0] = 1.0;
+  unitA->transfer->_ctrl[0]->_val[1] = 2.0;
+  unitB->transfer =
+    BBodyCreate(
+      1,
+      &dim);
+  unitB->transfer->_ctrl[0]->_val[0] = 2.0;
+  unitB->transfer->_ctrl[0]->_val[1] = 1.0;
 
   float x = 1.0;
   float y = 0.5;
@@ -920,61 +894,44 @@ void UnitTestNeuraMorphBurryUnitsEvaluate() {
 
     VecSet(
       unitC->lowFilters,
-      iInput + 1,
+      iInput,
       0.0);
     VecSet(
       unitC->highFilters,
-      iInput + 1,
+      iInput,
       20.0);
 
   }
 
-  float coeffsC[2][10] = {
-
-    { 1.0, 1.0,  1.0, 1.0,  1.0,  1.0, 1.0,  1.0,  1.0, 1.0},
-    { 0.0, 0.0,  1.0, 0.0, -1.0,  3.0, 0.0,  2.0, -4.0, 5.0}
-
-  };
-  for (
-    long iOutput = 2;
-    iOutput--;) {
-
-    for (
-      long iCoeff = 10;
-      iCoeff--;) {
-
-      VecSet(
-        unitC->coeffs[iOutput],
-        iCoeff,
-        coeffsC[iOutput][iCoeff]);
-
-    }
-
-  }
+  unitC->transfer =
+    BBodyCreate(
+      1,
+      &dim);
+  unitC->transfer->_ctrl[0]->_val[0] = -1.0;
+  unitC->transfer->_ctrl[0]->_val[1] = -2.0;
 
   NMEvaluate(
     nm,
     evalInputs);
-
   float checkAout[2];
-  checkAout[0] =
-    1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z -
+  checkAout[0] = 
+    0.09375 -
     VecGet(
       nm->hiddens,
       0);
-  checkAout[1] =
-    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z -
+  checkAout[1] = 
+    0.1875 -
     VecGet(
       nm->hiddens,
       1);
   float checkBout[2];
   checkBout[0] =
-    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z -
+    0.1875 -
     VecGet(
       nm->hiddens,
       2);
   checkBout[1] =
-    1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z -
+    0.09375 -
     VecGet(
       nm->hiddens,
       3);
@@ -1023,12 +980,12 @@ void UnitTestNeuraMorphBurryUnitsEvaluate() {
       2);
   float checkCout[2];
   checkCout[0] =
-    1.0 + x + y + z + x * x + x * y + x * z + y * y + y * z + z * z -
+    -0.976738 -
     VecGet(
       unitC->outputs,
       0);
   checkCout[1] =
-    x * x - x * y + 2.0 * x * z + 3.0 * y * y - 4.0 * y * z + 5.0 * z * z -
+    -1.953476 -
     VecGet(
       unitC->outputs,
       1);
