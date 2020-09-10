@@ -249,12 +249,27 @@ typedef struct NeuraMorphTrainer {
   // Depth of the training
   short depth;
 
+  // Order of the transfer function of NeuraMorphUnit
+  int order;
+
+  // Maximum number of inputs per NeuraMorphUnit
+  int nbMaxInputsUnit;
+
   // Threshold used to discard weakest units during training
   // in [0.0,1.0]
   float weakUnitThreshold;
 
+  // Max level of division of values' range
+  short maxLvlDiv;
+
   // Precomputed values to train the NeuraMorphUnit
   VecFloat** preCompInp;
+  VecFloat** preCompOut;
+
+  // Lowest and highest values for input values in the training
+  // dataset
+  VecFloat* lowInputs;
+  VecFloat* highInputs;
 
 } NeuraMorphTrainer;
 
@@ -288,6 +303,48 @@ static inline
 void NMTrainerSetDepth(
   NeuraMorphTrainer* that,
                short depth);
+
+// Get the maxLvlDiv of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+short NMTrainerGetMaxLvlDiv(const NeuraMorphTrainer* that);
+
+// Set the maxLvlDiv of the NeuraMorphTrainer 'that' to 'lvl'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetMaxLvlDiv(
+  NeuraMorphTrainer* that,
+               short lvl);
+
+// Get the order of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+int NMTrainerGetOrder(const NeuraMorphTrainer* that);
+
+// Set the order of the NeuraMorphTrainer 'that' to 'order'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetOrder(
+  NeuraMorphTrainer* that,
+                 int order);
+
+// Get the nbMaxInputsUnit of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+int NMTrainerGetNbMaxInputsUnit(const NeuraMorphTrainer* that);
+
+// Set the nbMaxInputsUnit of the NeuraMorphTrainer 'that' to 'order'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetNbMaxInputsUnit(
+  NeuraMorphTrainer* that,
+                 int nbMaxInputsUnit);
 
 // Get the weakness threshold of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0

@@ -818,11 +818,11 @@ void NMTrainerTrainUnit(
       const VecLong* iInputs,
       const VecLong* iOutputs);
 
-// Precompute the hidden values of the NeuraMorph for each sample of the
+// Precompute the values of the NeuraMorph for each sample of the
 // GDataset for the NeuraMorphTrainer 'that'
-void NMTrainerPrecomputeHiddens(NeuraMorphTrainer* that);
+void NMTrainerPrecomputeValues(NeuraMorphTrainer* that);
 
-// Free the precomputed hidden values of the NeuraMorphTrainer 'that'
+// Free the precomputed values of the NeuraMorphTrainer 'that'
 void NMTrainerFreePrecomputed(NeuraMorphTrainer* that);
 
 // ================ Functions implemetation ====================
@@ -867,9 +867,17 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.neuraMorph = neuraMorph;
   that.dataset = dataset;
   that.depth = 2;
+  that.order = 1;
+  that.maxLvlDiv = 2;
+  that.nbMaxInputsUnit =
+    MAX(
+      GDSGetNbOutputs(dataset),
+      2);
   that.iCatTraining = 0;
   that.weakUnitThreshold = 0.9;
   that.preCompInp = NULL;
+  that.lowInputs = NULL;
+  that.highInputs = NULL;
 
   // Return the NeuraMorphTrainer
   return that;
@@ -893,7 +901,8 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
 
 #endif
 
-  // Nothing to do
+  VecFree(&(that->lowInputs));
+  VecFree(&(that->highInputs));
 
 }
 
@@ -939,8 +948,8 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
       "Nb available inputs: %ld\n",
       nbAvailInputs);
 
-    // Precompute the hidden values to speed up the training
-    NMTrainerPrecomputeHiddens(that);
+    // Precompute the values to speed up the training
+    NMTrainerPrecomputeValues(that);
 
     // Get the output indices
     VecLong* iOutputs = NMGetVecIOutputs(NMTrainerNeuraMorph(that));
@@ -948,15 +957,20 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     // Declare a set to memorize the trained units
     GSet trainedUnits = GSetCreateStatic();
 
+    // Get the number of inputs per unit
+    long nbMaxInputsUnit =
+      MIN(
+        nbAvailInputs,
+        NMTrainerGetNbMaxInputsUnit(that));
+
     // Loop on the number of inputs for the new unit
-    // TODO restrain nbUnitInput to a maximum
     for (
       long nbUnitInputs = 1;
-      nbUnitInputs <= nbAvailInputs;
+      nbUnitInputs <= nbMaxInputsUnit;
       ++nbUnitInputs) {
 
       printf(
-        "Train units with %04ld inputs\n",
+        "Train units with %04ld input(s)\n",
         nbUnitInputs);
 
       // Loop on the possible input configurations for the new units
@@ -1041,8 +1055,9 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
 
       }
 
+      // Displayed the burried units
       printf(
-        "Burry %ld out of %ld units\n",
+        "Burry %ld out of %ld unit(s)\n",
         GSetNbElem(&trainedUnits),
         nbTrainedUnits);
       GSetIterForward iter = GSetIterForwardCreateStatic(&trainedUnits);
@@ -1186,6 +1201,76 @@ void NMTrainerTrainUnit(
 
 #endif
 
+  // Get the number of inputs and outputs
+  short nbInput = VecGetDim(iInputs);
+  short nbOutput = VecGetDim(iOutputs);
+
+  // Loop on the division levels
+  VecShort* curDivLvl = VecShortCreate(nbInput);
+  VecShort* divLvlBound = VecShortCreate(nbInput);
+  VecSetAll(
+    divLvlBound,
+    NMTrainerGetMaxLvlDiv(that));
+  bool flagStepDivLvl = true;
+  do {
+
+    // Get the bounds for the number of division for each input
+    // at current levels
+    VecShort* divBound = VecShortCreate(nbInput);
+    for (
+      long i = nbInput;
+      i--;) {
+
+      short lvl =
+        VecGet(
+          curDivLvl,
+          i);
+      short bound =
+        powi(
+          2,
+          lvl);
+      VecSet(
+        divBound,
+        i,
+        bound);
+
+    }
+
+    // Loop on the combination of divisions
+    VecShort* curDiv = VecShortCreate(nbInput);
+    bool flagStepDiv = true;
+    do {
+
+
+
+
+      // Move to the next combination of divisions
+      flagStepDiv =
+        VecStep(
+          curDiv,
+          divBound);
+
+    } while (flagStepDiv);
+
+    // Free memory
+    VecFree(&curDiv);
+    VecFree(&divBound);
+
+    // Move to the next division level
+    flagStepDivLvl =
+      VecStep(
+        curDivLvl,
+        divLvlBound);
+
+  } while (flagStepDivLvl);
+
+  // Free memory
+  VecFree(&curDivLvl);
+  VecFree(&divLvlBound);
+
+
+
+
   // Create the unit
   NeuraMorphUnit* unit =
     NeuraMorphUnitCreate(
@@ -1205,9 +1290,9 @@ void NMTrainerTrainUnit(
 
 }
 
-// Precompute the hidden values of the NeuraMorph for each sample of the
+// Precompute the values of the NeuraMorph for each sample of the
 // GDataset for the NeuraMorphTrainer 'that'
-void NMTrainerPrecomputeHiddens(NeuraMorphTrainer* that) {
+void NMTrainerPrecomputeValues(NeuraMorphTrainer* that) {
 
 #if BUILDMODE == 0
 
@@ -1234,6 +1319,14 @@ void NMTrainerPrecomputeHiddens(NeuraMorphTrainer* that) {
     PBErrMalloc(
       NeuraMorphErr,
       nbSample * sizeof(VecFloat*));
+  that->preCompOut =
+    PBErrMalloc(
+      NeuraMorphErr,
+      nbSample * sizeof(VecFloat*));
+
+  // Reset the low and high values for input
+  VecFree(&(that->lowInputs));
+  VecFree(&(that->highInputs));
 
   // Get the size of the precomputed vector
   long sizeInp =
@@ -1248,9 +1341,63 @@ void NMTrainerPrecomputeHiddens(NeuraMorphTrainer* that) {
     NMTrainerGetICatTraining(that));
   do {
 
-    // Get a clone of the sample
+    // Get a clone of the sample's inputs
     VecFloat* inputs =
       GDSGetSampleInputs(
+        NMTrainerDataset(that),
+        NMTrainerGetICatTraining(that));
+
+    // Update the low and high input values
+    if (that->lowInputs == NULL) {
+
+      that->lowInputs = VecClone(inputs);
+      that->highInputs = VecClone(inputs);
+
+    } else {
+
+      for (
+        long iOutput = 0;
+        iOutput < VecGetDim(inputs);
+        ++iOutput) {
+
+        float val =
+          VecGet(
+            inputs,
+            iOutput);
+
+        float curLow =
+          VecGet(
+            that->lowInputs,
+            iOutput);
+        if (curLow > val) {
+
+          VecSet(
+            that->lowInputs,
+            iOutput,
+            val);
+
+        }
+
+        float curHigh =
+          VecGet(
+            that->highInputs,
+            iOutput);
+        if (curHigh < val) {
+
+          VecSet(
+            that->highInputs,
+            iOutput,
+            val);
+
+        }
+
+      }
+
+    }
+
+    // Get a clone of the sample's outputs
+    that->preCompOut[iSample] =
+      GDSGetSampleOutputs(
         NMTrainerDataset(that),
         NMTrainerGetICatTraining(that));
 
@@ -1344,10 +1491,13 @@ void NMTrainerFreePrecomputed(NeuraMorphTrainer* that) {
     iSample--;) {
 
     VecFree(that->preCompInp + iSample);
+    VecFree(that->preCompOut + iSample);
 
   }
 
   free(that->preCompInp);
   that->preCompInp = NULL;
+  free(that->preCompOut);
+  that->preCompOut = NULL;
 
 }

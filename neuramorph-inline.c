@@ -437,6 +437,189 @@ void NMTrainerSetDepth(
 
 }
 
+// Get the maxLvlDiv of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+short NMTrainerGetMaxLvlDiv(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->maxLvlDiv;
+
+}
+
+// Set the maxLvlDiv of the NeuraMorphTrainer 'that' to 'lvl'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetMaxLvlDiv(
+  NeuraMorphTrainer* that,
+               short lvl) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (lvl < 0) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'lvl' is invalid (%d>=0)",
+      lvl);
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->maxLvlDiv = lvl;
+
+}
+
+// Get the order of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+int NMTrainerGetOrder(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->order;
+
+}
+
+// Set the order of the NeuraMorphTrainer 'that' to 'order'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetOrder(
+  NeuraMorphTrainer* that,
+                 int order) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (order < 1) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'order' is invalid (%d>=1)",
+      order);
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->order = order;
+
+}
+
+// Get the nbMaxInputsUnit of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+int NMTrainerGetNbMaxInputsUnit(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->nbMaxInputsUnit;
+
+}
+
+// Set the nbMaxInputsUnit of the NeuraMorphTrainer 'that' to 'order'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetNbMaxInputsUnit(
+  NeuraMorphTrainer* that,
+                 int nbMaxInputsUnit) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (nbMaxInputsUnit < 2) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'nbMaxInputsUnit' is invalid (%d>=2)",
+      nbMaxInputsUnit);
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->nbMaxInputsUnit = nbMaxInputsUnit;
+
+}
+
 // Get the NeuraMorph of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
 static inline
