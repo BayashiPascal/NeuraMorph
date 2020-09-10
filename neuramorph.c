@@ -1201,9 +1201,8 @@ void NMTrainerTrainUnit(
 
 #endif
 
-  // Get the number of inputs and outputs
+  // Get the number of inputs
   long nbInputs = VecGetDim(iInputs);
-  long nbOutputs = VecGetDim(iOutputs);
 
   // Loop on the division levels
   VecShort* curDivLvl = VecShortCreate(nbInputs);
@@ -1319,23 +1318,145 @@ void NMTrainerTrainUnit(
 
       }
 
-      // Extract the filtered samples and calculate the BBody
+      // Declare two GSets to extract the filtered samples
+      GSetVecFloat trainingInputs = GSetVecFloatCreateStatic();
+      GSetVecFloat trainingOutputs = GSetVecFloatCreateStatic();
 
+      // Loop on the samples of the dataset
+      long iSample = 0;
+      bool flagStep = true;
+      GDSReset(
+        NMTrainerDataset(that),
+        NMTrainerGetICatTraining(that));
+      do {
 
+        // Get a clone of the sample's inputs
+        VecFloat* sampleInputs =
+          GDSGetSampleInputs(
+            NMTrainerDataset(that),
+            NMTrainerGetICatTraining(that));
 
-  // TODO
-  NMUnitSetValue(
-    unit,
-    rand());
+        // If all the input values are within the bound of the unit
+        bool flag = true;
+        for (
+          long iInput = nbInputs;
+          flag && iInput--;) {
 
-  // Add the unit to the set of trained units
-  GSetAddSort(
-    trainedUnits,
-    unit,
-    NMUnitGetValue(unit));
+          float low =
+            VecGet(
+              unit->lowFilters,
+              iInput);
+          float high =
+            VecGet(
+              unit->highFilters,
+              iInput);
+          float val =
+            VecGet(
+              sampleInputs,
+              iInput);
+          if (
+            val < low ||
+            val > high) {
 
+            flag = false;
 
+          }
 
+          // Simultaneously, scale the inputs values toward the unit
+          // input space
+          val = (val - low) / (high - low);
+          VecSet(
+            sampleInputs,
+            iInput,
+            val);
+
+        }
+
+        if (flag) {
+
+          // Add this sample to the training set for the current unit
+          GSetAppend(
+            &trainingInputs,
+            sampleInputs);
+          VecFloat* sampleOutputs =
+            GDSGetSampleOutputs(
+              NMTrainerDataset(that),
+              NMTrainerGetICatTraining(that));
+          GSetAppend(
+            &trainingOutputs,
+            sampleOutputs);
+
+        } else {
+
+          // Free memory
+          VecFree(&sampleInputs);
+
+        }
+
+        // Move to the next sample
+        ++iSample;
+        flagStep =
+          GDSStepSample(
+            NMTrainerDataset(that),
+            NMTrainerGetICatTraining(that));
+
+      } while (flagStep);
+
+      // If we have enough samples to train the unit on the current
+      // combination of divisions
+      if (GSetNbElem(&trainingInputs) >= NMUnitGetNbInputs(unit)) {
+
+        // Calculate the transfer function
+        float bias = 0.0;
+        unit->transfer =
+          BBodyFromPointCloud(
+            NMTrainerGetOrder(that),
+            &trainingInputs,
+            &trainingOutputs,
+            &bias);
+
+        // If we could calculate the transfer function
+        if (unit->transfer != NULL) {
+
+          // Set the value of the unit
+          float corrRange =
+            (float)GSetNbElem(&trainingInputs) /
+            (float)GDSGetSizeCat(
+              NMTrainerDataset(that),
+              NMTrainerGetICatTraining(that));
+          NMUnitSetValue(
+            unit,
+            -1.0 * bias / corrRange);
+
+          // Add the unit to the set of trained units
+          GSetAddSort(
+            trainedUnits,
+            unit,
+            NMUnitGetValue(unit));
+
+        // Else, we couldn't calculate the transfer function
+        } else {
+
+          // Free memory
+          NeuraMorphUnitFree(&unit);
+
+        }
+
+      }
+
+      // Free memory
+      while (GSetNbElem(&trainingInputs) > 0) {
+
+        VecFloat* v = GSetPop(&trainingInputs);
+        VecFree(&v);
+
+      }
+      while (GSetNbElem(&trainingOutputs) > 0) {
+
+        VecFloat* v = GSetPop(&trainingOutputs);
+        VecFree(&v);
+
+      }
 
       // Move to the next combination of divisions
       flagStepDiv =

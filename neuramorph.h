@@ -97,6 +97,13 @@ static inline
 #endif
 long NMUnitGetNbOutputs(const NeuraMorphUnit* that);
 
+// Get the number of coefficients in the transfer function of
+// the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMUnitGetNbCoeffs(const NeuraMorphUnit* that);
+
 // Get the value of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0
 static inline

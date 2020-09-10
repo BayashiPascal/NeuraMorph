@@ -124,6 +124,31 @@ long NMUnitGetNbOutputs(const NeuraMorphUnit* that) {
 
 }
 
+// Get the number of coefficients in the transfer function of
+// the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+long NMUnitGetNbCoeffs(const NeuraMorphUnit* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return BBodyGetNbCtrl(that->transfer);
+
+}
+
 // Get the value of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0
 static inline
