@@ -477,6 +477,26 @@ void UnitTestNeuraMorphGetSet() {
 
   }
 
+  if (NMLowHiddens(nm) != nm->lowHiddens) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMLowHiddens failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NMHighHiddens(nm) != nm->highHiddens) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMHighHiddens failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   NeuraMorphFree(&nm);
 
   printf("UnitTestNeuraMorphGetSet OK\n");

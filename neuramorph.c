@@ -1202,12 +1202,12 @@ void NMTrainerTrainUnit(
 #endif
 
   // Get the number of inputs and outputs
-  short nbInput = VecGetDim(iInputs);
-  short nbOutput = VecGetDim(iOutputs);
+  long nbInputs = VecGetDim(iInputs);
+  long nbOutputs = VecGetDim(iOutputs);
 
   // Loop on the division levels
-  VecShort* curDivLvl = VecShortCreate(nbInput);
-  VecShort* divLvlBound = VecShortCreate(nbInput);
+  VecShort* curDivLvl = VecShortCreate(nbInputs);
+  VecShort* divLvlBound = VecShortCreate(nbInputs);
   VecSetAll(
     divLvlBound,
     NMTrainerGetMaxLvlDiv(that));
@@ -1216,30 +1216,123 @@ void NMTrainerTrainUnit(
 
     // Get the bounds for the number of division for each input
     // at current levels
-    VecShort* divBound = VecShortCreate(nbInput);
+    VecShort* divBound = VecShortCreate(nbInputs);
     for (
-      long i = nbInput;
-      i--;) {
+      long iInput = nbInputs;
+      iInput--;) {
 
       short lvl =
         VecGet(
           curDivLvl,
-          i);
+          iInput);
       short bound =
         powi(
           2,
           lvl);
       VecSet(
         divBound,
-        i,
+        iInput,
         bound);
 
     }
 
     // Loop on the combination of divisions
-    VecShort* curDiv = VecShortCreate(nbInput);
+    VecShort* curDiv = VecShortCreate(nbInputs);
     bool flagStepDiv = true;
     do {
+
+      // Create the unit
+      NeuraMorphUnit* unit =
+        NeuraMorphUnitCreate(
+          iInputs,
+          iOutputs);
+
+      // Loop on the inputs of the unit
+      for (
+        long iInput = nbInputs;
+        iInput--;) {
+
+        // Get the indice of this input in the NeuraMorph
+        short jInput =
+          VecGet(
+            NMUnitIInputs(unit),
+            iInput);
+
+        // Declare variables to memorize the lowest and highest
+        // values for this input
+        float low = 0.0;
+        float high = 0.0;
+
+        // If this input is an input in the NeuraMorph
+        if (jInput < NMGetNbInput(NMTrainerNeuraMorph(that))) {
+
+          low =
+            VecGet(
+              that->lowInputs,
+              jInput);
+          high =
+            VecGet(
+              that->highInputs,
+              jInput);
+
+        // Else, this input is an hidden value in the NeuraMorph
+        } else {
+
+          low =
+            VecGet(
+              NMLowHiddens(NMTrainerNeuraMorph(that)),
+              jInput - NMGetNbInput(NMTrainerNeuraMorph(that)));
+          high =
+            VecGet(
+              NMHighHiddens(NMTrainerNeuraMorph(that)),
+              jInput - NMGetNbInput(NMTrainerNeuraMorph(that)));
+
+        }
+
+        // Get the filter values for the current division
+        float lowFilter =
+          low + (high - low) *
+          (float)VecGet(
+            curDiv,
+            iInput) /
+          (float)VecGet(
+            divBound,
+            iInput);
+        float highFilter =
+          low + (high - low) *
+          (float)(VecGet(
+            curDiv,
+            iInput) + 1) /
+          (float)VecGet(
+            divBound,
+            iInput);
+
+        // Set the filter values in the unit
+        VecSet(
+          unit->lowFilters,
+          iInput,
+          lowFilter);
+        VecSet(
+          unit->highFilters,
+          iInput,
+          highFilter);
+
+      }
+
+      // Extract the filtered samples and calculate the BBody
+
+
+
+  // TODO
+  NMUnitSetValue(
+    unit,
+    rand());
+
+  // Add the unit to the set of trained units
+  GSetAddSort(
+    trainedUnits,
+    unit,
+    NMUnitGetValue(unit));
 
 
 
@@ -1267,26 +1360,6 @@ void NMTrainerTrainUnit(
   // Free memory
   VecFree(&curDivLvl);
   VecFree(&divLvlBound);
-
-
-
-
-  // Create the unit
-  NeuraMorphUnit* unit =
-    NeuraMorphUnitCreate(
-      iInputs,
-      iOutputs);
-
-  // TODO
-  NMUnitSetValue(
-    unit,
-    rand());
-
-  // Add the unit to the set of trained units
-  GSetAddSort(
-    trainedUnits,
-    unit,
-    NMUnitGetValue(unit));
 
 }
 

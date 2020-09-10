@@ -116,7 +116,7 @@ void NMUnitPrint(
   const NeuraMorphUnit* that,
                   FILE* stream);
 #define NMUnitPrintln(T, S) \
-  NMUnitPrint(T, S);fprintf(S, "\n")
+  do {NMUnitPrint(T, S);fprintf(S, "\n");} while (false)
 
 // ----- NeuraMorph
 
@@ -183,6 +183,18 @@ const VecFloat* NMOutputs(const NeuraMorph* that);
 static inline
 #endif
 const VecFloat* NMHiddens(const NeuraMorph* that);
+
+// Get the lowest bound of hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat* NMLowHiddens(const NeuraMorph* that);
+
+// Get the highest bound of hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat* NMHighHiddens(const NeuraMorph* that);
 
 // Get the number of hidden values of the NeuraMorph 'that'
 #if BUILDMODE != 0

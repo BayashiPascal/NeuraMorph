@@ -372,6 +372,54 @@ void NMSetNbHidden(
 
 }
 
+// Get the lowest bound of hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat* NMLowHiddens(const NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->lowHiddens;
+
+}
+
+// Get the highest bound of hidden values of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat* NMHighHiddens(const NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->highHiddens;
+
+}
+
 // ----- NeuraMorphTrainer
 
 // ================ Functions implementation ====================
