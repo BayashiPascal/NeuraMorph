@@ -1312,16 +1312,16 @@ void UnitTestNeuraMorphTrainerRun() {
 
   GDataSetVecFloat dataset =
     GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
-  GDSShuffleAll(&dataset);
+  GSetShuffle(&(dataset._dataSet._samples));
   VecShort2D split = VecShortCreateStatic2D();
   VecSet(
     &split,
     0,
-    100);
+    130);
   VecSet(
     &split,
     1,
-    50);
+    20);
   GDSSplit(
     &dataset,
     (VecShort*)&split);
@@ -1339,7 +1339,7 @@ void UnitTestNeuraMorphTrainerRun() {
     0.99);
   NMTrainerSetDepth(
     &trainer,
-    2);
+    3);
   NMTrainerSetMaxLvlDiv(
     &trainer,
     1);
@@ -1350,6 +1350,7 @@ void UnitTestNeuraMorphTrainerRun() {
     &trainer,
     1);
   NMTrainerRun(&trainer);
+  NMTrainerEval(&trainer);
 
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);

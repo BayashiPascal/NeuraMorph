@@ -1645,8 +1645,6 @@ void NMTrainerPrecomputeValues(NeuraMorphTrainer* that) {
         val);
 
     }
-//VecPrintln(that->preCompInp[iSample],stdout);
-//VecPrintln(that->preCompOut[iSample],stdout);
 
     // Free memory
     VecFree(&inputs);
@@ -1716,3 +1714,98 @@ void NMTrainerFreePrecomputed(NeuraMorphTrainer* that) {
   that->preCompOut = NULL;
 
 }
+
+// Run the evaluation process for the NeuraMorphTrainer 'that'
+void NMTrainerEval(NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare a variable to calculate the average bias
+  float avgBias = 0.0;
+
+  // Loop on the evaluation samples
+  long iSample = 0;
+  bool flagStep = true;
+  GDSReset(
+    NMTrainerDataset(that),
+    NMTrainerGetICatEval(that));
+  do {
+
+    // Get a clone of the sample's inputs and outputs
+    VecFloat* inputs =
+      GDSGetSampleInputs(
+        NMTrainerDataset(that),
+        NMTrainerGetICatEval(that));
+    VecFloat* outputs =
+      GDSGetSampleOutputs(
+        NMTrainerDataset(that),
+        NMTrainerGetICatEval(that));
+
+    // Run the NeuraMorph on the sample
+    NMEvaluate(
+      NMTrainerNeuraMorph(that),
+      inputs);
+
+    // Display the result
+    printf(
+      "%02ld ",
+      iSample);
+    VecPrint(
+      inputs,
+      stdout);
+    printf(" -> ");
+    VecPrint(
+      outputs,
+      stdout);
+    printf(" : ");
+    VecPrint(
+      NMOutputs(NMTrainerNeuraMorph(that)),
+      stdout);
+    printf(" ");
+    float bias =
+      VecDist(
+        outputs,
+        NMOutputs(NMTrainerNeuraMorph(that)));
+    printf(
+      "%f\n",
+      bias);
+
+    // Update the average bias
+    avgBias += bias;
+
+    // Free memory
+    VecFree(&inputs);
+    VecFree(&outputs);
+
+    // Move to the next sample
+    ++iSample;
+    flagStep =
+      GDSStepSample(
+        NMTrainerDataset(that),
+        NMTrainerGetICatEval(that));
+
+  } while (flagStep);
+
+  // Display the average bias
+  avgBias /=
+    (float)GDSGetSizeCat(
+      NMTrainerDataset(that),
+      NMTrainerGetICatEval(that));
+  printf(
+    "Average bias: %f\n",
+    avgBias);
+
+}
+
