@@ -1437,7 +1437,7 @@ void NMTrainerTrainUnit(
         }
 
       }
-//printf("%ld\n",GSetNbElem(&trainingInputs));
+
       // If we have enough samples to train the unit on the current
       // combination of divisions
       if (GSetNbElem(&trainingInputs) >= NMUnitGetNbInputs(unit)) {
@@ -1487,6 +1487,7 @@ void NMTrainerTrainUnit(
         VecFree(&v);
 
       }
+
       GSetFlush(&trainingOutputs);
 
       // Move to the next combination of divisions
@@ -1855,4 +1856,3 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
     maxBias);
 
 }
-
