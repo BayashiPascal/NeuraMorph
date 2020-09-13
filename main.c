@@ -1097,6 +1097,7 @@ void UnitTestNeuraMorphTrainerCreateFree() {
     trainer.depth != 2 ||
     trainer.order != 1 ||
     trainer.nbMaxUnitDepth != 2 ||
+    trainer.streamInfo != NULL ||
     trainer.maxLvlDiv != 2 ||
     trainer.nbMaxInputsUnit != GDSGetNbOutputs(&dataset) ||
     isSame != true ||
@@ -1148,6 +1149,16 @@ void UnitTestNeuraMorphTrainerGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NeuraMorphTrainerGetOrder failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (NMTrainerStreamInfo(&trainer) != NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerStreamInfo failed");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1225,6 +1236,19 @@ void UnitTestNeuraMorphTrainerGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NeuraMorphTrainerSetDepth failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMTrainerSetStreamInfo(
+    &trainer,
+    stdout);
+  if (NMTrainerStreamInfo(&trainer) != stdout) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerSetStreamInfo failed");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1378,8 +1402,23 @@ void UnitTestNeuraMorphTrainerRun() {
     &trainer,
     1);
   NMTrainerRun(&trainer);
+  NMTrainerSetStreamInfo(
+    &trainer,
+    stdout);
   NMTrainerEval(&trainer);
   printf("Bias (min/avg/max): ");
+  VecPrint(
+    NMTrainerResEval(&trainer),
+    stdout);
+  printf("\n");
+  NMTrainerSetICatEval(
+    &trainer,
+    0);
+  NMTrainerSetStreamInfo(
+    &trainer,
+    NULL);
+  NMTrainerEval(&trainer);
+  printf("Bias training (min/avg/max): ");
   VecPrint(
     NMTrainerResEval(&trainer),
     stdout);

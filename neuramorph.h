@@ -314,6 +314,9 @@ typedef struct NeuraMorphTrainer {
   // Variable to store the result of the last evaluation
   VecFloat3D resEval;
 
+  // Stream to output info during training and evaluation
+  FILE* streamInfo;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
@@ -349,6 +352,20 @@ static inline
 void NMTrainerSetDepth(
   NeuraMorphTrainer* that,
                short depth);
+
+// Get the streamInfo of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+FILE* NMTrainerStreamInfo(const NeuraMorphTrainer* that);
+
+// Set the streamInfo of the NeuraMorphTrainer 'that' to 'streamInfo'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetStreamInfo(
+  NeuraMorphTrainer* that,
+               FILE* streamInfo);
 
 // Get the maxLvlDiv of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0

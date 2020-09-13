@@ -1017,3 +1017,54 @@ const VecFloat3D* NMTrainerResEval(const NeuraMorphTrainer* that) {
   return &(that->resEval);
 
 }
+
+// Get the streamInfo of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+FILE* NMTrainerStreamInfo(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->streamInfo;
+
+}
+
+// Set the streamInfo of the NeuraMorphTrainer 'that' to 'streamInfo'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetStreamInfo(
+  NeuraMorphTrainer* that,
+               FILE* streamInfo) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->streamInfo = streamInfo;
+
+}
+

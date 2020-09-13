@@ -901,6 +901,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.preCompInp = NULL;
   that.lowInputs = NULL;
   that.highInputs = NULL;
+  that.streamInfo = NULL;
   that.resEval = VecFloatCreateStatic3D();
 
   // Return the NeuraMorphTrainer
@@ -1780,31 +1781,11 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
       NMTrainerNeuraMorph(that),
       inputs);
 
-    // Display the result
-    printf(
-      "%02ld ",
-      iSample);
-    VecPrint(
-      inputs,
-      stdout);
-    printf(" -> ");
-    VecPrint(
-      outputs,
-      stdout);
-    printf(" : ");
-    VecPrint(
-      NMOutputs(NMTrainerNeuraMorph(that)),
-      stdout);
-    printf(" ");
+    // Update the result of evaluation
     float bias =
       VecDist(
         outputs,
         NMOutputs(NMTrainerNeuraMorph(that)));
-    printf(
-      "%f\n",
-      bias);
-
-    // Update the result of evaluation
     avgBias += bias;
     if (iSample == 0) {
 
@@ -1821,6 +1802,38 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
         MAX(
           bias,
           maxBias);
+
+    }
+
+    // Display the result
+    if (NMTrainerStreamInfo(that) != NULL) {
+
+      fprintf(
+        NMTrainerStreamInfo(that),
+        "%02ld ",
+        iSample);
+      VecPrint(
+        inputs,
+        NMTrainerStreamInfo(that));
+      fprintf(
+        NMTrainerStreamInfo(that),
+        " -> ");
+      VecPrint(
+        outputs,
+        NMTrainerStreamInfo(that));
+      fprintf(
+        NMTrainerStreamInfo(that),
+        " : ");
+      VecPrint(
+        NMOutputs(NMTrainerNeuraMorph(that)),
+        NMTrainerStreamInfo(that));
+      fprintf(
+        NMTrainerStreamInfo(that),
+        " ");
+      fprintf(
+        NMTrainerStreamInfo(that),
+        "%f\n",
+        bias);
 
     }
 
