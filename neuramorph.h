@@ -262,8 +262,9 @@ typedef struct NeuraMorphTrainer {
   // Training dataset
   GDataSetVecFloat* dataset;
 
-  // Index of the dataset's category used for training
+  // Index of the dataset's category used for training and evaluation
   unsigned int iCatTraining;
+  unsigned int iCatEval;
 
   // Depth of the training
   short depth;
@@ -277,6 +278,9 @@ typedef struct NeuraMorphTrainer {
   // Threshold used to discard weakest units during training
   // in [0.0,1.0]
   float weakUnitThreshold;
+
+  // Maximum number of unit kept at each depth
+  int nbMaxUnitDepth;
 
   // Max level of division of values' range
   short maxLvlDiv;
@@ -308,6 +312,9 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that);
 
 // Run the training process for the NeuraMorphTrainer 'that'
 void NMTrainerRun(NeuraMorphTrainer* that);
+
+// Run the evaluation process for the NeuraMorphTrainer 'that'
+void NMTrainerEval(NeuraMorphTrainer* that);
 
 // Get the depth of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
@@ -350,6 +357,20 @@ static inline
 void NMTrainerSetOrder(
   NeuraMorphTrainer* that,
                  int order);
+
+// Get the nbMaxUnitDepth of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+int NMTrainerGetNbMaxUnitDepth(const NeuraMorphTrainer* that);
+
+// Set the nbMaxUnitDepth of the NeuraMorphTrainer 'that' to 'nbMaxUnitDepth'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetNbMaxUnitDepth(
+  NeuraMorphTrainer* that,
+                 int nbMaxUnitDepth);
 
 // Get the nbMaxInputsUnit of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
@@ -394,6 +415,21 @@ static inline
 void NMTrainerSetICatTraining(
   NeuraMorphTrainer* that,
         unsigned int iCatTraining);
+
+// Get the index of the evaluation category of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+unsigned int NMTrainerGetICatEval(const NeuraMorphTrainer* that);
+
+// Set the index of the evaluation category of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetICatEval(
+  NeuraMorphTrainer* that,
+        unsigned int iCatEval);
 
 // Get the NeuraMorph of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0

@@ -1072,10 +1072,12 @@ void UnitTestNeuraMorphTrainerCreateFree() {
     trainer.neuraMorph != nm ||
     trainer.depth != 2 ||
     trainer.order != 1 ||
+    trainer.nbMaxUnitDepth != 2 ||
     trainer.maxLvlDiv != 2 ||
     trainer.nbMaxInputsUnit != GDSGetNbOutputs(&dataset) ||
     isSame != true ||
     trainer.iCatTraining != 0 ||
+    trainer.iCatEval != 1 ||
     trainer.dataset != &dataset) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
@@ -1126,6 +1128,16 @@ void UnitTestNeuraMorphTrainerGetSet() {
 
   }
 
+  if (NMTrainerGetNbMaxUnitDepth(&trainer) != 2) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerGetNbMaxUnitDepth failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   if (NMTrainerGetMaxLvlDiv(&trainer) != 2) {
 
     NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
@@ -1156,6 +1168,16 @@ void UnitTestNeuraMorphTrainerGetSet() {
 
   }
 
+  if (NMTrainerGetICatEval(&trainer) != 1) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerGetICatEval failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   bool isSame =
     ISEQUALF(
       NMTrainerGetWeakThreshold(&trainer),
@@ -1179,6 +1201,19 @@ void UnitTestNeuraMorphTrainerGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NeuraMorphTrainerSetDepth failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMTrainerSetNbMaxUnitDepth(
+    &trainer,
+    3);
+  if (NMTrainerGetNbMaxUnitDepth(&trainer) != 3) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerSetNbMaxUnitDepth failed");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1218,6 +1253,19 @@ void UnitTestNeuraMorphTrainerGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NeuraMorphTrainerSetICatTraining failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMTrainerSetICatEval(
+    &trainer,
+    4);
+  if (NMTrainerGetICatEval(&trainer) != 4) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerSetICatEval failed");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1274,9 +1322,9 @@ void UnitTestNeuraMorphTrainerRun() {
     &split,
     1,
     50);
-  //GDSSplit(
-  //  &dataset,
-  //  (VecShort*)&split);
+  GDSSplit(
+    &dataset,
+    (VecShort*)&split);
   NeuraMorph* nm =
     NeuraMorphCreate(
       GDSGetNbInputs(&dataset),
@@ -1291,13 +1339,13 @@ void UnitTestNeuraMorphTrainerRun() {
     0.99);
   NMTrainerSetDepth(
     &trainer,
-    10);
+    2);
   NMTrainerSetMaxLvlDiv(
     &trainer,
-    0);
+    1);
   NMTrainerSetNbMaxInputsUnit(
     &trainer,
-    4);
+    GDSGetNbInputs(&dataset));
   NMTrainerSetOrder(
     &trainer,
     1);

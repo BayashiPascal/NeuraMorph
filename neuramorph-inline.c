@@ -792,6 +792,57 @@ void NMTrainerSetICatTraining(
 
 }
 
+// Get the index of the evaluation category of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+unsigned int NMTrainerGetICatEval(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->iCatEval;
+
+}
+
+// Set the index of the evaluation category of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetICatEval(
+  NeuraMorphTrainer* that,
+        unsigned int iCatEval) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->iCatEval = iCatEval;
+
+}
+
 // Get the weakness threshold of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
 static inline
@@ -842,3 +893,55 @@ void NMTrainerSetWeakThreshold(
   that->weakUnitThreshold = weakUnitThreshold;
 
 }
+
+// Get the nbMaxUnitDepth of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+int NMTrainerGetNbMaxUnitDepth(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->nbMaxUnitDepth;
+
+}
+
+// Set the nbMaxUnitDepth of the NeuraMorphTrainer 'that' to 'nbMaxUnitDepth'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetNbMaxUnitDepth(
+  NeuraMorphTrainer* that,
+                 int nbMaxUnitDepth) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->nbMaxUnitDepth = nbMaxUnitDepth;
+
+}
+
+

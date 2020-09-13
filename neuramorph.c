@@ -871,12 +871,14 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.dataset = dataset;
   that.depth = 2;
   that.order = 1;
+  that.nbMaxUnitDepth = 2;
   that.maxLvlDiv = 2;
   that.nbMaxInputsUnit =
     MAX(
       GDSGetNbOutputs(dataset),
       2);
   that.iCatTraining = 0;
+  that.iCatEval = 1;
   that.weakUnitThreshold = 0.9;
   that.preCompInp = NULL;
   that.lowInputs = NULL;
@@ -1056,8 +1058,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
       long nbTrainedUnits = GSetNbElem(&trainedUnits);
       while (
         GSetElemGetSortVal(GSetHeadElem(&trainedUnits)) < threshold
-        // TODO
-        || GSetNbElem(&trainedUnits) > 5) {
+        || GSetNbElem(&trainedUnits) > NMTrainerGetNbMaxUnitDepth(that)) {
 
         NeuraMorphUnit* unit = GSetPop(&trainedUnits);
         NeuraMorphUnitFree(&unit);
