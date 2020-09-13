@@ -343,6 +343,7 @@ void UnitTestNeuraMorphCreateFree() {
   if (
     nm->nbInput != 3 ||
     nm->nbOutput != 2 ||
+    nm->flagOneHot != false ||
     VecGetDim(nm->inputs) != 3 ||
     VecGetDim(nm->outputs) != 2 ||
     nm->hiddens != NULL ||
@@ -407,6 +408,16 @@ void UnitTestNeuraMorphGetSet() {
 
   }
 
+  if (NMGetFlagOneHot(nm) != false) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMGetFlagOneHot failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   NMSetNbHidden(
     nm,
     5);
@@ -416,6 +427,19 @@ void UnitTestNeuraMorphGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NMSetNbHidden failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  NMSetFlagOneHot(
+    nm,
+    true);
+  if (NMGetFlagOneHot(nm) != true) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NMSetFlagOneHot failed");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1329,6 +1353,9 @@ void UnitTestNeuraMorphTrainerRun() {
     NeuraMorphCreate(
       GDSGetNbInputs(&dataset),
       GDSGetNbOutputs(&dataset));
+  NMSetFlagOneHot(
+    nm,
+    true);
   NeuraMorphTrainer trainer =
     NeuraMorphTrainerCreateStatic(
       nm,

@@ -310,6 +310,7 @@ NeuraMorph* NeuraMorphCreate(
   that->lowHiddens = NULL;
   that->highHiddens = NULL;
   that->units = GSetCreateStatic();
+  that->flagOneHot = false;
 
   // Return the NeuraMorph
   return that;
@@ -797,6 +798,23 @@ void NMEvaluate(
     }
 
   } while (GSetIterStep(&iter));
+
+  // If the NeuraMorph is a one hot encoder
+  if (NMGetFlagOneHot(that) == true) {
+
+    // Get the one hot
+    long oneHot = VecGetIMaxVal(that->outputs);
+
+    // Convert the output values
+    VecSetAll(
+      that->outputs,
+      -1.0);
+    VecSet(
+      that->outputs,
+      oneHot,
+      1.0);
+
+  }
 
 }
 

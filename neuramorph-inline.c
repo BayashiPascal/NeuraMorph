@@ -445,6 +445,56 @@ const VecFloat* NMHighHiddens(const NeuraMorph* that) {
 
 }
 
+// Get the flag for one hot encoding of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+bool NMGetFlagOneHot(const NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->flagOneHot;
+
+}
+
+// Set the flag for one hot encoding of the NeuraMorph 'that' to 'flag'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMSetFlagOneHot(
+  NeuraMorph* that,
+         bool flag) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->flagOneHot = flag;
+
+}
+
 // ----- NeuraMorphTrainer
 
 // ================ Functions implementation ====================

@@ -146,6 +146,9 @@ typedef struct NeuraMorph {
   VecFloat* lowHiddens;
   VecFloat* highHiddens;
 
+  // Flag to memorize if the outputs are to be seen as one hot encoding
+  bool flagOneHot;
+
   // GSet of NeuraMorphUnit
   GSet units;
 
@@ -216,6 +219,20 @@ static inline
 void NMSetNbHidden(
   NeuraMorph* that,
          long nb);
+
+// Get the flag for one hot encoding of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+bool NMGetFlagOneHot(const NeuraMorph* that);
+
+// Set the flag for one hot encoding of the NeuraMorph 'that' to 'flag'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMSetFlagOneHot(
+  NeuraMorph* that,
+         bool flag);
 
 // Add one NeuraMorphUnit with input and output indices 'iInputs'
 // and 'iOutputs' to the NeuraMorph 'that'
