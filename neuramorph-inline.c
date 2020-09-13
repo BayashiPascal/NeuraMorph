@@ -944,4 +944,26 @@ void NMTrainerSetNbMaxUnitDepth(
 
 }
 
+// Get the result of the last evaluation of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat3D* NMTrainerResEval(const NeuraMorphTrainer* that) {
 
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return &(that->resEval);
+
+}

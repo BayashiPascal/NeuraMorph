@@ -883,6 +883,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.preCompInp = NULL;
   that.lowInputs = NULL;
   that.highInputs = NULL;
+  that.resEval = VecFloatCreateStatic3D();
 
   // Return the NeuraMorphTrainer
   return that;
@@ -1732,8 +1733,10 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
 #endif
 
-  // Declare a variable to calculate the average bias
+  // Declare a variable to calculate the result of evaluation
+  float minBias = 0.0;
   float avgBias = 0.0;
+  float maxBias = 0.0;
 
   // Loop on the evaluation samples
   long iSample = 0;
@@ -1782,8 +1785,25 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
       "%f\n",
       bias);
 
-    // Update the average bias
+    // Update the result of evaluation
     avgBias += bias;
+    if (iSample == 0) {
+
+      minBias = bias;
+      maxBias = bias;
+
+    } else {
+
+      minBias =
+        MIN(
+          bias,
+          minBias);
+      maxBias =
+        MAX(
+          bias,
+          maxBias);
+
+    }
 
     // Free memory
     VecFree(&inputs);
@@ -1798,14 +1818,23 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
   } while (flagStep);
 
-  // Display the average bias
+  // Memorize the result of evaluation
   avgBias /=
     (float)GDSGetSizeCat(
       NMTrainerDataset(that),
       NMTrainerGetICatEval(that));
-  printf(
-    "Average bias: %f\n",
+  VecSet(
+    &(that->resEval),
+    0,
+    minBias);
+  VecSet(
+    &(that->resEval),
+    1,
     avgBias);
+  VecSet(
+    &(that->resEval),
+    2,
+    maxBias);
 
 }
 

@@ -1312,7 +1312,7 @@ void UnitTestNeuraMorphTrainerRun() {
 
   GDataSetVecFloat dataset =
     GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
-  GSetShuffle(&(dataset._dataSet._samples));
+  GDSShuffle(&dataset);
   VecShort2D split = VecShortCreateStatic2D();
   VecSet(
     &split,
@@ -1351,6 +1351,11 @@ void UnitTestNeuraMorphTrainerRun() {
     1);
   NMTrainerRun(&trainer);
   NMTrainerEval(&trainer);
+  printf("Bias (min/avg/max): ");
+  VecPrint(
+    NMTrainerResEval(&trainer),
+    stdout);
+  printf("\n");
 
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);

@@ -294,6 +294,9 @@ typedef struct NeuraMorphTrainer {
   VecFloat* lowInputs;
   VecFloat* highInputs;
 
+  // Variable to store the result of the last evaluation
+  VecFloat3D resEval;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
@@ -442,6 +445,12 @@ NeuraMorph* NMTrainerNeuraMorph(const NeuraMorphTrainer* that);
 static inline
 #endif
 GDataSetVecFloat* NMTrainerDataset(const NeuraMorphTrainer* that);
+
+// Get the result of the last evaluation of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+const VecFloat3D* NMTrainerResEval(const NeuraMorphTrainer* that);
 
 // ================ static inliner ====================
 
