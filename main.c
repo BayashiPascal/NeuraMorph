@@ -1334,6 +1334,7 @@ void UnitTestNeuraMorphTrainerGetSet() {
 
 void UnitTestNeuraMorphTrainerRun() {
 
+  srand(2);
   GDataSetVecFloat dataset =
     GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
   GDSShuffle(&dataset);
