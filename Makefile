@@ -2,9 +2,9 @@
 # 0: development (max safety, no optimisation)
 # 1: release (min safety, optimisation)
 # 2: fast and furious (no safety, optimisation)
-BUILD_MODE?=0
+BUILD_MODE?=1
 
-all: pbmake_wget main
+all: pbmake_wget main validation
 	
 # Automatic installation of the repository PBMake in the parent folder
 pbmake_wget:
@@ -27,4 +27,16 @@ $($(repo)_EXENAME).o: \
 		$($(repo)_INC_H_EXE) \
 		$($(repo)_EXE_DEP)
 	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/$($(repo)_EXENAME).c
+
+validation: \
+		validation.o \
+		$($(repo)_EXE_DEP) \
+		$($(repo)_DEP)
+	$(COMPILER) `echo "$($(repo)_EXE_DEP) validation.o" | tr ' ' '\n' | sort -u` $(LINK_ARG) $($(repo)_LINK_ARG) -o validation 
+
+validation.o: \
+		$($(repo)_DIR)/validation.c \
+		$($(repo)_INC_H_EXE) \
+		$($(repo)_EXE_DEP)
+	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/validation.c
 	

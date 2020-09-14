@@ -1096,6 +1096,7 @@ void UnitTestNeuraMorphTrainerCreateFree() {
     trainer.neuraMorph != nm ||
     trainer.depth != 2 ||
     trainer.order != 1 ||
+    trainer.nbCorrect != 0 ||
     trainer.nbMaxUnitDepth != 2 ||
     trainer.streamInfo != NULL ||
     trainer.maxLvlDiv != 2 ||
@@ -1236,6 +1237,17 @@ void UnitTestNeuraMorphTrainerGetSet() {
     sprintf(
       NeuraMorphErr->_msg,
       "NeuraMorphTrainerSetDepth failed");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  trainer.nbCorrect = 1;
+  if (NMTrainerGetNbCorrect(&trainer) != 1) {
+
+    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "NeuraMorphTrainerGetNbCorrect failed");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1410,7 +1422,14 @@ void UnitTestNeuraMorphTrainerRun() {
   VecPrint(
     NMTrainerResEval(&trainer),
     stdout);
-  printf("\n");
+  float percCorrect =
+    (float)NMTrainerGetNbCorrect(&trainer) /
+    (float)VecGet(
+      &split,
+      1);
+  printf(
+    " %f\n",
+    percCorrect);
   NMTrainerSetICatEval(
     &trainer,
     0);
@@ -1422,7 +1441,14 @@ void UnitTestNeuraMorphTrainerRun() {
   VecPrint(
     NMTrainerResEval(&trainer),
     stdout);
-  printf("\n");
+  percCorrect =
+    (float)NMTrainerGetNbCorrect(&trainer) /
+    (float)VecGet(
+      &split,
+      0);
+  printf(
+    " %f\n",
+    percCorrect);
 
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);

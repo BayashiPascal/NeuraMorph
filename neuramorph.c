@@ -903,6 +903,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.highInputs = NULL;
   that.streamInfo = NULL;
   that.resEval = VecFloatCreateStatic3D();
+  that.nbCorrect = 0;
 
   // Return the NeuraMorphTrainer
   return that;
@@ -1015,14 +1016,17 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
             iInputs,
             iMinInput);
         if (isValidInputConfig == true) {
-
+if(GSetTail(&trainedUnits)){
+VecPrint(iInputs,stdout);printf(" %f    \r", NMUnitGetValue(GSetTail(&trainedUnits)));
+}
           // Train the unit
           NMTrainerTrainUnit(
             that,
             &trainedUnits,
             iInputs,
             iOutputs,
-            isLastDepth);
+            (iDepth != 1));
+            //isLastDepth);
 
           }
 
@@ -1167,11 +1171,11 @@ bool NMTrainerIsValidInputConfig(
 
     a = b;
 
-    if (a >= iMinInput) {
+    /*if (a >= iMinInput) {
 
       noveltyCond = true;
 
-    }
+    }*/
 
   }
 
@@ -1394,6 +1398,24 @@ void NMTrainerTrainUnit(
             VecGet(
               unit->highFilters,
               iInput);
+
+          if (high - low < PBMATH_EPSILON) {
+
+            low -= 1.0;
+            high += 1.0;
+            VecSet(
+              unit->lowFilters,
+              iInput,
+              low);
+            VecSet(
+              unit->highFilters,
+              iInput,
+              high);
+
+          }
+
+
+
           short jInput =
             VecGet(
               iInputs,
@@ -1441,7 +1463,12 @@ void NMTrainerTrainUnit(
 
       // If we have enough samples to train the unit on the current
       // combination of divisions
-      if (GSetNbElem(&trainingInputs) >= NMUnitGetNbInputs(unit)) {
+      //if (GSetNbElem(&trainingInputs) >= NMUnitGetNbInputs(unit)) {
+      long nbMinSample =
+        powi(
+          NMTrainerGetOrder(that) + 2,
+          NMUnitGetNbInputs(unit));
+      if (GSetNbElem(&trainingInputs) >= nbMinSample) {
 
         // Calculate the transfer function
         float bias = 0.0;
@@ -1757,6 +1784,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
   float minBias = 0.0;
   float avgBias = 0.0;
   float maxBias = 0.0;
+  that->nbCorrect = 0;
 
   // Loop on the evaluation samples
   long iSample = 0;
@@ -1804,9 +1832,14 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
           maxBias);
 
     }
+    if (fabs(bias) < PBMATH_EPSILON) {
+
+      ++(that->nbCorrect);
+
+    }
 
     // Display the result
-    if (NMTrainerStreamInfo(that) != NULL) {
+    /* if (NMTrainerStreamInfo(that) != NULL) {
 
       fprintf(
         NMTrainerStreamInfo(that),
@@ -1835,7 +1868,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
         "%f\n",
         bias);
 
-    }
+    } */
 
     // Free memory
     VecFree(&inputs);
