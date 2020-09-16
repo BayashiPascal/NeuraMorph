@@ -1,5 +1,6 @@
 *.o
 main
+validation
 Doc/*.aux
 Doc/*.log
 Doc/*.gz
