@@ -275,14 +275,12 @@ void NMUnitPrint(
     stream);
   fprintf(
     stream,
-    " -> ");
-  VecPrint(
-    NMUnitIOutputs(that),
-    stream);
-  fprintf(
-    stream,
-    " (%04.6f)",
+    " val(%04.6f)",
     NMUnitGetValue(that));
+fprintf(
+  stream,
+  " nbSample(%ld)",
+  that->nbTrainingSample);
 
 }
 
@@ -1171,11 +1169,11 @@ bool NMTrainerIsValidInputConfig(
 
     a = b;
 
-    /*if (a >= iMinInput) {
+    if (a >= iMinInput) {
 
       noveltyCond = true;
 
-    }*/
+    }
 
   }
 
@@ -1294,6 +1292,8 @@ void NMTrainerTrainUnit(
         NeuraMorphUnitCreate(
           iInputs,
           iOutputs);
+
+unit->nbTrainingSample = 0;
 
       // Loop on the inputs of the unit
       for (
@@ -1463,7 +1463,6 @@ void NMTrainerTrainUnit(
 
       // If we have enough samples to train the unit on the current
       // combination of divisions
-      //if (GSetNbElem(&trainingInputs) >= NMUnitGetNbInputs(unit)) {
       long nbMinSample =
         powi(
           NMTrainerGetOrder(that) + 2,
@@ -1491,6 +1490,8 @@ void NMTrainerTrainUnit(
           NMUnitSetValue(
             unit,
             -1.0 * bias / corrRange);
+
+unit->nbTrainingSample += GSetNbElem(&trainingInputs);
 
           // Add the unit to the set of trained units
           GSetAddSort(

@@ -48,6 +48,8 @@ typedef struct NeuraMorphUnit {
   // Variable to memorize the value of the unit during training
   float value;
 
+long nbTrainingSample;
+
 } NeuraMorphUnit;
 
 // ================ Functions declaration ====================

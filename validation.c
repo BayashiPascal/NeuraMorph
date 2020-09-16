@@ -153,10 +153,18 @@ void Train(const TrainArg* arg) {
     (float)GDSGetSizeCat(
       NMTrainerDataset(&trainer),
       NMTrainerGetICatEval(&trainer));
+  if (arg->oneHot) {
+
+    fprintf(
+      arg->streamInfo,
+      " Accuracy %f%%",
+      percCorrect * 100.0);
+
+  }
+
   fprintf(
     arg->streamInfo,
-    " Accuracy %f%%\n",
-    percCorrect * 100.0);
+    "\n");
   NMTrainerSetICatEval(
     &trainer,
     0);
@@ -175,10 +183,18 @@ void Train(const TrainArg* arg) {
     (float)GDSGetSizeCat(
       NMTrainerDataset(&trainer),
       NMTrainerGetICatTraining(&trainer));
+  if (arg->oneHot) {
+
+    fprintf(
+      arg->streamInfo,
+      " Accuracy %f%%",
+      percCorrect * 100.0);
+
+  }
+
   fprintf(
     arg->streamInfo,
-    " Accuracy %f%%\n",
-    percCorrect * 100.0);
+    "\n");
 
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);
@@ -194,11 +210,11 @@ void Iris() {
     .nbSampleEval = 25,
     .oneHot = true,
     .weakUnitThreshold = 0.99,
-    .depth = 3,
+    .depth = 1,
     .maxLvlDiv = 0,
-    .nbMaxInputsUnit = 4,
-    .nbMaxUnitDepth = 1,
-    .order = 1,
+    .nbMaxInputsUnit = 3,
+    .nbMaxUnitDepth = 100,
+    .order = 2,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -213,11 +229,11 @@ void WisconsinDiagnosticBreastCancerDataset() {
     .nbSampleEval = 50,
     .oneHot = true,
     .weakUnitThreshold = 0.99,
-    .depth = 4,
+    .depth = 1,
     .maxLvlDiv = 0,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 1,
-    .order = 1,
+    .nbMaxInputsUnit = 3,
+    .nbMaxUnitDepth = 100,
+    .order = 2,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -234,11 +250,11 @@ void Arrythmia() {
     .nbSampleEval = 25,
     .oneHot = true,
     .weakUnitThreshold = 0.95,
-    .depth = 6,
-    .maxLvlDiv = 3,
+    .depth = 1,
+    .maxLvlDiv = 0,
     .nbMaxInputsUnit = 2,
     .nbMaxUnitDepth = 100,
-    .order = 3,
+    .order = 2,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -247,11 +263,31 @@ void Arrythmia() {
   // 81.11% when used with 80/20 data split and 92.07% using 90/10 data split
 }
 
+void Abalone() {
+
+  TrainArg arg = {
+    .pathDataset = "./Datasets/abalone.json",
+    .seed = 0,
+    .nbSampleEval = 100,
+    .oneHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 1,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 3,
+    .nbMaxUnitDepth = 100,
+    .order = 2,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
 int main() {
 
-  //Iris();
-  //WisconsinDiagnosticBreastCancerDataset();
+  Iris();
+  WisconsinDiagnosticBreastCancerDataset();
   Arrythmia();
+  Abalone();
 
   // Return success code
   return 0;
