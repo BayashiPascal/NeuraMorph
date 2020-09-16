@@ -900,7 +900,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.lowInputs = NULL;
   that.highInputs = NULL;
   that.streamInfo = NULL;
-  that.resEval = VecFloatCreateStatic3D();
+  that.resEval = VecFloatCreate(4);
   that.nbCorrect = 0;
 
   // Return the NeuraMorphTrainer
@@ -927,6 +927,7 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
 
   VecFree(&(that->lowInputs));
   VecFree(&(that->highInputs));
+  VecFree(&(that->resEval));
 
 }
 
@@ -1781,11 +1782,20 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
 #endif
 
-  // Declare a variable to calculate the result of evaluation
+  // Declare variables to calculate the result of evaluation
   float minBias = 0.0;
   float avgBias = 0.0;
   float maxBias = 0.0;
+  float sigmaBias = 0.0;
   that->nbCorrect = 0;
+  long nbSample =
+    GDSGetSizeCat(
+      NMTrainerDataset(that),
+      NMTrainerGetICatEval(that));
+  float* biases =
+    PBErrMalloc(
+      NeuraMorphErr,
+      sizeof(float) * nbSample);
 
   // Loop on the evaluation samples
   long iSample = 0;
@@ -1816,6 +1826,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
         outputs,
         NMOutputs(NMTrainerNeuraMorph(that)));
     avgBias += bias;
+    biases[iSample] = bias;
     if (iSample == 0) {
 
       minBias = bias;
@@ -1884,22 +1895,40 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
   } while (flagStep);
 
+  // Calculate the mean and standard deviation
+  avgBias /= (float)nbSample;
+  for (
+    iSample = nbSample;
+    iSample--;) {
+
+    sigmaBias +=
+     powi(
+       biases[iSample] - avgBias,
+       2);
+
+  }
+  sigmaBias /= (float)(nbSample - 1);
+  sigmaBias = sqrt(sigmaBias);
+
   // Memorize the result of evaluation
-  avgBias /=
-    (float)GDSGetSizeCat(
-      NMTrainerDataset(that),
-      NMTrainerGetICatEval(that));
   VecSet(
-    &(that->resEval),
+    that->resEval,
     0,
     minBias);
   VecSet(
-    &(that->resEval),
+    that->resEval,
     1,
     avgBias);
   VecSet(
-    &(that->resEval),
+    that->resEval,
     2,
+    sigmaBias);
+  VecSet(
+    that->resEval,
+    3,
     maxBias);
+
+  // Free memory
+  free(biases);
 
 }

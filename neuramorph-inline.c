@@ -998,7 +998,7 @@ void NMTrainerSetNbMaxUnitDepth(
 #if BUILDMODE != 0
 static inline
 #endif
-const VecFloat3D* NMTrainerResEval(const NeuraMorphTrainer* that) {
+const VecFloat* NMTrainerResEval(const NeuraMorphTrainer* that) {
 
 #if BUILDMODE == 0
 
@@ -1014,7 +1014,7 @@ const VecFloat3D* NMTrainerResEval(const NeuraMorphTrainer* that) {
 
 #endif
 
-  return &(that->resEval);
+  return that->resEval;
 
 }
 

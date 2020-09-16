@@ -314,8 +314,9 @@ typedef struct NeuraMorphTrainer {
   VecFloat* highInputs;
 
   // Variable to store the result of the last evaluation
-  VecFloat3D resEval;
-  long nbCorrect;
+  // min/avg/sigma/max
+  VecFloat* resEval;
+long nbCorrect;
 
   // Stream to output info during training and evaluation
   FILE* streamInfo;
@@ -487,7 +488,7 @@ GDataSetVecFloat* NMTrainerDataset(const NeuraMorphTrainer* that);
 #if BUILDMODE != 0
 static inline
 #endif
-const VecFloat3D* NMTrainerResEval(const NeuraMorphTrainer* that);
+const VecFloat* NMTrainerResEval(const NeuraMorphTrainer* that);
 
 // Get the number of correct output in the last evaluation of the
 // NeuraMorphTrainer 'that'

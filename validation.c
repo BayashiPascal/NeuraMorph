@@ -144,7 +144,7 @@ void Train(const TrainArg* arg) {
   NMTrainerEval(&trainer);
   fprintf(
     arg->streamInfo,
-    "Bias (min/avg/max): ");
+    "Bias (min/avg/sigma/max): ");
   VecPrint(
     NMTrainerResEval(&trainer),
     arg->streamInfo);
@@ -174,7 +174,7 @@ void Train(const TrainArg* arg) {
   NMTrainerEval(&trainer);
   fprintf(
     arg->streamInfo,
-    "Bias training (min/avg/max): ");
+    "Bias training (min/avg/sigma/max): ");
   VecPrint(
     NMTrainerResEval(&trainer),
     arg->streamInfo);
