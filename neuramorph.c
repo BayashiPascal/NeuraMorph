@@ -1016,7 +1016,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
             iMinInput);
         if (isValidInputConfig == true) {
 if(GSetTail(&trainedUnits)){
-VecPrint(iInputs,stdout);printf(" %f    \r", NMUnitGetValue(GSetTail(&trainedUnits)));
+VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&trainedUnits)));
 }
           // Train the unit
           NMTrainerTrainUnit(
@@ -1415,8 +1415,6 @@ unit->nbTrainingSample = 0;
 
           }
 
-
-
           short jInput =
             VecGet(
               iInputs,
@@ -1426,8 +1424,8 @@ unit->nbTrainingSample = 0;
               that->preCompInp[iSample],
               jInput);
           if (
-            val < low ||
-            val > high) {
+            val < low - PBMATH_EPSILON ||
+            val > high + PBMATH_EPSILON) {
 
             flag = false;
 
@@ -1467,7 +1465,11 @@ unit->nbTrainingSample = 0;
       long nbMinSample =
         powi(
           NMTrainerGetOrder(that) + 2,
-          NMUnitGetNbInputs(unit));
+          NMUnitGetNbInputs(unit) + 1);
+      nbMinSample =
+        MIN(
+          nbMinSample,
+          nbSample);
       if (GSetNbElem(&trainingInputs) >= nbMinSample) {
 
         // Calculate the transfer function

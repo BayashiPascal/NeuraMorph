@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include "neuramorph.h"
+#include "pbdataanalysis.h"
 
 typedef struct TrainArg {
 
@@ -75,8 +76,19 @@ void Train(const TrainArg* arg) {
     "=============================================================\n");
 
   srand(arg->seed);
-  GDataSetVecFloat dataset =
+  GDataSetVecFloat datasetOrig =
     GDataSetVecFloatCreateStaticFromFile(arg->pathDataset);
+  PrincipalComponentAnalysis pca =
+    PrincipalComponentAnalysisCreateStatic();
+  PCASearch(
+      &pca,
+      &datasetOrig);
+  GDataSetVecFloat dataset =
+    PCAConvert(
+      &pca,
+      &datasetOrig,
+      PCAGetNbComponents(&pca));
+  GDataSetVecFloatFreeStatic(&datasetOrig);
   GDSShuffle(&dataset);
   fprintf(
     arg->streamInfo,
@@ -199,6 +211,7 @@ void Train(const TrainArg* arg) {
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);
   GDataSetVecFloatFreeStatic(&dataset);
+  PrincipalComponentAnalysisFreeStatic(&pca);
 
 }
 
@@ -210,7 +223,7 @@ void Iris() {
     .nbSampleEval = 25,
     .oneHot = true,
     .weakUnitThreshold = 0.99,
-    .depth = 1,
+    .depth = 2,
     .maxLvlDiv = 0,
     .nbMaxInputsUnit = 3,
     .nbMaxUnitDepth = 100,
@@ -229,7 +242,7 @@ void WisconsinDiagnosticBreastCancerDataset() {
     .nbSampleEval = 50,
     .oneHot = true,
     .weakUnitThreshold = 0.99,
-    .depth = 1,
+    .depth = 2,
     .maxLvlDiv = 0,
     .nbMaxInputsUnit = 3,
     .nbMaxUnitDepth = 100,
@@ -250,10 +263,10 @@ void Arrythmia() {
     .nbSampleEval = 25,
     .oneHot = true,
     .weakUnitThreshold = 0.95,
-    .depth = 1,
+    .depth = 2,
     .maxLvlDiv = 0,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 100,
+    .nbMaxUnitDepth = 20,
     .order = 2,
     .streamInfo = stdout
   };
@@ -271,7 +284,7 @@ void Abalone() {
     .nbSampleEval = 100,
     .oneHot = false,
     .weakUnitThreshold = 0.95,
-    .depth = 1,
+    .depth = 2,
     .maxLvlDiv = 0,
     .nbMaxInputsUnit = 3,
     .nbMaxUnitDepth = 100,
@@ -285,9 +298,9 @@ void Abalone() {
 int main() {
 
   Iris();
+  Abalone();
   WisconsinDiagnosticBreastCancerDataset();
   Arrythmia();
-  Abalone();
 
   // Return success code
   return 0;
