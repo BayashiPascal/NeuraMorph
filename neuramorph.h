@@ -16,6 +16,37 @@
 #include "gdataset.h"
 #include "bcurve.h"
 
+// ----- NeuraMorphUnitBody
+
+// ================= Data structure ===================
+
+typedef struct NeuraMorphUnitBody {
+
+  // Lowest and highest values for filtering inputs
+  VecFloat* lowFilters;
+  VecFloat* highFilters;
+
+  // Transfer function
+  BBody* transfer;
+
+  // Variable to memorize the value of the body during training
+  float value;
+
+} NeuraMorphUnitBody;
+
+// ================ Functions declaration ====================
+
+// Create a new NeuraMorphUnitBody for 'nbInputs' inputs
+NeuraMorphUnitBody* NeuraMorphUnitBodyCreate(int nbInputs);
+
+// Free the memory used by the NeuraMorphUnitBody 'that'
+void NeuraMorphUnitFree(NeuraMorphUnitBody** that);
+
+// Check if the NeuraMorphUnitBody 'that' includes the 'inputs'
+bool NMUnitBodyCheckInputs(
+  const NeuraMorphUnitBody* that,
+            const VecFloat* inputs);
+
 // ----- NeuraMorphUnit
 
 // ================= Data structure ===================
@@ -28,10 +59,6 @@ typedef struct NeuraMorphUnit {
   // Output indices in parent NeuraMorph
   VecLong* iOutputs;
 
-  // Lowest and highest values for filtering inputs
-  VecFloat* lowFilters;
-  VecFloat* highFilters;
-
   // Lowest and highest values of outputs
   VecFloat* lowOutputs;
   VecFloat* highOutputs;
@@ -39,16 +66,14 @@ typedef struct NeuraMorphUnit {
   // Vector to memorize the output values
   VecFloat* outputs;
 
-  // Transfer function
-  BBody* transfer;
-
   // Working variable to avoid reallocation of memory at each Evaluate()
   VecFloat* unitInputs;
 
   // Variable to memorize the value of the unit during training
   float value;
 
-long nbTrainingSample;
+  // GSet of NeuraMorphUnitBody
+  GSet bodies;
 
 } NeuraMorphUnit;
 
@@ -62,6 +87,12 @@ NeuraMorphUnit* NeuraMorphUnitCreate(
 
 // Free the memory used by the NeuraMorphUnit 'that'
 void NeuraMorphUnitFree(NeuraMorphUnit** that);
+
+// Get the bodies of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+GSet* NMUnitBodies(NeuraMorphUnit* that);
 
 // Get the input indices of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0
@@ -86,6 +117,12 @@ const VecFloat* NMUnitOutputs(const NeuraMorphUnit* that);
 void NMUnitEvaluate(
   NeuraMorphUnit* that,
   const VecFloat* inputs);
+
+// Get the NeuraMorphUnitBody of the NeuraMorphUnit 'that' for the
+// 'inputs', i.e. the first one whose filters include 'inputs'
+NeuraMorphUnitBody* NMUnitBody(
+  const NeuraMorphUnit* that,
+        const VecFloat* inputs);
 
 // Get the number of input values of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0

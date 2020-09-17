@@ -7,6 +7,140 @@
 #include "neuramorph-inline.c"
 #endif
 
+// ----- NeuraMorphUnitBody
+
+// ================ Functions implementation ====================
+
+// Create a new NeuraMorphUnitBody for 'nbInputs' inputs
+NeuraMorphUnitBody* NeuraMorphUnitBodyCreate(long nbInputs) {
+
+#if BUILDMODE == 0
+
+  if (nbInputs <= 0) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'nbInputs' is invalid (%d>0)",
+      nbInputs);
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Allocate memory for the NeuraMorphUnitBody
+  NeuraMorphUnitBody* that =
+    PBErrMalloc(
+      NeuraMorphErr,
+      sizeof(NeuraMorphUnitBody));
+
+  that->lowFilters = VecFloatCreate(nbIn);
+  that->highFilters = VecFloatCreate(nbIn);
+  that->transfers = NULL;
+  that->value = 0.0;
+
+  // Return the new NeuraMorphUnitBody
+  return that;
+
+}
+
+// Free the memory used by the NeuraMorphUnitBody 'that'
+void NeuraMorphUnitFree(NeuraMorphUnitBody** that) {
+
+  // Check the input
+  if (that == NULL || *that == NULL) {
+
+    return;
+
+  }
+
+  // Free memory
+  BBodyFree(&((*that)->transfer));
+  VecFree(&((*that)->lowFilters));
+  VecFree(&((*that)->highFilters));
+  free(*that);
+  *that = NULL;
+
+}
+
+// Check if the NeuraMorphUnitBody 'that' includes the 'inputs'
+bool NMUnitBodyCheckInputs(
+  const NeuraMorphUnitBody* that,
+            const VecFloat* inputs) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (inputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'inputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (VecGetDim(inputs) != VecGetDim(that->lowFilters)) {
+
+    NeuraMorphErr->_type = PBErrTypeInvalidArg;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'inputs' has invalid dimension (%ld!=%ld)",
+      VecGetDim(inputs),
+      VecGetDim(that->lowFilters));
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Loop on input values
+  for (
+    long iInput = VecGetDim(inputs);
+    iInput--;) {
+
+    // Get the value and lower and higher bounds
+    float val =
+      VecGet(
+        inputs,
+        iInput);
+    float low =
+      VecGet(
+        that->lowFilters,
+        iInput);
+    float high =
+      VecGet(
+        that->highFilters,
+        iInput);
+
+    // If the input value is out of bound
+    if (
+      val < low - PBMATH_EPSILON ||
+      val > high + PBMATH_EPSILON) {
+
+      // The body doesn't include the inputs
+      return false;
+
+    }
+
+  }
+
+  // If we reach here, the body includes the inputs
+  return true;
+
+}
+
 // ----- NeuraMorphUnit
 
 // ================ Functions declaration ====================
@@ -74,7 +208,7 @@ NeuraMorphUnit* NeuraMorphUnitCreate(
     &dim,
     1,
     nbOut);
-  that->transfer = NULL;
+  that->bodies = GSetCreateStatic();
   that->unitInputs = VecFloatCreate(nbIn);
   that->value = 0.0;
 
@@ -96,8 +230,6 @@ void NeuraMorphUnitFree(NeuraMorphUnit** that) {
   // Free memory
   VecFree(&((*that)->iInputs));
   VecFree(&((*that)->iOutputs));
-  VecFree(&((*that)->lowFilters));
-  VecFree(&((*that)->highFilters));
   if ((*that)->lowOutputs != NULL) {
 
     VecFree(&((*that)->lowOutputs));
@@ -111,7 +243,13 @@ void NeuraMorphUnitFree(NeuraMorphUnit** that) {
   }
 
   VecFree(&((*that)->outputs));
-  BBodyFree(&((*that)->transfer));
+  while (GSetNbElem(NeuraMorphUnitBodies(*that)) > 0) {
+
+    NeuraMorphUnitBody* body = GSetPop(NeuraMorphUnitBodies(*that));
+    NeuraMorphUnitBodyFree(&(body->transfer));
+
+  }
+
   VecFree(&((*that)->unitInputs));
   free(*that);
   *that = NULL;
@@ -136,6 +274,16 @@ void NMUnitEvaluate(
 
   }
 
+  if (inputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'inputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
   if (VecGetDim(inputs) != VecGetDim(that->iInputs)) {
 
     NeuraMorphErr->_type = PBErrTypeInvalidArg;
@@ -153,6 +301,12 @@ void NMUnitEvaluate(
   // Reset the outputs
   VecFree(&(that->outputs));
 
+  // Get the NeuraMorphUnitBody for the inputs in argument
+  NeuraMorphUnitBody* body =
+    NMUnitBody(
+      that,
+      inputs);
+
   // Update the scaled inputs
   for (
     long iInput = 0;
@@ -166,11 +320,11 @@ void NMUnitEvaluate(
         iInput);
     float low =
       VecGet(
-        that->lowFilters,
+        body->lowFilters,
         iInput);
     float high =
       VecGet(
-        that->highFilters,
+        body->highFilters,
         iInput);
 
     // Set the value in the unit inputs
@@ -184,7 +338,7 @@ void NMUnitEvaluate(
   // Apply the transfer function
   that->outputs =
     BBodyGet(
-      that->transfer,
+      body->transfer,
       that->unitInputs);
 
   // If the low and high values for outputs don't exist yet
@@ -238,6 +392,72 @@ void NMUnitEvaluate(
     }
 
   }
+
+}
+
+// Get the NeuraMorphUnitBody of the NeuraMorphUnit 'that' for the
+// 'inputs', i.e. the first one whose filters include 'inputs'
+NeuraMorphUnitBody* NMUnitBody(
+  const NeuraMorphUnit* that,
+        const VecFloat* inputs) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (inputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'inputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare the variable to memorize the result body
+  NeuraMorphUnitBody* body = NULL;
+
+  // Loop on the bodies
+  bool flagStep = true;
+  GSetIterForward iter = GSetIterForwardCreateStatic(NMUnitBodies(that));
+  do {
+
+    // Get the body
+    body = GSetIterGet(&iter);
+
+    // If the body includes the inputs
+    bool flagInclude =
+      NMUnitBodyCheckInputs(
+        body,
+        inputs);
+    if (flagInclude == true) {
+
+      // Stop here
+      flagStep = false;
+
+    // Else, the body doesn't include the inputs
+    } else {
+
+      // Step to the next body
+      flagStep = GSetIterStep(&iter);
+
+    }
+
+  } while (flagStep);
+
+  // Return the result body
+  return body;
 
 }
 
@@ -828,14 +1048,14 @@ bool NMTrainerIsValidInputConfig(
 
 // Train a new NeuraMorphUnit with the interface defined by 'iInputs'
 // and 'iOutputs', and add it to the set, sorted on its value
-// If 'lastUnit' is true, the NeuraMorphUnit will be the last one in
-// its NeuraMorph
+// If 'flagSubdiv' is true, search down through subdivisions of the
+// inputs space
 void NMTrainerTrainUnit(
   NeuraMorphTrainer* that,
                GSet* trainedUnits,
       const VecLong* iInputs,
       const VecLong* iOutputs,
-                bool lastUnit);
+                bool flagSubDiv);
 
 // Precompute the values of the NeuraMorph for each sample of the
 // GDataset for the NeuraMorphTrainer 'that'
@@ -1184,9 +1404,91 @@ bool NMTrainerIsValidInputConfig(
 
 // Train a new NeuraMorphUnit with the interface defined by 'iInputs'
 // and 'iOutputs', and add it to the set, sorted on its value
+// If 'flagSubdiv' is true, search down through subdivisions of the
+// inputs space
+void NMTrainerTrainUnit(
+  NeuraMorphTrainer* that,
+               GSet* trainedUnits,
+      const VecLong* iInputs,
+      const VecLong* iOutputs,
+                bool flagSubDiv) {
+
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (trainedUnits == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'trainedUnits' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (iInputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'iInputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (iOutputs == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'iOutputs' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Get the number of inputs
+  long nbInputs = VecGetDim(iInputs);
+
+  // Create the initial body including all the samples
+  NeuraMorphUnitBody* body = NeuraMorphUnitBodyCreate(nbInputs);
+
+  // Initialise the low and high filters of the body
+  // TODO
+  VecCopy(
+    body->lowFilters,
+    that->lowInputs);
+  VecCopy(
+    body->highFilters,
+    that->highInputs);
+
+  // Get the number of samples
+  long nbSample =
+    GDSGetSizeCat(
+      NMTrainerDataset(that),
+      NMTrainerGetICatTraining(that));
+
+  // Create a GSet containing all the pair input/output
+  // TODO
+
+}
+
+// Train a new NeuraMorphUnit with the interface defined by 'iInputs'
+// and 'iOutputs', and add it to the set, sorted on its value
 // If 'lastUnit' is true, the NeuraMorphUnit will be the last one in
 // its NeuraMorph
-void NMTrainerTrainUnit(
+void NMTrainerTrainUnitOld(
   NeuraMorphTrainer* that,
                GSet* trainedUnits,
       const VecLong* iInputs,
@@ -1293,8 +1595,6 @@ void NMTrainerTrainUnit(
         NeuraMorphUnitCreate(
           iInputs,
           iOutputs);
-
-unit->nbTrainingSample = 0;
 
       // Loop on the inputs of the unit
       for (

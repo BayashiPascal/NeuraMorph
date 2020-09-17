@@ -28,6 +28,30 @@ const VecLong* NMUnitIInputs(const NeuraMorphUnit* that) {
 
 }
 
+// Get the bodies of the NeuraMorphUnit 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+GSet* NMUnitBodies(NeuraMorphUnit* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->bodies;
+
+}
+
 // Get the output indices of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0
 static inline
