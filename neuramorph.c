@@ -46,7 +46,7 @@ NeuraMorphUnitBody* NeuraMorphUnitBodyCreate(long nbInputs) {
 }
 
 // Free the memory used by the NeuraMorphUnitBody 'that'
-void NeuraMorphUnitFree(NeuraMorphUnitBody** that) {
+void NeuraMorphUnitBodyFree(NeuraMorphUnitBody** that) {
 
   // Check the input
   if (that == NULL || *that == NULL) {
@@ -328,10 +328,17 @@ void NMUnitEvaluate(
         iInput);
 
     // Set the value in the unit inputs
+    float valInput = 0.5;
+    if (high - low > PBMATH_EPSILON) {
+
+      valInput = (val - low) / (high - low);
+
+    }
+
     VecSet(
       that->unitInputs,
       iInput,
-      (val - low) / (high - low));
+      valInput);
 
   }
 
@@ -1064,6 +1071,25 @@ void NMTrainerPrecomputeValues(NeuraMorphTrainer* that);
 // Free the precomputed values of the NeuraMorphTrainer 'that'
 void NMTrainerFreePrecomputed(NeuraMorphTrainer* that);
 
+// Train recursively the bodies of the 'unit' on the 'samples'
+// Return true if the training succeeded
+bool NMTrainerTrainBody(
+         NeuraMorphTrainer* that,
+            NeuraMorphUnit* unit,
+        NeuraMorphUnitBody* body,
+  const NeuraMorphUnitBody* parentBody,
+                        int curLvl,
+                        int maxLvl,
+                      GSet* samples);
+
+// Calculate the transfer function for the 'body' using the
+// precomputer 'pods'
+void NMTrainerSearchBodyTransfer(
+   NeuraMorphTrainer* that,
+      NeuraMorphUnit* unit,
+  NeuraMorphUnitBody* body,
+                GSet* pods);
+
 // ================ Functions implemetation ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
@@ -1116,7 +1142,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.iCatTraining = 0;
   that.iCatEval = 1;
   that.weakUnitThreshold = 0.9;
-  that.preCompInp = NULL;
+  that.preComp = GSetCreateStatic();
   that.lowInputs = NULL;
   that.highInputs = NULL;
   that.streamInfo = NULL;
@@ -1148,6 +1174,14 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
   VecFree(&(that->lowInputs));
   VecFree(&(that->highInputs));
   VecFree(&(that->resEval));
+  while (GSetNbElem(NMTrainerPrecomp(that)) > 0) {
+
+    NMPodInputOutput* pod = GSetPop(NMTrainerPrecomp(that));
+    VecFree(&(pod->input));
+    VecFree(&(pod->output));
+    free(pod);
+
+  }
 
 }
 
@@ -1465,13 +1499,32 @@ void NMTrainerTrainUnit(
   NeuraMorphUnitBody* body = NeuraMorphUnitBodyCreate(nbInputs);
 
   // Initialise the low and high filters of the body
-  // TODO
-  VecCopy(
-    body->lowFilters,
-    that->lowInputs);
-  VecCopy(
-    body->highFilters,
-    that->highInputs);
+  for (
+    long iInput = nbInputs;
+    iInput++;) {
+
+    long jInput =
+      VecGet(
+        iInputs,
+        iInput);
+    float low =
+      VecGet(
+        that->lowInputs,
+        jInput);
+    float high =
+      VecGet(
+        that->highInputs,
+        jInput);
+    VecSet(
+      body->lowFilters,
+      jInput,
+      low);
+    VecSet(
+      body->highFilters,
+      jInput,
+      high);
+
+  }
 
   // Get the number of samples
   long nbSample =
@@ -1479,21 +1532,59 @@ void NMTrainerTrainUnit(
       NMTrainerDataset(that),
       NMTrainerGetICatTraining(that));
 
-  // Create a GSet containing all the pair input/output
-  // TODO
+  // Get the max level of subdivision
+  int nbMaxLvlSubDiv =
+    flagSubDiv ? NMTrainerGetMaxLvlDiv(that) : 0;
+
+  NeuraMorph* unit =
+    NeuraMorphUnitCreate(
+      iInputs,
+      iOutputs);
+
+  // Start the training of the bodies of the unit
+  bool flagSuccess =
+    NMTrainerTrainBody(
+      that,
+      unit,
+      body,
+      NULL,
+      0,
+      nbMaxLvlSubDiv,
+      NMTrainerPrecomp(that));
+
+  // If the training was succesfull
+  if (flagSuccess == true) {
+
+    // Evalutate the resulting unit
+    // TODO
+    float val =
+      NMUnitGetValueSamples(
+        unit,
+        NMTrainerPrecomp(that));
+    NMUnitSetValue(
+      unit,
+      val);
+
+    // Add the new unit to the trained units
+    GSetAddSort(
+      trainedUnits,
+      unit,
+      NMUnitGetValue(unit));
+
+  }
 
 }
 
-// Train a new NeuraMorphUnit with the interface defined by 'iInputs'
-// and 'iOutputs', and add it to the set, sorted on its value
-// If 'lastUnit' is true, the NeuraMorphUnit will be the last one in
-// its NeuraMorph
-void NMTrainerTrainUnitOld(
-  NeuraMorphTrainer* that,
-               GSet* trainedUnits,
-      const VecLong* iInputs,
-      const VecLong* iOutputs,
-                bool lastUnit) {
+// Train recursively the bodies of the 'unit' on the 'samples'
+// Return true if the training succeeded
+bool NMTrainerTrainBody(
+         NeuraMorphTrainer* that,
+            NeuraMorphUnit* unit,
+        NeuraMorphUnitBody* body,
+  const NeuraMorphUnitBody* parentBody,
+                        int curLvl,
+                        int maxLvl,
+                      GSet* samples) {
 
 #if BUILDMODE == 0
 
@@ -1507,32 +1598,32 @@ void NMTrainerTrainUnitOld(
 
   }
 
-  if (trainedUnits == NULL) {
+  if (unit == NULL) {
 
     NeuraMorphErr->_type = PBErrTypeNullPointer;
     sprintf(
       NeuraMorphErr->_msg,
-      "'trainedUnits' is null");
+      "'unit' is null");
     PBErrCatch(NeuraMorphErr);
 
   }
 
-  if (iInputs == NULL) {
+  if (body == NULL) {
 
     NeuraMorphErr->_type = PBErrTypeNullPointer;
     sprintf(
       NeuraMorphErr->_msg,
-      "'iInputs' is null");
+      "'body' is null");
     PBErrCatch(NeuraMorphErr);
 
   }
 
-  if (iOutputs == NULL) {
+  if (samples == NULL) {
 
     NeuraMorphErr->_type = PBErrTypeNullPointer;
     sprintf(
       NeuraMorphErr->_msg,
-      "'iOutputs' is null");
+      "'samples' is null");
     PBErrCatch(NeuraMorphErr);
 
   }
@@ -1540,311 +1631,415 @@ void NMTrainerTrainUnitOld(
 #endif
 
   // Get the number of inputs
-  long nbInputs = VecGetDim(iInputs);
+  long nbInputs = NMUnitGetNbInputs(unit);
 
-  // Loop on the division levels
-  // (None for the last unit)
-  VecShort* curDivLvl = VecShortCreate(nbInputs);
-  VecShort* divLvlBound = VecShortCreate(nbInputs);
-  if (lastUnit == true) {
+  // Declare a variable to memorize the success of training
+  bool flagSuccess = true;
 
-    VecSetAll(
-      divLvlBound,
-      0);
+  // Create a GSet to filter the samples with the filters of the body
+  GSet filteredSamples = GSetCreate();
 
-  } else {
-
-    VecSetAll(
-      divLvlBound,
-      NMTrainerGetMaxLvlDiv(that));
-
-  }
-
-  bool flagStepDivLvl = true;
+  // Loop on the samples
+  bool flagStep = true;
+  GSetIterForward iter = GSetIterForwardCreateStatic(samples);
   do {
 
-    // Get the bounds for the number of division for each input
-    // at current levels
-    VecShort* divBound = VecShortCreate(nbInputs);
+    // Get the pod
+    NMPodInputOutput* pod = GSetIterGet(&iter);
+
+    // Get the inputs of the pod
+    VecFloat* inputs = pod->inputs;
+
+    // Declare a flag to filter the sample
+    bool flagFilter = true;
+
+    // Loop on the inputs of the body
     for (
       long iInput = nbInputs;
       iInput--;) {
 
-      short lvl =
+      // Get the index of the input
+      long jInput =
         VecGet(
-          curDivLvl,
+          iInputs,
           iInput);
-      short bound =
-        powi(
-          2,
-          lvl);
-      VecSet(
-        divBound,
-        iInput,
-        bound);
+
+      // Get the value and filters for this input
+      float low =
+        VecGet(
+          body->lowFilters,
+          iInput);
+      float high =
+        VecGet(
+          body->highFilters,
+          iInput);
+      float val =
+        VecGet(
+          inputs,
+          jInput);
+
+      // Check the filter
+      if (
+        val < low - PBMATH_EPSILON ||
+        val > high + PBMATH_EPSILON) {
+
+        flagFilter = false;
+
+      }
 
     }
 
-    // Loop on the combination of divisions
-    VecShort* curDiv = VecShortCreate(nbInputs);
-    bool flagStepDiv = true;
-    do {
+    // If the input matches the filter
+    if (flagFilter) {
 
-      // Create the unit
-      NeuraMorphUnit* unit =
-        NeuraMorphUnitCreate(
-          iInputs,
-          iOutputs);
+      //  Add the pod to the filtered samples
+      GSetAppend(
+        &filteredSamples,
+        pod);
 
-      // Loop on the inputs of the unit
-      for (
-        long iInput = nbInputs;
-        iInput--;) {
+    }
 
-        // Get the indice of this input in the NeuraMorph
-        short jInput =
-          VecGet(
-            NMUnitIInputs(unit),
-            iInput);
+    // Step to the next sample
+    flagStep = GSetIterStep(&iter);
 
-        // Declare variables to memorize the lowest and highest
-        // values for this input
-        float low = 0.0;
-        float high = 0.0;
+  } while (flagStep);
 
-        // If this input is an input in the NeuraMorph
-        if (jInput < NMGetNbInput(NMTrainerNeuraMorph(that))) {
+  // If there is enough samples to train the body
+  long nbMinSample =
+    powi(
+      NMTrainerGetOrder(that) + 2,
+      NMUnitGetNbInputs(unit) + 1);
+  if (GSetNbElem(&filteredSamples) >= nbMinSample) {
 
-          low =
-            VecGet(
-              that->lowInputs,
-              jInput);
-          high =
-            VecGet(
-              that->highInputs,
-              jInput);
+    // Calculate the transfer function for the body
+    NMTrainerSearchBodyTransfer(
+      that,
+      unit,
+      body,
+      filteredSamples);
 
-        // Else, this input is an hidden value in the NeuraMorph
-        } else {
+    // If we could calculate the transfer function
+    if (body->transfer != NULL) {
 
-          low =
-            VecGet(
-              NMLowHiddens(NMTrainerNeuraMorph(that)),
-              jInput - NMGetNbInput(NMTrainerNeuraMorph(that)));
-          high =
-            VecGet(
-              NMHighHiddens(NMTrainerNeuraMorph(that)),
-              jInput - NMGetNbInput(NMTrainerNeuraMorph(that)));
+      // If this body is better than its parent
+      if (
+        parentBody == NULL ||
+        body->value > parentBody->value) {
 
-        }
+        // Add the body to the unit
+        GSetPush(
+          NMUnitBodies(unit),
+          body);
 
-        // Get the filter values for the current division
-        float lowFilter =
-          low + (high - low) *
-          (float)VecGet(
-            curDiv,
-            iInput) /
-          (float)VecGet(
-            divBound,
-            iInput);
-        float highFilter =
-          low + (high - low) *
-          (float)(VecGet(
-            curDiv,
-            iInput) + 1) /
-          (float)VecGet(
-            divBound,
-            iInput);
+        // If we are not at the maximum subdivision level
+        if (curLvl < maxLvl) {
 
-        // Set the filter values in the unit
-        VecSet(
-          unit->lowFilters,
-          iInput,
-          lowFilter);
-        VecSet(
-          unit->highFilters,
-          iInput,
-          highFilter);
+          // Get the number of bodies at sub level
+          long nbBodies =
+            powi(
+              2,
+              NMUnitGetNbInputs(unit));
 
-      }
+          // Allocate memory for bodies at sub level
+          NMUnitBody** bodies =
+            PBErrMalloc(
+              NeuraMorphErr,
+              nbBodies * sizeof(NMUnitBody*));
 
-      // Declare two GSets to extract the filtered samples
-      GSetVecFloat trainingInputs = GSetVecFloatCreateStatic();
-      GSetVecFloat trainingOutputs = GSetVecFloatCreateStatic();
+          // Set the filters of bodies at sub level
+          VecShort* subDiv = VecShortCreate(NMUnitGetNbInputs(unit));
+          VecShort* boundsDiv = VecShortCreate(NMUnitGetNbInputs(unit));
+          VecSetAll(
+            boundsDiv,
+            2);
+          bool flagStepDiv = true;
+          do {
 
-      // Loop on the samples of the dataset
-      long nbSample =
-        GDSGetSizeCat(
-          NMTrainerDataset(that),
-          NMTrainerGetICatTraining(that));
-      for (
-        long iSample = 0;
-        iSample < nbSample;
-        ++iSample) {
+            // Loop on the filter values
+            for (
+              long iFilter = nbInputs;
+              iFilter--;) {
 
-        // Create the sample's inputs for this unit
-        VecFloat* sampleInputs = VecFloatCreate(nbInputs);
+              // Get the low and high filter of the current body
+              float low =
+                VecGet(
+                  body->lowFilters,
+                  iFilter);
+              float high =
+                VecGet(
+                  body->highFilters,
+                  iFilter);
 
-        // If all the input values are within the bound of the unit
-        bool flag = true;
-        for (
-          long iInput = nbInputs;
-          flag && iInput--;) {
+              // Get the subdivision indice
+              long iDiv =
+                VecGet(
+                  subDiv,
+                  iFilter);
 
-          float low =
-            VecGet(
-              unit->lowFilters,
-              iInput);
-          float high =
-            VecGet(
-              unit->highFilters,
-              iInput);
+              // Set the low and high filter of the subbody
+              // according to the division
+              VecSet(
+                bodies[iBody]->lowFilters,
+                iFilter,
+                low + ((float)iDiv) * 0.5 * (high - low));
+              VecSet(
+                bodies[iBody]->highFilters,
+                iFilter,
+                high - ((float)(1 - iDiv)) * 0.5 * (high - low));
 
-          if (high - low < PBMATH_EPSILON) {
+            }
 
-            low -= 1.0;
-            high += 1.0;
-            VecSet(
-              unit->lowFilters,
-              iInput,
-              low);
-            VecSet(
-              unit->highFilters,
-              iInput,
-              high);
+            // Step to the next div
+            flagStepDiv =
+              VecStep(
+                subDiv,
+                boundsDiv);
+
+          } while (flagStepDiv);
+ 
+          // Free memory
+          VecFree(&subDiv);
+          VecFree(&boundsDiv);
+
+          // Train the bodies
+          for (
+            long iBody = nbBodies;
+            iBody--;) {
+
+            bool flagSuccessSubBody =
+              NMTrainerTrainBody(
+                that,
+                unit,
+                bodies[iBody],
+                body,
+                curLvl + 1,
+                maxLvl,
+                filteredSamples);
+
+            // If the training failed
+            if (flagSuccessSubBody == false) {
+
+              // Free memory
+              NeuraMorphUnitBodyFree(bodies + iBody);
+
+            }
 
           }
 
-          short jInput =
-            VecGet(
-              iInputs,
-              iInput);
-          float val =
-            VecGet(
-              that->preCompInp[iSample],
-              jInput);
-          if (
-            val < low - PBMATH_EPSILON ||
-            val > high + PBMATH_EPSILON) {
-
-            flag = false;
-
-          }
-
-          // Simultaneously, scale the inputs values toward the unit
-          // input space
-          val = (val - low) / (high - low);
-          VecSet(
-            sampleInputs,
-            iInput,
-            val);
-
-        }
-
-        if (flag) {
-
-          // Add this sample to the training set for the current unit
-          GSetAppend(
-            &trainingInputs,
-            sampleInputs);
-          GSetAppend(
-            &trainingOutputs,
-            that->preCompOut[iSample]);
-
-        } else {
-
           // Free memory
-          VecFree(&sampleInputs);
+          free(bodies);
 
         }
 
-      }
+      // Else this body is not better than its parent
+      } else {
 
-      // If we have enough samples to train the unit on the current
-      // combination of divisions
-      long nbMinSample =
-        powi(
-          NMTrainerGetOrder(that) + 2,
-          NMUnitGetNbInputs(unit) + 1);
-      nbMinSample =
-        MIN(
-          nbMinSample,
-          nbSample);
-      if (GSetNbElem(&trainingInputs) >= nbMinSample) {
-
-        // Calculate the transfer function
-        float bias = 0.0;
-        unit->transfer =
-          BBodyFromPointCloud(
-            NMTrainerGetOrder(that),
-            &trainingInputs,
-            &trainingOutputs,
-            &bias);
-
-        // If we could calculate the transfer function
-        if (unit->transfer != NULL) {
-
-          // Set the value of the unit
-          float corrRange =
-            (float)GSetNbElem(&trainingInputs) /
-            (float)GDSGetSizeCat(
-              NMTrainerDataset(that),
-              NMTrainerGetICatTraining(that));
-          NMUnitSetValue(
-            unit,
-            -1.0 * bias / corrRange);
-
-unit->nbTrainingSample += GSetNbElem(&trainingInputs);
-
-          // Add the unit to the set of trained units
-          GSetAddSort(
-            trainedUnits,
-            unit,
-            NMUnitGetValue(unit));
-
-        // Else, we couldn't calculate the transfer function
-        } else {
-
-          // Free memory
-          NeuraMorphUnitFree(&unit);
-
-        }
+        // Update the success flag
+        flagSuccess = false;
 
       }
 
-      // Free memory
-      while (GSetNbElem(&trainingInputs) > 0) {
+    // Else, we could not calculate the transfer function
+    } else {
 
-        VecFloat* v = GSetPop(&trainingInputs);
-        VecFree(&v);
+      // Update the success flag
+      flagSuccess = false;
 
-      }
+    }
 
-      GSetFlush(&trainingOutputs);
+  // Else, there is not enough samples to train the body
+  } else {
 
-      // Move to the next combination of divisions
-      flagStepDiv =
-        VecStep(
-          curDiv,
-          divBound);
+    // Update the flag
+    flagSuccess = false;
 
-    } while (flagStepDiv);
-
-    // Free memory
-    VecFree(&curDiv);
-    VecFree(&divBound);
-
-    // Move to the next division level
-    flagStepDivLvl =
-      VecStep(
-        curDivLvl,
-        divLvlBound);
-
-  } while (flagStepDivLvl);
+  }
 
   // Free memory
-  VecFree(&curDivLvl);
-  VecFree(&divLvlBound);
+  GSetFlush(&filteredSamples);
+
+  // Return the flag for success of training
+  return flagSuccess;
+
+}
+
+// Calculate the transfer function for the 'body' using the
+// precomputer 'pods'
+void NMTrainerSearchBodyTransfer(
+   NeuraMorphTrainer* that,
+      NeuraMorphUnit* unit,
+  NeuraMorphUnitBody* body,
+                GSet* pods) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (unit == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'unit' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (body == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'body' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (pods == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'pods' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Get the number of inputs
+  long nbInputs = NMUnitGetNbInputs(unit);
+  long nbOutputs = NMUnitGetNbOutputs(unit);
+
+  // Declare the sets in argument of BBodyFromPointCloud
+  GSet trainingInputs = GSetCreateStatic();
+  GSet trainingOutputs = GSetCreateStatic();
+
+  // Loop on the pods
+  bool flagStep = true;
+  GSetIterForward iter = GSetIterForwardCreateStatic(pods);
+  do {
+
+    // Get the pod
+    NMPodInputOutput* pod = GSetIterGet(&iter);
+
+    // Declare the inputs and outputs of the body
+    VecFloat* inputs = VecCreate(nbInputs);
+    VecFloat* outputs = VecCreate(nbOutputs);
+
+    // Loop on the inputs of the body
+    for (
+      long iInput = nbInputs;
+      iInput--;) {
+
+      // Get the index of the input
+      long jInput =
+        VecGet(
+          NMUnitIInputs(unit),
+          iInput);
+
+      // Get the value and filters for this input
+      float low =
+        VecGet(
+          body->lowFilters,
+          iInput);
+      float high =
+        VecGet(
+          body->highFilters,
+          iInput);
+      float val =
+        VecGet(
+          pod->inputs,
+          jInput);
+
+      // Set the input value
+      float valInput = 0.5;
+      if (high - low > PBMATH_EPSILON) {
+
+        valInput = (val - low) / (high - low);
+
+      }
+
+      VecSet(
+        inputs,
+        iInput,
+        valInput);
+
+    }
+
+    // Loop on the outputs of the body
+    for (
+      long iOutput = nbOutputs;
+      iOutput--;) {
+
+      // Get the index of the output
+      long jOutput =
+        VecGet(
+          NMUnitIOutputs(unit),
+          iOutput);
+      jOutput -= NMGetNbHidden(NMTrainerNeuraMorph(that));
+
+      // Get the value of this output
+      float val =
+        VecGet(
+          pod->outputs,
+          jOutput);
+
+      // Set the output value
+      VecSet(
+        outputs,
+        iOutput,
+        val);
+
+    }
+
+    // Add the inputs and outputs to the arguments of BBodyFromPointCloud
+    GSetAppend(
+      &trainingInputs,
+      inputs);
+    GSetAppend(
+      &trainingOutputs,
+      outputs);
+
+    // Step to the next sample
+    flagStep = GSetIterStep(&iter);
+
+  } while (flagStep);
+
+  // Calculate the transfer function
+  float bias = 0.0;
+  body->transfer =
+    BBodyFromPointCloud(
+      NMTrainerGetOrder(that),
+      &trainingInputs,
+      &trainingOutputs,
+      &bias);
+
+  // If we could calculate the transfer function
+  if (unit->transfer != NULL) {
+
+    // Set the value of the body
+    body->value =  -1.0 * bias;
+
+  }
+
+  // Free memory
+  while (GSetNbElem(&trainingInputs) > 0) {
+
+    VecFloat* v = GSetPop(&trainingInputs);
+    VecFree(&v);
+    v = GSetPop(&trainingOutputs);
+    VecFree(&v);
+
+  }
 
 }
 
@@ -1872,15 +2067,15 @@ void NMTrainerPrecomputeValues(NeuraMorphTrainer* that) {
       NMTrainerDataset(that),
       NMTrainerGetICatTraining(that));
 
-  // Allocate memory
-  that->preCompInp =
-    PBErrMalloc(
-      NeuraMorphErr,
-      nbSample * sizeof(VecFloat*));
-  that->preCompOut =
-    PBErrMalloc(
-      NeuraMorphErr,
-      nbSample * sizeof(VecFloat*));
+  // Free memory
+  while (GSetNbElem(NMTrainerPrecomp(that)) > 0) {
+
+    NMPodInputOutput* pod = GSetPop(NMTrainerPrecomp(that));
+    VecFree(&(pod->input));
+    VecFree(&(pod->output));
+    free(pod);
+
+  }
 
   // Reset the low and high values for input
   VecFree(&(that->lowInputs));
@@ -1953,19 +2148,30 @@ void NMTrainerPrecomputeValues(NeuraMorphTrainer* that) {
 
     }
 
-    // Get a clone of the sample's outputs
-    that->preCompOut[iSample] =
-      GDSGetSampleOutputs(
-        NMTrainerDataset(that),
-        NMTrainerGetICatTraining(that));
-
     // Run the NeuraMorph on the sample
     NMEvaluate(
       NMTrainerNeuraMorph(that),
       inputs);
 
-    // Allocate memory for the precomputed vector
-    that->preCompInp[iSample] = VecFloatCreate(sizeInp);
+    // Create a pod for the sample
+    NMPodInputOutput* pod =
+      PBErrMalloc(
+        NeuraMorphErr,
+        sizeof(NMPodInputOutput));
+
+    // Add the pod to the precomputed values
+    GSetAppend(
+      NMTrainerPrecomp(that),
+      pod);
+
+    // Get a clone of the sample's outputs
+    pod->output =
+      GDSGetSampleOutputs(
+        NMTrainerDataset(that),
+        NMTrainerGetICatTraining(that));
+
+    // Allocate memory for the precomputed input
+    pod->input = VecFloatCreate(sizeInp);
 
     // Copy the inputs and hidden values into the precomputed vector
     for (
@@ -1977,7 +2183,7 @@ void NMTrainerPrecomputeValues(NeuraMorphTrainer* that) {
           NMInputs(NMTrainerNeuraMorph(that)),
           i);
       VecSet(
-        that->preCompInp[iSample],
+        pod->input,
         i,
         val);
 
@@ -1992,7 +2198,7 @@ void NMTrainerPrecomputeValues(NeuraMorphTrainer* that) {
           NMHiddens(NMTrainerNeuraMorph(that)),
           i);
       VecSet(
-        that->preCompInp[iSample],
+        pod->input,
         i + NMGetNbInput(NMTrainerNeuraMorph(that)),
         val);
 

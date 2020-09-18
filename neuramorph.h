@@ -40,7 +40,7 @@ typedef struct NeuraMorphUnitBody {
 NeuraMorphUnitBody* NeuraMorphUnitBodyCreate(int nbInputs);
 
 // Free the memory used by the NeuraMorphUnitBody 'that'
-void NeuraMorphUnitFree(NeuraMorphUnitBody** that);
+void NeuraMorphUnitBodyFree(NeuraMorphUnitBody** that);
 
 // Check if the NeuraMorphUnitBody 'that' includes the 'inputs'
 bool NMUnitBodyCheckInputs(
@@ -310,6 +310,13 @@ void NMEvaluate(
 
 // ================= Data structure ===================
 
+typedef struct NMPodInputOutput {
+
+  VecFloat* input;
+  VecFloat* output;
+
+} NMPodInputOutput;
+
 typedef struct NeuraMorphTrainer {
 
   // Trained NeuraMorph
@@ -342,8 +349,8 @@ typedef struct NeuraMorphTrainer {
   short maxLvlDiv;
 
   // Precomputed values to train the NeuraMorphUnit
-  VecFloat** preCompInp;
-  VecFloat** preCompOut;
+  // GSet of NMPodInputOutput
+  GSet preComp;
 
   // Lowest and highest values for input values in the training
   // dataset
@@ -385,6 +392,12 @@ void NMTrainerEval(NeuraMorphTrainer* that);
 static inline
 #endif
 short NMTrainerGetDepth(const NeuraMorphTrainer* that);
+
+// Get the precomp values of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+GSet* NMTrainerPrecomp(const NeuraMorphTrainer* that);
 
 // Set the depth of the NeuraMorphTrainer 'that' to 'depth'
 #if BUILDMODE != 0

@@ -1116,3 +1116,28 @@ long NMTrainerGetNbCorrect(const NeuraMorphTrainer* that) {
   return that->nbCorrect;
 
 }
+
+// Get the precomp values of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+GSet* NMTrainerPrecomp(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return &(that->preComp);
+
+}
+
