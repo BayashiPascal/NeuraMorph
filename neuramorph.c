@@ -1090,6 +1090,12 @@ void NMTrainerSearchBodyTransfer(
   NeuraMorphUnitBody* body,
                 GSet* pods);
 
+// Evaluate the NeuraMorphUnit 'that' on the samples in the 'pods'
+// This is the average of ||truth-pred||
+float NMUnitGetValueSamples(
+    NeuraMorphUnit* that,
+    GSet* pods);
+
 // ================ Functions implemetation ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
@@ -1556,7 +1562,6 @@ void NMTrainerTrainUnit(
   if (flagSuccess == true) {
 
     // Evalutate the resulting unit
-    // TODO
     float val =
       NMUnitGetValueSamples(
         unit,
@@ -1572,6 +1577,145 @@ void NMTrainerTrainUnit(
       NMUnitGetValue(unit));
 
   }
+
+}
+
+// Evaluate the NeuraMorphUnit 'that' on the samples in the 'pods'
+// This is the average of ||truth-pred||
+float NMUnitGetValueSamples(
+    NeuraMorphUnit* that,
+    GSet* pods) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (pods == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'pods' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare a variable to calculate the average bias
+  float bias = 0.0;
+
+  // Loop on the pods
+  bool flagStep = true;
+  GSetIterForward iter = GSetIterForwardCreateStatic(samples);
+  do {
+
+    // Get the pod
+    NMPodInputOutput* pod = GSetIterGet(&iter);
+
+    // Declare the inputs and outputs of the body
+    VecFloat* inputs = VecCreate(nbInputs);
+    VecFloat* outputs = VecCreate(nbOutputs);
+
+    // Loop on the inputs of the body
+    for (
+      long iInput = nbInputs;
+      iInput--;) {
+
+      // Get the index of the input
+      long jInput =
+        VecGet(
+          NMUnitIInputs(unit),
+          iInput);
+
+      // Get the value and filters for this input
+      float low =
+        VecGet(
+          body->lowFilters,
+          iInput);
+      float high =
+        VecGet(
+          body->highFilters,
+          iInput);
+      float val =
+        VecGet(
+          pod->inputs,
+          jInput);
+
+      // Set the input value
+      float valInput = 0.5;
+      if (high - low > PBMATH_EPSILON) {
+
+        valInput = (val - low) / (high - low);
+
+      }
+
+      VecSet(
+        inputs,
+        iInput,
+        valInput);
+
+    }
+
+    // Loop on the outputs of the body
+    for (
+      long iOutput = nbOutputs;
+      iOutput--;) {
+
+      // Get the index of the output
+      long jOutput =
+        VecGet(
+          NMUnitIOutputs(unit),
+          iOutput);
+      jOutput -= NMGetNbHidden(NMTrainerNeuraMorph(that));
+
+      // Get the value of this output
+      float val =
+        VecGet(
+          pod->outputs,
+          jOutput);
+
+      // Set the output value
+      VecSet(
+        outputs,
+        iOutput,
+        val);
+
+    }
+
+    // Evaluate the unit
+    NMUnitEvaluate(
+      that,
+      inputs);
+
+    // Update the bias
+    bias +=
+      VecDist(
+      outputs,
+      NMUnitOutputs(that));
+
+    // Free memory
+    VecFree(&inputs);
+    VecFree(&outputs);
+
+    // Step to the next sample
+    flagStep = GSetIterStep(&iter);
+
+  } while (flagStep);
+
+  // Calculate the value
+  float value = -1.0 * bias / (float)GSetNbElem(pods);
+
+  // Return the value
+  return value;
 
 }
 
