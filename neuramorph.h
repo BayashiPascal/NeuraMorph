@@ -37,7 +37,7 @@ typedef struct NeuraMorphUnitBody {
 // ================ Functions declaration ====================
 
 // Create a new NeuraMorphUnitBody for 'nbInputs' inputs
-NeuraMorphUnitBody* NeuraMorphUnitBodyCreate(int nbInputs);
+NeuraMorphUnitBody* NeuraMorphUnitBodyCreate(long nbInputs);
 
 // Free the memory used by the NeuraMorphUnitBody 'that'
 void NeuraMorphUnitBodyFree(NeuraMorphUnitBody** that);
@@ -121,8 +121,8 @@ void NMUnitEvaluate(
 // Get the NeuraMorphUnitBody of the NeuraMorphUnit 'that' for the
 // 'inputs', i.e. the first one whose filters include 'inputs'
 NeuraMorphUnitBody* NMUnitBody(
-  const NeuraMorphUnit* that,
-        const VecFloat* inputs);
+  NeuraMorphUnit* that,
+  const VecFloat* inputs);
 
 // Get the number of input values of the NeuraMorphUnit 'that'
 #if BUILDMODE != 0
@@ -397,7 +397,7 @@ short NMTrainerGetDepth(const NeuraMorphTrainer* that);
 #if BUILDMODE != 0
 static inline
 #endif
-GSet* NMTrainerPrecomp(const NeuraMorphTrainer* that);
+GSet* NMTrainerPrecomp(NeuraMorphTrainer* that);
 
 // Set the depth of the NeuraMorphTrainer 'that' to 'depth'
 #if BUILDMODE != 0

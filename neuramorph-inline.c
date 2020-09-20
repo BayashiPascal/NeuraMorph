@@ -48,7 +48,7 @@ GSet* NMUnitBodies(NeuraMorphUnit* that) {
 
 #endif
 
-  return that->bodies;
+  return &(that->bodies);
 
 }
 
@@ -169,7 +169,16 @@ long NMUnitGetNbCoeffs(const NeuraMorphUnit* that) {
 
 #endif
 
-  return BBodyGetNbCtrl(that->transfer);
+  NeuraMorphUnitBody* body = GSetHead(NMUnitBodies((NeuraMorphUnit*)that));
+  if (body != NULL) {
+
+    return BBodyGetNbCtrl(body->transfer);
+    
+  } else {
+
+    return 0;
+
+  }
 
 }
 
@@ -1121,7 +1130,7 @@ long NMTrainerGetNbCorrect(const NeuraMorphTrainer* that) {
 #if BUILDMODE != 0
 static inline
 #endif
-GSet* NMTrainerPrecomp(const NeuraMorphTrainer* that) {
+GSet* NMTrainerPrecomp(NeuraMorphTrainer* that) {
 
 #if BUILDMODE == 0
 
