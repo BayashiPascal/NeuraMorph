@@ -503,6 +503,35 @@ void NMUnitPrint(
     " val(%04.6f)",
     NMUnitGetValue(that));
 
+  if (GSetNbElem(&(that->bodies)) > 0) {
+
+    bool flagStep = true;
+    GSetIterForward iter = GSetIterForwardCreateStatic(&(that->bodies));
+    do {
+
+      NeuraMorphUnitBody* body = GSetIterGet(&iter);
+      fprintf(
+        stream,
+        "\n");
+      VecPrint(
+        body->lowFilters,
+        stream);
+      fprintf(
+        stream,
+        " ");
+      VecPrint(
+        body->highFilters,
+        stream);
+      fprintf(
+        stream,
+        " %f",
+        body->value);
+      flagStep = GSetIterStep(&iter);
+
+    } while (flagStep);
+
+  }
+
 }
 
 // ----- NeuraMorph
@@ -1279,7 +1308,8 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
             &trainedUnits,
             iInputs,
             iOutputs,
-            (iDepth != 1));
+            true);
+            //(iDepth == 1));
             //isLastDepth);
 
           }
