@@ -87,3 +87,6 @@ generateAmphibian.o: \
 		$($(repo)_INC_H_EXE) \
 		$($(repo)_EXE_DEP)
 	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateAmphibian.c
+
+latexValid:
+	cd Validation; pdflatex -synctex=1 -interaction=nonstopmode -shell-escape  doc.tex; cd ..

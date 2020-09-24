@@ -1,7 +1,15 @@
 *.o
 main
 validation
+generateAmphibian
+generateDiabeteRisk
+generateHCV
+generateRgbHsv
 Doc/*.aux
 Doc/*.log
 Doc/*.gz
 Doc/*.toc
+Validation/*.aux
+Validation/*.log
+Validation/*.gz
+Validation/*.toc

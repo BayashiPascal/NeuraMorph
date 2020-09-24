@@ -8,9 +8,12 @@
 #include "neuramorph.h"
 #include "pbdataanalysis.h"
 
+FILE* fpDoc;
+
 typedef struct TrainArg {
 
   const char* label;
+  const char* type;
   const char* pathDataset;
   int seed;
   int percSampleEval;
@@ -34,6 +37,10 @@ void TrainArgPrint(const TrainArg* arg) {
     arg->streamInfo,
     "label: %s\n",
     arg->label);
+  fprintf(
+    arg->streamInfo,
+    "type: %s\n",
+    arg->type);
   fprintf(
     arg->streamInfo,
     "pathDataset: %s\n",
@@ -92,6 +99,9 @@ void TrainArgPrint(const TrainArg* arg) {
 void Train(const TrainArg* arg) {
 
   fprintf(
+    fpDoc,
+    "\\\\\n");
+  fprintf(
     arg->streamInfo,
     "=============================================================\n");
 
@@ -131,6 +141,17 @@ void Train(const TrainArg* arg) {
     "nbOutputs: %d\n",
     GDSGetNbOutputs(&dataset));
   TrainArgPrint(arg);
+
+  fprintf(
+    fpDoc,
+    "%s & %s & %d/%d & %ld/%d & ",
+    arg->label,
+    arg->type,
+    GDSGetNbInputs(&dataset),
+    GDSGetNbOutputs(&dataset),
+    GDSGetSize(&dataset),
+    100 - arg->percSampleEval);
+
   VecShort2D split = VecShortCreateStatic2D();
   short nbSampleEval = GDSGetSize(&dataset) / arg->percSampleEval;
   VecSet(
@@ -185,6 +206,12 @@ void Train(const TrainArg* arg) {
     arg->streamInfo,
     "Time NMTrainerRun: %fs\n",
     timeUsed);
+
+  fprintf(
+    fpDoc,
+    "%fs & \\makecell{",
+    timeUsed);
+
   NMTrainerSetStreamInfo(
     &trainer,
     arg->streamInfo);
@@ -201,9 +228,16 @@ void Train(const TrainArg* arg) {
       arg->streamInfo,
       "#%d ",
       iOut);
+    fprintf(
+      fpDoc,
+      "#%d ",
+      iOut);
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
       arg->streamInfo);
+    VecPrint(
+      NMTrainerResEval(&trainer)[iOut],
+      fpDoc);
     float percCorrect =
       (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
       (float)GDSGetSizeCat(
@@ -215,6 +249,10 @@ void Train(const TrainArg* arg) {
         arg->streamInfo,
         " %f%%",
         percCorrect * 100.0);
+      fprintf(
+        fpDoc,
+        " %.2f\\%%",
+        percCorrect * 100.0);
 
     }
 
@@ -222,7 +260,15 @@ void Train(const TrainArg* arg) {
       arg->streamInfo,
       "\n");
 
+    fprintf(
+      fpDoc,
+      "\\\\");
+
   }
+
+  fprintf(
+    fpDoc,
+    "} & \\makecell{");
 
   NMTrainerSetICatEval(
     &trainer,
@@ -243,9 +289,16 @@ void Train(const TrainArg* arg) {
       arg->streamInfo,
       "#%d ",
       iOut);
+    fprintf(
+      fpDoc,
+      "#%d ",
+      iOut);
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
       arg->streamInfo);
+    VecPrint(
+      NMTrainerResEval(&trainer)[iOut],
+      fpDoc);
     float percCorrect =
       (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
       (float)GDSGetSizeCat(
@@ -257,14 +310,25 @@ void Train(const TrainArg* arg) {
         arg->streamInfo,
         " %f%%",
         percCorrect * 100.0);
+      fprintf(
+        fpDoc,
+        " %.2f\\%%",
+        percCorrect * 100.0);
 
     }
 
     fprintf(
       arg->streamInfo,
       "\n");
+    fprintf(
+      fpDoc,
+      "\\\\");
 
   }
+
+  fprintf(
+    fpDoc,
+    "} ");
 
   fprintf(
     arg->streamInfo,
@@ -324,12 +388,20 @@ void Train(const TrainArg* arg) {
   NeuraMorphFree(&nm);
   GDataSetVecFloatFreeStatic(&dataset);
 
+  fprintf(
+    fpDoc,
+    "\\\\\n");
+  fprintf(
+    fpDoc,
+    "\\hline\n");
+
 }
 
 void Iris() {
 
   TrainArg arg = {
     .label = "Iris",
+    .type = "Classification",
     .pathDataset = "./Datasets/iris.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -353,6 +425,7 @@ void WisconsinDiagnosticBreastCancerDataset() {
 
   TrainArg arg = {
     .label = "Breast cancer",
+    .type = "Classification",
     .pathDataset = "./Datasets/wdbc.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -378,6 +451,7 @@ void Arrythmia() {
 
   TrainArg arg = {
     .label = "Arrythmia",
+    .type = "Classification",
     .pathDataset = "./Datasets/arrhythmia.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -403,6 +477,7 @@ void Abalone() {
 
   TrainArg arg = {
     .label = "Abalone",
+    .type = "Regression",
     .pathDataset = "./Datasets/abalone.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -426,6 +501,7 @@ void RGBHSV() {
 
   TrainArg arg = {
     .label = "RGB to HSV",
+    .type = "Regression",
     .pathDataset = "./Datasets/rgbhsv.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -449,6 +525,7 @@ void DiabeteRisk() {
 
   TrainArg arg = {
     .label = "Diabete",
+    .type = "Classification",
     .pathDataset = "./Datasets/diabeteRisk.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -472,6 +549,7 @@ void HCV() {
 
   TrainArg arg = {
     .label = "Hepatitis",
+    .type = "Classification",
     .pathDataset = "./Datasets/hcv.json",
     .seed = 0,
     .percSampleEval = 10,
@@ -495,6 +573,7 @@ void Amphibian() {
 
   TrainArg arg = {
     .label = "Amphibian",
+    .type = "Classification",
     .pathDataset = "./Datasets/amphibian.json",
     .seed = 1,
     .percSampleEval = 10,
@@ -514,7 +593,95 @@ void Amphibian() {
 
 }
 
+void DocHeader() {
+
+  fprintf(
+    fpDoc,
+    "\\documentclass[8pt, a4paper]{article}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage[a4paper,bindingoffset=0.01in,left=0.01in,right=0.01in,top=0.01in,bottom=0.01in,footskip=.0in]{geometry}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{amsmath}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{amsfonts}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{amssymb}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{graphicx}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{float}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{listings}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{rotating}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{tikz}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{verbatim}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{lscape}\n");
+  fprintf(
+    fpDoc,
+    "\\usepackage{makecell}\n");
+  fprintf(
+    fpDoc,
+    "\\pdfgentounicode=1\n");
+  fprintf(
+    fpDoc,
+    "\\pdfmapline{+cyberb@Unicode@  <cyberbit.ttf}\n");
+  fprintf(
+    fpDoc,
+    "\\pagenumbering{gobble}\n");
+  fprintf(
+    fpDoc,
+    "\\begin{document}\n");
+  fprintf(
+    fpDoc,
+    "\\begin{landscape}\n");
+  fprintf(
+    fpDoc,
+    "\\begin{tabular}{|c|c|c|c|c|c|c|}\n");
+  fprintf(
+    fpDoc,
+    "\\hline\n");
+  fprintf(
+    fpDoc,
+    "Dataset & Category & Nb input/output & Nb sample/Perc. training & \\makecell{Time train.\\\\(cpu monothread)} & \\makecell{Acc. train. per channel\\\\(min/avg/sigma/max)} & \\makecell{Acc. eval. per channel\\\\(min/avg/sigma/max)}\\\\\n");
+
+}
+
+void DocFooter() {
+
+  fprintf(
+    fpDoc,
+    "\\end{tabular}\n");
+  fprintf(
+    fpDoc,
+    "\\end{landscape}\n");
+  fprintf(
+    fpDoc,
+    "\\end{document}\n");
+
+}
+
 int main() {
+
+  fpDoc =
+    fopen(
+      "./Validation/doc.tex",
+      "w");
+  DocHeader();
 
   RGBHSV();
   DiabeteRisk();
@@ -524,6 +691,9 @@ int main() {
   Abalone();
   WisconsinDiagnosticBreastCancerDataset();
   Arrythmia();
+
+  DocFooter();
+  fclose(fpDoc);
 
   // Return success code
   return 0;
