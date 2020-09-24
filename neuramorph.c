@@ -1151,6 +1151,13 @@ float NMUnitGetValueSamples(
     GSet* pods,
     NeuraMorph* nm);
 
+// Check if the 'unit' is not redundant, i.e. there is no already
+// trained unit with better value and a subset of its inputs
+bool NMTrainerCheckRedundantUnit(
+  NeuraMorphTrainer* that,
+     NeuraMorphUnit* unit,
+               GSet* trainedUnits);
+
 // ================ Functions implemetation ====================
 
 // Create a static NeuraMorphTrainer for the NeuraMorph 'neuraMorph' and the
@@ -1390,7 +1397,9 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
         &(NMTrainerNeuraMorph(that)->units),
         bestUnit);
 
-      printf("Add the last unit\n");
+      printf(
+        "Add the last unit (value: %f)\n",
+        NMUnitGetValue(GSetTail(&trainedUnits)));
       /*NMUnitPrintln(
         bestUnit,
         stdout);*/
@@ -1428,9 +1437,10 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
 
       // Displayed the burried units
       printf(
-        "Burry %ld out of %ld unit(s)\n",
+        "Burry %ld out of %ld unit(s) (best value: %f)\n",
         GSetNbElem(&trainedUnits),
-        nbTrainedUnits);
+        nbTrainedUnits,
+        NMUnitGetValue(GSetTail(&trainedUnits)));
       /*GSetIterForward iter = GSetIterForwardCreateStatic(&trainedUnits);
       do {
 
@@ -1643,11 +1653,25 @@ void NMTrainerTrainUnit(
       unit,
       val);
 
-    // Add the new unit to the trained units
-    GSetAddSort(
-      trainedUnits,
-      unit,
-      NMUnitGetValue(unit));
+    // If this unit is not redundant
+    bool flagRedundant =
+      NMTrainerCheckRedundantUnit(
+        that,
+        unit,
+        trainedUnits);
+    if (flagRedundant == false) {
+
+      // Add the new unit to the trained units
+      GSetAddSort(
+        trainedUnits,
+        unit,
+        NMUnitGetValue(unit));
+
+    } else {
+
+      NeuraMorphUnitFree(&unit);
+
+    }
 
   } else {
 
@@ -1655,6 +1679,119 @@ void NMTrainerTrainUnit(
     NeuraMorphUnitBodyFree(&body);
 
   }
+
+}
+
+// Check if the 'unit' is not redundant, i.e. there is no already
+// trained unit with better value and a subset of its inputs
+bool NMTrainerCheckRedundantUnit(
+  NeuraMorphTrainer* that,
+     NeuraMorphUnit* unit,
+               GSet* trainedUnits) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (unit == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'unit' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+  if (trainedUnits == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'trainedUnits' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Unused argument
+  (void)that;
+
+  // If there are no trained unit
+  if (GSetNbElem(trainedUnits) == 0) {
+
+    // The unit is not redundant
+    return false;
+
+  }
+
+  // Loop on the trained units
+  GSetIterForward iter = GSetIterForwardCreateStatic(trainedUnits);
+  do {
+
+    NeuraMorphUnit* trainedUnit = GSetIterGet(&iter);
+
+    // If the trained unit has a better value than the new unit
+    if (NMUnitGetValue(trainedUnit) >= NMUnitGetValue(unit)) {
+
+      // If the trained unit has less input than the new unit
+      if (NMUnitGetNbInputs(trainedUnit) < NMUnitGetNbInputs(unit)) {
+
+        // Declare a flag to memorize if the inputs matches
+        bool flag = true;
+
+        // Loop on the input indices of the trained unit
+        for (
+          long iInput = 0;
+          iInput < NMUnitGetNbInputs(trainedUnit) &&
+          flag == true;
+          ++iInput) {
+
+          // Get the input indices
+          long indiceTrained =
+            VecGet(
+              NMUnitIInputs(trainedUnit),
+              iInput);
+          long indiceNew =
+            VecGet(
+              NMUnitIInputs(unit),
+              iInput);
+
+          // If the indices do not match
+          if (indiceTrained != indiceNew) {
+
+            // Update the flag
+            flag = false;
+
+          } 
+
+        }
+
+        // If all indices match
+        if (flag == true) {
+
+          // The new unit is redundant
+          return true;
+
+        }
+
+      }
+
+    }
+
+  } while (GSetIterStep(&iter));
+
+  // If we reach here, the unit is not redundant
+  return false;
 
 }
 
