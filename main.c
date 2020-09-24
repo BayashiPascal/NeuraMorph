@@ -1239,17 +1239,6 @@ void UnitTestNeuraMorphTrainerGetSet() {
 
   }
 
-  trainer.nbCorrect = 1;
-  if (NMTrainerGetNbCorrect(&trainer) != 1) {
-
-    NeuraMorphErr->_type = PBErrTypeUnitTestFailed;
-    sprintf(
-      NeuraMorphErr->_msg,
-      "NeuraMorphTrainerGetNbCorrect failed");
-    PBErrCatch(NeuraMorphErr);
-
-  }
-
   NMTrainerSetStreamInfo(
     &trainer,
     stdout);
@@ -1416,37 +1405,32 @@ void UnitTestNeuraMorphTrainerRun() {
     &trainer,
     stdout);
   NMTrainerEval(&trainer);
-  printf("Bias (min/avg/max): ");
-  VecPrint(
-    NMTrainerResEval(&trainer),
-    stdout);
-  float percCorrect =
-    (float)NMTrainerGetNbCorrect(&trainer) /
-    (float)VecGet(
-      &split,
-      1);
-  printf(
-    " %f\n",
-    percCorrect);
-  NMTrainerSetICatEval(
-    &trainer,
-    0);
-  NMTrainerSetStreamInfo(
-    &trainer,
-    NULL);
-  NMTrainerEval(&trainer);
-  printf("Bias training (min/avg/max): ");
-  VecPrint(
-    NMTrainerResEval(&trainer),
-    stdout);
-  percCorrect =
-    (float)NMTrainerGetNbCorrect(&trainer) /
-    (float)VecGet(
-      &split,
-      0);
-  printf(
-    " %f\n",
-    percCorrect);
+  for (
+    int iOut = 0;
+    iOut < GDSGetNbOutputs(&dataset);
+    ++iOut) {
+
+    fprintf(
+      stdout,
+      "#%d ",
+      iOut);
+    VecPrint(
+      NMTrainerResEval(&trainer)[iOut],
+      stdout);
+    float percCorrect =
+      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+      (float)GDSGetSizeCat(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatTraining(&trainer));
+    fprintf(
+      stdout,
+      " %f%%",
+      percCorrect * 100.0);
+    fprintf(
+      stdout,
+      "\n");
+
+  }
 
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);

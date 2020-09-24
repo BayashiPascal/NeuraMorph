@@ -502,6 +502,30 @@ bool NMGetFlagOneHot(const NeuraMorph* that) {
 
 }
 
+// Get the flag for all hot encoding of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+bool NMGetFlagAllHot(const NeuraMorph* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->flagAllHot;
+
+}
+
 // Set the flag for one hot encoding of the NeuraMorph 'that' to 'flag'
 #if BUILDMODE != 0
 static inline
@@ -525,6 +549,34 @@ void NMSetFlagOneHot(
 #endif
 
   that->flagOneHot = flag;
+  that->flagAllHot = that->flagAllHot && !flag;
+
+}
+
+// Set the flag for all hot encoding of the NeuraMorph 'that' to 'flag'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMSetFlagAllHot(
+  NeuraMorph* that,
+         bool flag) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->flagOneHot = that->flagOneHot && !flag;
+  that->flagAllHot = flag;
 
 }
 
@@ -1031,7 +1083,7 @@ void NMTrainerSetNbMaxUnitDepth(
 #if BUILDMODE != 0
 static inline
 #endif
-const VecFloat* NMTrainerResEval(const NeuraMorphTrainer* that) {
+VecFloat** NMTrainerResEval(const NeuraMorphTrainer* that) {
 
 #if BUILDMODE == 0
 
@@ -1106,7 +1158,7 @@ void NMTrainerSetStreamInfo(
 #if BUILDMODE != 0
 static inline
 #endif
-long NMTrainerGetNbCorrect(const NeuraMorphTrainer* that) {
+long* NMTrainerGetNbCorrect(const NeuraMorphTrainer* that) {
 
 #if BUILDMODE == 0
 

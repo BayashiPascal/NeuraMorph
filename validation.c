@@ -10,10 +10,12 @@
 
 typedef struct TrainArg {
 
+  const char* label;
   const char* pathDataset;
   int seed;
-  int nbSampleEval;
+  int percSampleEval;
   bool oneHot;
+  bool allHot;
   float weakUnitThreshold;
   int depth;
   int maxLvlDiv;
@@ -21,6 +23,8 @@ typedef struct TrainArg {
   int nbMaxUnitDepth;
   int order;
   FILE* streamInfo;
+  int nbDisplay;
+  bool pcaFlag;
 
 } TrainArg;
 
@@ -28,16 +32,24 @@ void TrainArgPrint(const TrainArg* arg) {
 
   fprintf(
     arg->streamInfo,
+    "label: %s\n",
+    arg->label);
+  fprintf(
+    arg->streamInfo,
     "pathDataset: %s\n",
     arg->pathDataset);
   fprintf(
     arg->streamInfo,
-    "nbSampleEval: %d\n",
-    arg->nbSampleEval);
+    "percSampleEval: %d\n",
+    arg->percSampleEval);
   fprintf(
     arg->streamInfo,
     "oneHot: %d\n",
     arg->oneHot);
+  fprintf(
+    arg->streamInfo,
+    "allHot: %d\n",
+    arg->allHot);
   fprintf(
     arg->streamInfo,
     "seed: %d\n",
@@ -66,6 +78,14 @@ void TrainArgPrint(const TrainArg* arg) {
     arg->streamInfo,
     "order: %d\n",
     arg->order);
+  fprintf(
+    arg->streamInfo,
+    "nbDisplay: %d\n",
+    arg->nbDisplay);
+  fprintf(
+    arg->streamInfo,
+    "pca: %d\n",
+    arg->pcaFlag);
 
 }
 
@@ -78,17 +98,21 @@ void Train(const TrainArg* arg) {
   srand(arg->seed);
   GDataSetVecFloat datasetOrig =
     GDataSetVecFloatCreateStaticFromFile(arg->pathDataset);
-  PrincipalComponentAnalysis pca =
-    PrincipalComponentAnalysisCreateStatic();
-  PCASearch(
-      &pca,
-      &datasetOrig);
-  GDataSetVecFloat dataset =
-    PCAConvert(
-      &pca,
-      &datasetOrig,
-      PCAGetNbComponents(&pca));
-  GDataSetVecFloatFreeStatic(&datasetOrig);
+  GDataSetVecFloat dataset = datasetOrig;
+  if (arg->pcaFlag) {
+    PrincipalComponentAnalysis pca =
+      PrincipalComponentAnalysisCreateStatic();
+    PCASearch(
+        &pca,
+        &datasetOrig);
+    dataset =
+      PCAConvert(
+        &pca,
+        &datasetOrig,
+        PCAGetNbComponents(&pca));
+    GDataSetVecFloatFreeStatic(&datasetOrig);
+    PrincipalComponentAnalysisFreeStatic(&pca);
+  }
   GDSShuffle(&dataset);
   fprintf(
     arg->streamInfo,
@@ -108,14 +132,15 @@ void Train(const TrainArg* arg) {
     GDSGetNbOutputs(&dataset));
   TrainArgPrint(arg);
   VecShort2D split = VecShortCreateStatic2D();
+  short nbSampleEval = GDSGetSize(&dataset) / arg->percSampleEval;
   VecSet(
     &split,
     0,
-    GDSGetSize(&dataset) - arg->nbSampleEval);
+    GDSGetSize(&dataset) - nbSampleEval);
   VecSet(
     &split,
     1,
-    arg->nbSampleEval);
+    nbSampleEval);
   GDSSplit(
     &dataset,
     (VecShort*)&split);
@@ -126,6 +151,9 @@ void Train(const TrainArg* arg) {
   NMSetFlagOneHot(
     nm,
     arg->oneHot);
+  NMSetFlagAllHot(
+    nm,
+    arg->allHot);
   NeuraMorphTrainer trainer =
     NeuraMorphTrainerCreateStatic(
       nm,
@@ -149,34 +177,53 @@ void Train(const TrainArg* arg) {
   NMTrainerSetOrder(
     &trainer,
     arg->order);
+  double clockStart = clock();
   NMTrainerRun(&trainer);
+  double timeUsed = 
+    ((double)(clock() - clockStart)) / CLOCKS_PER_SEC;
+  fprintf(
+    arg->streamInfo,
+    "Time NMTrainerRun: %fs\n",
+    timeUsed);
   NMTrainerSetStreamInfo(
     &trainer,
     arg->streamInfo);
   NMTrainerEval(&trainer);
   fprintf(
     arg->streamInfo,
-    "Bias (min/avg/sigma/max): ");
-  VecPrint(
-    NMTrainerResEval(&trainer),
-    arg->streamInfo);
-  float percCorrect =
-    (float)NMTrainerGetNbCorrect(&trainer) /
-    (float)GDSGetSizeCat(
-      NMTrainerDataset(&trainer),
-      NMTrainerGetICatEval(&trainer));
-  if (arg->oneHot) {
+    "Bias prediction (min/avg/sigma/max) and accuracy:\n");
+  for (
+    int iOut = 0;
+    iOut < GDSGetNbOutputs(&dataset);
+    ++iOut) {
 
     fprintf(
       arg->streamInfo,
-      " Accuracy %f%%",
-      percCorrect * 100.0);
+      "#%d ",
+      iOut);
+    VecPrint(
+      NMTrainerResEval(&trainer)[iOut],
+      arg->streamInfo);
+    float percCorrect =
+      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+      (float)GDSGetSizeCat(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatEval(&trainer));
+    if (arg->oneHot || arg->allHot) {
+
+      fprintf(
+        arg->streamInfo,
+        " %f%%",
+        percCorrect * 100.0);
+
+    }
+
+    fprintf(
+      arg->streamInfo,
+      "\n");
 
   }
 
-  fprintf(
-    arg->streamInfo,
-    "\n");
   NMTrainerSetICatEval(
     &trainer,
     0);
@@ -186,48 +233,116 @@ void Train(const TrainArg* arg) {
   NMTrainerEval(&trainer);
   fprintf(
     arg->streamInfo,
-    "Bias training (min/avg/sigma/max): ");
-  VecPrint(
-    NMTrainerResEval(&trainer),
-    arg->streamInfo);
-  percCorrect =
-    (float)NMTrainerGetNbCorrect(&trainer) /
-    (float)GDSGetSizeCat(
-      NMTrainerDataset(&trainer),
-      NMTrainerGetICatTraining(&trainer));
-  if (arg->oneHot) {
+    "Bias training (min/avg/sigma/max) and accuracy:\n");
+  for (
+    int iOut = 0;
+    iOut < GDSGetNbOutputs(&dataset);
+    ++iOut) {
 
     fprintf(
       arg->streamInfo,
-      " Accuracy %f%%",
-      percCorrect * 100.0);
+      "#%d ",
+      iOut);
+    VecPrint(
+      NMTrainerResEval(&trainer)[iOut],
+      arg->streamInfo);
+    float percCorrect =
+      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+      (float)GDSGetSizeCat(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatTraining(&trainer));
+    if (arg->oneHot || arg->allHot) {
+
+      fprintf(
+        arg->streamInfo,
+        " %f%%",
+        percCorrect * 100.0);
+
+    }
+
+    fprintf(
+      arg->streamInfo,
+      "\n");
 
   }
 
   fprintf(
     arg->streamInfo,
-    "\n");
+    "Samples of prediction:\n");
+  GDSReset(
+    NMTrainerDataset(&trainer),
+    NMTrainerGetICatEval(&trainer));
+  bool flagStep = true;
+  for (
+    int iDisplay = 0;
+    iDisplay < arg->nbDisplay && flagStep;
+    ++iDisplay) {
+
+    VecFloat* inputs =
+      GDSGetSampleInputs(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatEval(&trainer));
+    VecFloat* outputs =
+      GDSGetSampleOutputs(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatEval(&trainer));
+    NMEvaluate(
+      NMTrainerNeuraMorph(&trainer),
+      inputs);
+    fprintf(
+      arg->streamInfo,
+      "#%d\n",
+      iDisplay);
+    /*fprintf(
+      arg->streamInfo,
+      "Input: ");
+    VecPrintln(
+      inputs,
+      arg->streamInfo);*/
+    fprintf(
+      arg->streamInfo,
+      "Truth: ");
+    VecPrintln(
+      outputs,
+      arg->streamInfo);
+    fprintf(
+      arg->streamInfo,
+      "Pred : ");
+    VecPrintln(
+      NMOutputs(NMTrainerNeuraMorph(&trainer)),
+      arg->streamInfo);
+    VecFree(&inputs);
+    VecFree(&outputs);
+    flagStep =
+      GDSStepSample(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatEval(&trainer));
+
+  }
 
   NeuraMorphTrainerFreeStatic(&trainer);
   NeuraMorphFree(&nm);
   GDataSetVecFloatFreeStatic(&dataset);
-  PrincipalComponentAnalysisFreeStatic(&pca);
 
 }
 
 void Iris() {
 
   TrainArg arg = {
+    .label = "Iris",
     .pathDataset = "./Datasets/iris.json",
     .seed = 0,
-    .nbSampleEval = 25,
+    .percSampleEval = 10,
     .oneHot = true,
+    .allHot = false,
     .weakUnitThreshold = 0.95,
-    .depth = 3,
-    .maxLvlDiv = 2,
+    .depth = 6,
+    .maxLvlDiv = 0,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 100,
+    .nbMaxUnitDepth = 10,
     .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -237,16 +352,20 @@ void Iris() {
 void WisconsinDiagnosticBreastCancerDataset() {
 
   TrainArg arg = {
+    .label = "Breast cancer",
     .pathDataset = "./Datasets/wdbc.json",
     .seed = 0,
-    .nbSampleEval = 50,
+    .percSampleEval = 10,
     .oneHot = true,
+    .allHot = false,
     .weakUnitThreshold = 0.95,
-    .depth = 3,
+    .depth = 4,
     .maxLvlDiv = 2,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 100,
+    .nbMaxUnitDepth = 10,
     .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -258,16 +377,20 @@ void WisconsinDiagnosticBreastCancerDataset() {
 void Arrythmia() {
 
   TrainArg arg = {
+    .label = "Arrythmia",
     .pathDataset = "./Datasets/arrhythmia.json",
     .seed = 0,
-    .nbSampleEval = 25,
+    .percSampleEval = 10,
     .oneHot = true,
+    .allHot = false,
     .weakUnitThreshold = 0.95,
     .depth = 3,
     .maxLvlDiv = 2,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 20,
+    .nbMaxUnitDepth = 10,
     .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -279,16 +402,112 @@ void Arrythmia() {
 void Abalone() {
 
   TrainArg arg = {
+    .label = "Abalone",
     .pathDataset = "./Datasets/abalone.json",
     .seed = 0,
-    .nbSampleEval = 100,
+    .percSampleEval = 10,
     .oneHot = false,
+    .allHot = false,
     .weakUnitThreshold = 0.95,
-    .depth = 3,
+    .depth = 9,
     .maxLvlDiv = 2,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 100,
+    .nbMaxUnitDepth = 10,
     .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
+void RGBHSV() {
+
+  TrainArg arg = {
+    .label = "RGB to HSV",
+    .pathDataset = "./Datasets/rgbhsv.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = false,
+    .weakUnitThreshold = 0.5,
+    .depth = 5,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
+void DiabeteRisk() {
+
+  TrainArg arg = {
+    .label = "Diabete",
+    .pathDataset = "./Datasets/diabeteRisk.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 5,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
+void HCV() {
+
+  TrainArg arg = {
+    .label = "Hepatitis",
+    .pathDataset = "./Datasets/hcv.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 5,
+    .maxLvlDiv = 1,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
+void Amphibian() {
+
+  TrainArg arg = {
+    .label = "Amphibian",
+    .pathDataset = "./Datasets/amphibian.json",
+    .seed = 1,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = true,
+    .weakUnitThreshold = 0.95,
+    .depth = 4,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
     .streamInfo = stdout
   };
   Train(&arg);
@@ -297,6 +516,10 @@ void Abalone() {
 
 int main() {
 
+  RGBHSV();
+  DiabeteRisk();
+  HCV();
+  Amphibian();
   Iris();
   Abalone();
   WisconsinDiagnosticBreastCancerDataset();
@@ -306,3 +529,4 @@ int main() {
   return 0;
 
 }
+

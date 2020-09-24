@@ -187,6 +187,7 @@ typedef struct NeuraMorph {
 
   // Flag to memorize if the outputs are to be seen as one hot encoding
   bool flagOneHot;
+  bool flagAllHot;
 
   // GSet of NeuraMorphUnit
   GSet units;
@@ -265,11 +266,25 @@ static inline
 #endif
 bool NMGetFlagOneHot(const NeuraMorph* that);
 
+// Get the flag for all hot encoding of the NeuraMorph 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+bool NMGetFlagAllHot(const NeuraMorph* that);
+
 // Set the flag for one hot encoding of the NeuraMorph 'that' to 'flag'
 #if BUILDMODE != 0
 static inline
 #endif
 void NMSetFlagOneHot(
+  NeuraMorph* that,
+         bool flag);
+
+// Set the flag for all hot encoding of the NeuraMorph 'that' to 'flag'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMSetFlagAllHot(
   NeuraMorph* that,
          bool flag);
 
@@ -358,9 +373,12 @@ typedef struct NeuraMorphTrainer {
   VecFloat* highInputs;
 
   // Variable to store the result of the last evaluation
-  // min/avg/sigma/max
-  VecFloat* resEval;
-long nbCorrect;
+  // min/avg/sigma/max per output
+  VecFloat** resEval;
+
+  // Variable to store the nb of correct answer when hot encoding
+  // per output
+  long* nbCorrect;
 
   // Stream to output info during training and evaluation
   FILE* streamInfo;
@@ -538,14 +556,14 @@ GDataSetVecFloat* NMTrainerDataset(const NeuraMorphTrainer* that);
 #if BUILDMODE != 0
 static inline
 #endif
-const VecFloat* NMTrainerResEval(const NeuraMorphTrainer* that);
+VecFloat** NMTrainerResEval(const NeuraMorphTrainer* that);
 
 // Get the number of correct output in the last evaluation of the
 // NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
 static inline
 #endif
-long NMTrainerGetNbCorrect(const NeuraMorphTrainer* that);
+long* NMTrainerGetNbCorrect(const NeuraMorphTrainer* that);
 
 // ================ static inliner ====================
 

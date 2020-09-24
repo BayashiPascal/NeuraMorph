@@ -4,7 +4,7 @@
 # 2: fast and furious (no safety, optimisation)
 BUILD_MODE?=1
 
-all: pbmake_wget main validation
+all: pbmake_wget main validation generateRgbHsv generateDiabeteRisk generateAmphibian generateHCV
 	
 # Automatic installation of the repository PBMake in the parent folder
 pbmake_wget:
@@ -39,3 +39,51 @@ validation.o: \
 		$($(repo)_INC_H_EXE) \
 		$($(repo)_EXE_DEP)
 	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/validation.c
+
+generateRgbHsv: \
+		generateRgbHsv.o \
+		$($(repo)_EXE_DEP) \
+		$($(repo)_DEP)
+	$(COMPILER) `echo "$($(repo)_EXE_DEP) generateRgbHsv.o" | tr ' ' '\n' | sort -u` $(LINK_ARG) $($(repo)_LINK_ARG) -o generateRgbHsv 
+
+generateRgbHsv.o: \
+		$($(repo)_DIR)/generateRgbHsv.c \
+		$($(repo)_INC_H_EXE) \
+		$($(repo)_EXE_DEP)
+	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateRgbHsv.c
+
+generateDiabeteRisk: \
+		generateDiabeteRisk.o \
+		$($(repo)_EXE_DEP) \
+		$($(repo)_DEP)
+	$(COMPILER) `echo "$($(repo)_EXE_DEP) generateDiabeteRisk.o" | tr ' ' '\n' | sort -u` $(LINK_ARG) $($(repo)_LINK_ARG) -o generateDiabeteRisk 
+
+generateDiabeteRisk.o: \
+		$($(repo)_DIR)/generateDiabeteRisk.c \
+		$($(repo)_INC_H_EXE) \
+		$($(repo)_EXE_DEP)
+	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateDiabeteRisk.c
+
+generateHCV: \
+		generateHCV.o \
+		$($(repo)_EXE_DEP) \
+		$($(repo)_DEP)
+	$(COMPILER) `echo "$($(repo)_EXE_DEP) generateHCV.o" | tr ' ' '\n' | sort -u` $(LINK_ARG) $($(repo)_LINK_ARG) -o generateHCV 
+
+generateHCV.o: \
+		$($(repo)_DIR)/generateHCV.c \
+		$($(repo)_INC_H_EXE) \
+		$($(repo)_EXE_DEP)
+	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateHCV.c
+
+generateAmphibian: \
+		generateAmphibian.o \
+		$($(repo)_EXE_DEP) \
+		$($(repo)_DEP)
+	$(COMPILER) `echo "$($(repo)_EXE_DEP) generateAmphibian.o" | tr ' ' '\n' | sort -u` $(LINK_ARG) $($(repo)_LINK_ARG) -o generateAmphibian 
+
+generateAmphibian.o: \
+		$($(repo)_DIR)/generateAmphibian.c \
+		$($(repo)_INC_H_EXE) \
+		$($(repo)_EXE_DEP)
+	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateAmphibian.c
