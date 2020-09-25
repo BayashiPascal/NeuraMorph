@@ -5,6 +5,7 @@ nbTotalSample: 1000
 nbInputs: 3
 nbOutputs: 3
 label: RGB to HSV
+type: Regression
 pathDataset: ./Datasets/rgbhsv.json
 percSampleEval: 10
 oneHot: 0
@@ -43,7 +44,7 @@ Nb available inputs: 99
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.152199)
-Time NMTrainerRun: 9.981769s
+Time NMTrainerRun: 9.636601s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.029,0.000,0.311>
 #1 <0.000,0.008,0.000,0.058>
@@ -75,6 +76,7 @@ nbTotalSample: 520
 nbInputs: 16
 nbOutputs: 2
 label: Diabete
+type: Classification
 pathDataset: ./Datasets/diabeteRisk.json
 percSampleEval: 10
 oneHot: 1
@@ -113,7 +115,7 @@ Nb available inputs: 74
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.072426)
-Time NMTrainerRun: 2.389716s
+Time NMTrainerRun: 2.358610s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.038,0.140,2.000> 98.076922%
 #1 <0.000,0.038,0.140,2.000> 98.076922%
@@ -143,6 +145,7 @@ nbTotalSample: 589
 nbInputs: 12
 nbOutputs: 5
 label: Hepatitis
+type: Classification
 pathDataset: ./Datasets/hcv.json
 percSampleEval: 10
 oneHot: 1
@@ -181,7 +184,7 @@ Nb available inputs: 132
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.147126)
-Time NMTrainerRun: 8.829878s
+Time NMTrainerRun: 7.748319s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.138,0.265,2.000> 93.103451%
 #1 <0.000,0.103,0.229,2.000> 94.827586%
@@ -217,6 +220,7 @@ nbTotalSample: 189
 nbInputs: 14
 nbOutputs: 7
 label: Amphibian
+type: Classification
 pathDataset: ./Datasets/amphibian.json
 percSampleEval: 10
 oneHot: 0
@@ -250,7 +254,7 @@ Nb available inputs: 140
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -2.026398)
-Time NMTrainerRun: 2.520525s
+Time NMTrainerRun: 2.394300s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.444,0.485,2.000> 77.777779%
 #1 <0.000,0.667,0.594,2.000> 66.666669%
@@ -290,6 +294,7 @@ nbTotalSample: 150
 nbInputs: 4
 nbOutputs: 3
 label: Iris
+type: Classification
 pathDataset: ./Datasets/iris.json
 percSampleEval: 10
 oneHot: 1
@@ -333,7 +338,7 @@ Nb available inputs: 88
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.091710)
-Time NMTrainerRun: 0.498078s
+Time NMTrainerRun: 0.479004s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.000,0.000,0.000> 100.000000%
 #1 <0.000,0.000,0.000,0.000> 100.000000%
@@ -365,6 +370,7 @@ nbTotalSample: 4177
 nbInputs: 10
 nbOutputs: 1
 label: Abalone
+type: Regression
 pathDataset: ./Datasets/abalone.json
 percSampleEval: 10
 oneHot: 0
@@ -423,7 +429,7 @@ Nb available inputs: 22
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -1.344893)
-Time NMTrainerRun: 2.283668s
+Time NMTrainerRun: 2.083712s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.003,1.393,1.114,9.467>
 Bias training (min/avg/sigma/max) and accuracy:
@@ -451,6 +457,7 @@ nbTotalSample: 569
 nbInputs: 30
 nbOutputs: 2
 label: Breast cancer
+type: Classification
 pathDataset: ./Datasets/wdbc.json
 percSampleEval: 10
 oneHot: 1
@@ -484,7 +491,7 @@ Nb available inputs: 84
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.031327)
-Time NMTrainerRun: 3.860055s
+Time NMTrainerRun: 3.707356s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.107,0.234,2.000> 94.642860%
 #1 <0.000,0.107,0.234,2.000> 94.642860%
@@ -514,6 +521,7 @@ nbTotalSample: 452
 nbInputs: 279
 nbOutputs: 16
 label: Arrythmia
+type: Classification
 pathDataset: ./Datasets/arrhythmia.json
 percSampleEval: 10
 oneHot: 1
@@ -542,7 +550,7 @@ Nb available inputs: 343
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -1.053249)
-Time NMTrainerRun: 47.147716s
+Time NMTrainerRun: 42.497173s
 Bias prediction (min/avg/sigma/max) and accuracy:
 #0 <0.000,0.000,0.000,0.000> 100.000000%
 #1 <0.000,0.667,0.584,2.000> 66.666669%

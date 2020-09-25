@@ -657,7 +657,7 @@ void DocHeader() {
     "\\hline\n");
   fprintf(
     fpDoc,
-    "Dataset & Category & Nb input/output & Nb sample/Perc. training & \\makecell{Time train.\\\\(cpu monothread)} & \\makecell{Acc. train. per channel\\\\(min/avg/sigma/max)} & \\makecell{Acc. eval. per channel\\\\(min/avg/sigma/max)}\\\\\n");
+    "Dataset & Category & Nb input/output & Nb sample/Perc. training & \\makecell{Time train.\\\\(cpu monothread)} & \\makecell{Acc. eval. per channel\\\\(min/avg/sigma/max)} & \\makecell{Acc. train. per channel\\\\(min/avg/sigma/max)}\\\\\n");
 
 }
 

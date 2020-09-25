@@ -1741,7 +1741,8 @@ bool NMTrainerCheckRedundantUnit(
     NeuraMorphUnit* trainedUnit = GSetIterGet(&iter);
 
     // If the trained unit has a better value than the new unit
-    if (NMUnitGetValue(trainedUnit) >= NMUnitGetValue(unit)) {
+    float valTrainedUnit = NMUnitGetValue(trainedUnit) + PBMATH_EPSILON;
+    if (valTrainedUnit >= NMUnitGetValue(unit)) {
 
       // If the trained unit has less input than the new unit
       if (NMUnitGetNbInputs(trainedUnit) < NMUnitGetNbInputs(unit)) {
