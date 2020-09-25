@@ -1361,7 +1361,7 @@ void UnitTestNeuraMorphTrainerRun() {
   GDataSetVecFloat dataset =
     GDataSetVecFloatCreateStaticFromFile("./Datasets/iris.json");
   GDSShuffle(&dataset);
-  VecShort2D split = VecShortCreateStatic2D();
+  VecLong2D split = VecLongCreateStatic2D();
   VecSet(
     &split,
     0,
@@ -1372,7 +1372,7 @@ void UnitTestNeuraMorphTrainerRun() {
     20);
   GDSSplit(
     &dataset,
-    (VecShort*)&split);
+    &split);
   NeuraMorph* nm =
     NeuraMorphCreate(
       GDSGetNbInputs(&dataset),

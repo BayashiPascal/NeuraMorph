@@ -124,6 +124,8 @@ void Train(const TrainArg* arg) {
     PrincipalComponentAnalysisFreeStatic(&pca);
   }
   GDSShuffle(&dataset);
+  long nbSample = MIN(GDSGetSize(&dataset), 10000L);
+  long nbSampleEval = nbSample / arg->percSampleEval;
   fprintf(
     arg->streamInfo,
     "%s\n",
@@ -131,7 +133,7 @@ void Train(const TrainArg* arg) {
   fprintf(
     arg->streamInfo,
     "nbTotalSample: %ld\n",
-    GDSGetSize(&dataset));
+    nbSample);
   fprintf(
     arg->streamInfo,
     "nbInputs: %d\n",
@@ -149,22 +151,21 @@ void Train(const TrainArg* arg) {
     arg->type,
     GDSGetNbInputs(&dataset),
     GDSGetNbOutputs(&dataset),
-    GDSGetSize(&dataset),
+    nbSample,
     100 - arg->percSampleEval);
 
-  VecShort2D split = VecShortCreateStatic2D();
-  short nbSampleEval = GDSGetSize(&dataset) / arg->percSampleEval;
+  VecLong2D split = VecLongCreateStatic2D();
   VecSet(
     &split,
     0,
-    GDSGetSize(&dataset) - nbSampleEval);
+    nbSample - nbSampleEval);
   VecSet(
     &split,
     1,
     nbSampleEval);
   GDSSplit(
     &dataset,
-    (VecShort*)&split);
+    &split);
   NeuraMorph* nm =
     NeuraMorphCreate(
       GDSGetNbInputs(&dataset),
@@ -593,6 +594,30 @@ void Amphibian() {
 
 }
 
+void MNIST() {
+
+  TrainArg arg = {
+    .label = "MNIST",
+    .type = "Classification",
+    .pathDataset = "./Datasets/mnist.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 2,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = false,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
 void DocHeader() {
 
   fprintf(
@@ -649,7 +674,12 @@ void DocHeader() {
   fprintf(
     fpDoc,
     "\\begin{landscape}\n");
-  fprintf(
+
+}
+
+void DocHeaderTab() {
+
+ fprintf(
     fpDoc,
     "\\begin{tabular}{|c|c|c|c|c|c|c|}\n");
   fprintf(
@@ -661,11 +691,16 @@ void DocHeader() {
 
 }
 
-void DocFooter() {
+void DocFooterTab() {
 
   fprintf(
     fpDoc,
     "\\end{tabular}\n");
+
+}
+
+void DocFooter() {
+
   fprintf(
     fpDoc,
     "\\end{landscape}\n");
@@ -682,8 +717,9 @@ int main() {
       "./Validation/doc.tex",
       "w");
   DocHeader();
+  DocHeaderTab();
 
-  RGBHSV();
+  /*RGBHSV();
   DiabeteRisk();
   HCV();
   Amphibian();
@@ -691,6 +727,11 @@ int main() {
   Abalone();
   WisconsinDiagnosticBreastCancerDataset();
   Arrythmia();
+  DocFooterTab();*/
+
+  DocHeaderTab();
+  MNIST();
+  DocFooterTab();
 
   DocFooter();
   fclose(fpDoc);

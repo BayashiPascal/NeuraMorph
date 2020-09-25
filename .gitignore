@@ -5,6 +5,7 @@ generateAmphibian
 generateDiabeteRisk
 generateHCV
 generateRgbHsv
+generateMNIST
 Doc/*.aux
 Doc/*.log
 Doc/*.gz
@@ -13,3 +14,4 @@ Validation/*.aux
 Validation/*.log
 Validation/*.gz
 Validation/*.toc
+Datasets/mnist.json
