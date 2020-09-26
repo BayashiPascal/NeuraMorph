@@ -1217,13 +1217,13 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.resEval =
     PBErrMalloc(
       NeuraMorphErr,
-      sizeof(VecFloat*) * GDSGetNbOutputs(dataset));
+      sizeof(VecFloat*) * (1 + GDSGetNbOutputs(dataset)));
   that.nbCorrect =
     PBErrMalloc(
       NeuraMorphErr,
-      sizeof(long) * GDSGetNbOutputs(dataset));
+      sizeof(long) * (1 + GDSGetNbOutputs(dataset)));
   for (
-    long iOut = GDSGetNbOutputs(dataset);
+    long iOut = GDSGetNbOutputs(dataset) + 1;
     iOut--;) {
 
     that.resEval[iOut] = VecFloatCreate(4);
@@ -1254,7 +1254,7 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
 #endif
 
   for (
-    long iOut = NMGetNbOutput(NMTrainerNeuraMorph(that));
+    long iOut = NMGetNbOutput(NMTrainerNeuraMorph(that)) + 1;
     iOut--;) {
 
     VecFree(that->resEval + iOut);
@@ -2622,7 +2622,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
   // Declare variables to calculate the result of evaluation
   long nbOutput = NMGetNbOutput(NMTrainerNeuraMorph(that));
   for (
-    long iOut = nbOutput;
+    long iOut = nbOutput + 1;
     iOut--;) {
 
     that->nbCorrect[iOut] = 0;
@@ -2636,7 +2636,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
   float* biases =
     PBErrMalloc(
       NeuraMorphErr,
-      sizeof(float) * nbSample * nbOutput);
+      sizeof(float) * nbSample * (nbOutput + 1));
 
   // Loop on the evaluation samples
   long iSample = 0;
@@ -2662,6 +2662,71 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
       inputs);
 
     // Update the result of evaluation
+    float bias =
+      VecDist(
+        outputs,
+        NMOutputs(NMTrainerNeuraMorph(that)));
+    if (iSample == 0) {
+
+      VecSet(
+        that->resEval[nbOutput],
+        0,
+        bias);
+      VecSet(
+        that->resEval[nbOutput],
+        1,
+        0.0);
+      VecSet(
+        that->resEval[nbOutput],
+        3,
+        bias);
+
+    } else {
+
+      float minBias =
+        VecGet(
+          that->resEval[nbOutput],
+          0);
+      float maxBias =
+        VecGet(
+          that->resEval[nbOutput],
+          3);
+      minBias =
+        MIN(
+          bias,
+          minBias);
+      maxBias =
+        MAX(
+          bias,
+          maxBias);
+      VecSet(
+        that->resEval[nbOutput],
+        0,
+        minBias);
+      VecSet(
+        that->resEval[nbOutput],
+        3,
+        maxBias);
+
+    }
+
+    if (fabs(bias) < PBMATH_EPSILON) {
+
+      ++(that->nbCorrect[nbOutput]);
+
+    }
+
+    biases[iSample * nbOutput + nbOutput] = bias;
+    float avgBias =
+      VecGet(
+        that->resEval[nbOutput],
+        1);
+    avgBias += bias;
+    VecSet(
+      that->resEval[nbOutput],
+      1,
+      avgBias);
+
     for (
       long iOut = nbOutput;
       iOut--;) {
@@ -2674,7 +2739,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
         VecGet(
           NMOutputs(NMTrainerNeuraMorph(that)),
           iOut);
-      float bias = fabs(truth - pred);
+      bias = fabs(truth - pred);
       if (iSample == 0) {
 
         VecSet(
@@ -2753,7 +2818,7 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
   // Calculate the mean and standard deviation
   for (
-    long iOut = nbOutput;
+    long iOut = nbOutput + 1;
     iOut--;) {
 
     float avgBias =

@@ -213,6 +213,15 @@ void Train(const TrainArg* arg) {
     "%fs & \\makecell{",
     timeUsed);
 
+  int nbOutDisplay = GDSGetNbOutputs(&dataset);
+  if (
+    nbOutDisplay > 1 &&
+    arg->allHot == false) {
+
+    ++nbOutDisplay;
+
+  }
+
   NMTrainerSetStreamInfo(
     &trainer,
     arg->streamInfo);
@@ -222,17 +231,31 @@ void Train(const TrainArg* arg) {
     "Bias prediction (min/avg/sigma/max) and accuracy:\n");
   for (
     int iOut = 0;
-    iOut < GDSGetNbOutputs(&dataset);
+    iOut < nbOutDisplay;
     ++iOut) {
 
-    fprintf(
-      arg->streamInfo,
-      "#%d ",
-      iOut);
-    fprintf(
-      fpDoc,
-      "#%d ",
-      iOut);
+    if (iOut < GDSGetNbOutputs(&dataset)) {
+
+      fprintf(
+        arg->streamInfo,
+        "c.%02d ",
+        iOut);
+      fprintf(
+        fpDoc,
+        "c.%02d ",
+        iOut);
+
+    } else {
+
+      fprintf(
+        arg->streamInfo,
+        ".... ");
+      fprintf(
+        fpDoc,
+        ".... ");
+
+    }
+
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
       arg->streamInfo);
@@ -248,7 +271,7 @@ void Train(const TrainArg* arg) {
 
       fprintf(
         arg->streamInfo,
-        " %f%%",
+        " %.2f%%",
         percCorrect * 100.0);
       fprintf(
         fpDoc,
@@ -283,17 +306,31 @@ void Train(const TrainArg* arg) {
     "Bias training (min/avg/sigma/max) and accuracy:\n");
   for (
     int iOut = 0;
-    iOut < GDSGetNbOutputs(&dataset);
+    iOut < nbOutDisplay;
     ++iOut) {
 
-    fprintf(
-      arg->streamInfo,
-      "#%d ",
-      iOut);
-    fprintf(
-      fpDoc,
-      "#%d ",
-      iOut);
+    if (iOut < GDSGetNbOutputs(&dataset)) {
+
+      fprintf(
+        arg->streamInfo,
+        "c.%02d ",
+        iOut);
+      fprintf(
+        fpDoc,
+        "c.%02d ",
+        iOut);
+
+    } else {
+
+      fprintf(
+        arg->streamInfo,
+        ".... ");
+      fprintf(
+        fpDoc,
+        ".... ");
+
+    }
+
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
       arg->streamInfo);
@@ -309,7 +346,7 @@ void Train(const TrainArg* arg) {
 
       fprintf(
         arg->streamInfo,
-        " %f%%",
+        " %.2f%%",
         percCorrect * 100.0);
       fprintf(
         fpDoc,
@@ -356,7 +393,7 @@ void Train(const TrainArg* arg) {
       inputs);
     fprintf(
       arg->streamInfo,
-      "#%d\n",
+      "s.%d\n",
       iDisplay);
     /*fprintf(
       arg->streamInfo,
@@ -695,7 +732,7 @@ void DocFooterTab() {
 
   fprintf(
     fpDoc,
-    "\\end{tabular}\n");
+    "\\end{tabular}\\newpage\n");
 
 }
 
@@ -719,18 +756,18 @@ int main() {
   DocHeader();
   DocHeaderTab();
 
-  /*RGBHSV();
+  RGBHSV();
   DiabeteRisk();
   HCV();
   Amphibian();
   Iris();
   Abalone();
   WisconsinDiagnosticBreastCancerDataset();
-  Arrythmia();
-  DocFooterTab();*/
+  DocFooterTab();
 
   DocHeaderTab();
-  MNIST();
+  Arrythmia();
+  //MNIST();
   DocFooterTab();
 
   DocFooter();
