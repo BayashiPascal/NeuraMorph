@@ -144,7 +144,7 @@ void GenerateMNIST() {
 "{\n \
 \"dataSet\": \"MNIST\",\n \
 \"dataSetType\": \"0\",\n \
-\"desc\": \"\",\n \
+\"desc\": \"http://yann.lecun.com/exdb/mnist/\",\n \
   \"nbInputs\": \"784\",\n \
   \"nbOutputs\": \"10\",\n \
 \"dim\": {\n \
