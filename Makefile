@@ -4,7 +4,7 @@
 # 2: fast and furious (no safety, optimisation)
 BUILD_MODE?=1
 
-all: pbmake_wget main validation generateRgbHsv generateDiabeteRisk generateAmphibian generateHCV
+all: pbmake_wget main validation generateRgbHsv generateDiabeteRisk generateAmphibian generateHCV generateAnnealing
 	
 # Automatic installation of the repository PBMake in the parent folder
 pbmake_wget:
@@ -75,6 +75,18 @@ generateHCV.o: \
 		$($(repo)_INC_H_EXE) \
 		$($(repo)_EXE_DEP)
 	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateHCV.c
+
+generateAnnealing: \
+		generateAnnealing.o \
+		$($(repo)_EXE_DEP) \
+		$($(repo)_DEP)
+	$(COMPILER) `echo "$($(repo)_EXE_DEP) generateAnnealing.o" | tr ' ' '\n' | sort -u` $(LINK_ARG) $($(repo)_LINK_ARG) -o generateAnnealing 
+
+generateAnnealing.o: \
+		$($(repo)_DIR)/generateAnnealing.c \
+		$($(repo)_INC_H_EXE) \
+		$($(repo)_EXE_DEP)
+	$(COMPILER) $(BUILD_ARG) $($(repo)_BUILD_ARG) `echo "$($(repo)_INC_DIR)" | tr ' ' '\n' | sort -u` -c $($(repo)_DIR)/generateAnnealing.c
 
 generateAmphibian: \
 		generateAmphibian.o \

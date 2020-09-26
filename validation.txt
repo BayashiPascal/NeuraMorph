@@ -44,7 +44,7 @@ Nb available inputs: 99
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.152199)
-Time NMTrainerRun: 9.625396s
+Time NMTrainerRun: 9.581486s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.029,0.000,0.311>
 c.01 <0.000,0.008,0.000,0.058>
@@ -117,7 +117,7 @@ Nb available inputs: 74
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.072426)
-Time NMTrainerRun: 2.338939s
+Time NMTrainerRun: 2.340129s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.038,0.140,2.000> 98.08%
 c.01 <0.000,0.038,0.140,2.000> 98.08%
@@ -188,7 +188,7 @@ Nb available inputs: 132
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.147126)
-Time NMTrainerRun: 7.769632s
+Time NMTrainerRun: 7.739765s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.138,0.265,2.000> 93.10%
 c.01 <0.000,0.103,0.229,2.000> 94.83%
@@ -260,7 +260,7 @@ Nb available inputs: 140
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -2.026398)
-Time NMTrainerRun: 2.447042s
+Time NMTrainerRun: 2.441734s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.444,0.485,2.000> 77.78%
 c.01 <0.000,0.667,0.594,2.000> 66.67%
@@ -344,7 +344,7 @@ Nb available inputs: 88
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.091710)
-Time NMTrainerRun: 0.491120s
+Time NMTrainerRun: 0.484383s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.000,0.000,0.000> 100.00%
 c.01 <0.000,0.000,0.000,0.000> 100.00%
@@ -437,7 +437,7 @@ Nb available inputs: 22
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -1.344893)
-Time NMTrainerRun: 2.062711s
+Time NMTrainerRun: 2.053056s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.003,1.393,1.114,9.467>
 Bias training (min/avg/sigma/max) and accuracy:
@@ -499,7 +499,7 @@ Nb available inputs: 84
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -0.031327)
-Time NMTrainerRun: 3.658160s
+Time NMTrainerRun: 3.637780s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.107,0.234,2.000> 94.64%
 c.01 <0.000,0.107,0.234,2.000> 94.64%
@@ -560,7 +560,7 @@ Nb available inputs: 343
 Train units with 0001 input(s)
 Train units with 0002 input(s)
 Add the last unit (value: -1.053249)
-Time NMTrainerRun: 42.283293s
+Time NMTrainerRun: 42.491479s
 Bias prediction (min/avg/sigma/max) and accuracy:
 c.00 <0.000,0.000,0.000,0.000> 100.00%
 c.01 <0.000,0.667,0.584,2.000> 66.67%
@@ -613,3 +613,87 @@ Pred : <-1.000,1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.
 s.4
 Truth: <-1.000,1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000>
 Pred : <-1.000,1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000,-1.000>
+=============================================================
+https://archive.ics.uci.edu/ml/datasets/Annealing
+Projection on the 44 first principal components.
+nbTotalSample: 798
+nbInputs: 38
+nbOutputs: 6
+label: Annealing
+type: Classification
+pathDataset: ./Datasets/annealing.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.950000
+depth: 6
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 20
+order: 2
+nbDisplay: 5
+pca: 1
+Depth 1/6...
+Nb available inputs: 38
+Train units with 0001 input(s)
+Train units with 0002 input(s)
+Burry 10 out of 560 unit(s) (best value: -0.718889)
+Depth 2/6...
+Nb available inputs: 98
+Train units with 0001 input(s)
+Train units with 0002 input(s)
+Burry 15 out of 3832 unit(s) (best value: -0.579206)
+Depth 3/6...
+Nb available inputs: 188
+Train units with 0001 input(s)
+Train units with 0002 input(s)
+Burry 20 out of 11243 unit(s) (best value: -0.468375)
+Depth 4/6...
+Nb available inputs: 308
+Train units with 0001 input(s)
+Train units with 0002 input(s)
+Burry 20 out of 24715 unit(s) (best value: -0.440416)
+Depth 5/6...
+Nb available inputs: 428
+Train units with 0001 input(s)
+Train units with 0002 input(s)
+Burry 20 out of 39230 unit(s) (best value: -0.433641)
+Depth 6/6...
+Nb available inputs: 548
+Train units with 0001 input(s)
+Train units with 0002 input(s)
+Add the last unit (value: -0.416520)
+Time NMTrainerRun: 299.955701s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.025,0.113,2.000> 98.73%
+c.01 <0.000,0.051,0.160,2.000> 97.47%
+c.02 <0.000,0.152,0.277,2.000> 92.41%
+c.03 <0.000,0.000,0.000,0.000> 100.00%
+c.04 <0.000,0.025,0.113,2.000> 98.73%
+c.05 <0.000,0.101,0.226,2.000> 94.94%
+.... <0.000,0.251,0.113,2.828> 91.14%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.014,0.083,2.000> 99.30%
+c.01 <0.000,0.108,0.233,2.000> 94.58%
+c.02 <0.000,0.134,0.259,2.000> 93.32%
+c.03 <0.000,0.000,0.000,0.000> 100.00%
+c.04 <0.000,0.061,0.175,2.000> 96.94%
+c.05 <0.000,0.083,0.204,2.000> 95.83%
+.... <0.000,0.283,0.083,2.828> 89.99%
+Samples of prediction:
+s.0
+Truth: <-1.000,-1.000,1.000,-1.000,-1.000,-1.000>
+Pred : <-1.000,-1.000,1.000,-1.000,-1.000,-1.000>
+s.1
+Truth: <-1.000,-1.000,1.000,-1.000,-1.000,-1.000>
+Pred : <-1.000,-1.000,1.000,-1.000,-1.000,-1.000>
+s.2
+Truth: <-1.000,1.000,-1.000,-1.000,-1.000,-1.000>
+Pred : <-1.000,1.000,-1.000,-1.000,-1.000,-1.000>
+s.3
+Truth: <-1.000,-1.000,-1.000,-1.000,1.000,-1.000>
+Pred : <-1.000,-1.000,-1.000,-1.000,1.000,-1.000>
+s.4
+Truth: <-1.000,-1.000,1.000,-1.000,-1.000,-1.000>
+Pred : <-1.000,-1.000,1.000,-1.000,-1.000,-1.000>

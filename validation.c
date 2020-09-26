@@ -655,6 +655,30 @@ void MNIST() {
 
 }
 
+void Annealing() {
+
+  TrainArg arg = {
+    .label = "Annealing",
+    .type = "Classification",
+    .pathDataset = "./Datasets/annealing.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 6,
+    .maxLvlDiv = 1,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 20,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
 void DocHeader() {
 
   fprintf(
@@ -768,6 +792,7 @@ int main() {
   DocHeaderTab();
   Arrythmia();
   //MNIST();
+  Annealing();
   DocFooterTab();
 
   DocFooter();

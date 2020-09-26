@@ -6,6 +6,7 @@ generateDiabeteRisk
 generateHCV
 generateRgbHsv
 generateMNIST
+generateAnnealing
 Doc/*.aux
 Doc/*.log
 Doc/*.gz
