@@ -780,20 +780,20 @@ int main() {
   DocHeader();
 
   DocHeaderTab();
-  RGBHSV();
-  /*DiabeteRisk();
+  /*RGBHSV();
+  DiabeteRisk();
   HCV();
-  Amphibian();
+  Amphibian();*/
   Iris();
-  Abalone();
+  /*Abalone();
   WisconsinDiagnosticBreastCancerDataset();
   DocFooterTab();
 
   DocHeaderTab();
   Arrythmia();
   //MNIST();
-  Annealing();*/
-  DocFooterTab();
+  Annealing();
+  */DocFooterTab();
 
   DocFooter();
   fclose(fpDoc);

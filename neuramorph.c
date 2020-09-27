@@ -1410,7 +1410,6 @@ GSet* NMTrainerGetInputsConfsB(
           0);
 
       if (isValidInputConfig == true) {
-VecPrintln(iInputs,stdout);
 
         // Get the configuration
         VecLong* conf = VecClone(iInputs);
@@ -1419,10 +1418,6 @@ VecPrintln(iInputs,stdout);
         GSetAppend(
           confs,
           conf);
-
-        // Add the configurations made of this configuration
-        // extended with one previous input
-        
 
       }
 
@@ -1469,7 +1464,6 @@ VecPrintln(iInputs,stdout);
           0);
 
       if (isValidInputConfig == true) {
-VecPrintln(iInputs,stdout);
 
         // Get the configuration
         VecLong* conf =
@@ -1484,9 +1478,25 @@ VecPrintln(iInputs,stdout);
           confs,
           conf);
 
-        // Add the configurations made of this configuration
-        // extended with one previous input
-        
+        // Loop on the previous inputs
+        for (
+          long iInput = 0;
+          iInput < iFirstNewInput;
+          ++iInput) {
+
+            VecLong* confB =
+              VecGetNewDim(
+                conf,
+                nbOutputs + 1);
+            VecSet(
+              confB,
+              nbOutputs,
+              iInput);
+            GSetAppend(
+              confs,
+              confB);
+
+        }
 
       }
 
@@ -1595,6 +1605,16 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
     // Free memory
     GSetFree(&confs);
 
+    if (GSetNbElem(&trainedUnits) == 0) {
+
+      NeuraMorphErr->_type = PBErrTypeRuntimeError;
+      sprintf(
+        NeuraMorphErr->_msg,
+        "The set of trained units is empty.");
+      PBErrCatch(NeuraMorphErr);
+
+    }
+
     // If this is the last depth
     if (isLastDepth == true) {
 
@@ -1606,7 +1626,7 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
 
       printf(
         "Add the last unit (value: %f)\n",
-        NMUnitGetValue(GSetTail(&trainedUnits)));
+        NMUnitGetValue(bestUnit));
       /*NMUnitPrintln(
         bestUnit,
         stdout);*/
@@ -1868,13 +1888,14 @@ void NMTrainerTrainUnit(
         NMUnitGetValue(unit));
 
     } else {
-
+printf("A ");NMUnitPrintln(unit,stdout);
       NeuraMorphUnitFree(&unit);
 
     }
 
   } else {
 
+printf("B ");NMUnitPrintln(unit,stdout);
     NeuraMorphUnitFree(&unit);
     NeuraMorphUnitBodyFree(&body);
 
