@@ -383,6 +383,9 @@ typedef struct NeuraMorphTrainer {
   // Stream to output info during training and evaluation
   FILE* streamInfo;
 
+  // Current depth during training
+  int curDepth;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
