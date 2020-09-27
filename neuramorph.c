@@ -1109,14 +1109,11 @@ bool NMTrainerIsValidInputConfig(
 
 // Train a new NeuraMorphUnit with the interface defined by 'iInputs'
 // and 'iOutputs', and add it to the set, sorted on its value
-// If 'flagSubdiv' is true, search down through subdivisions of the
-// inputs space
 void NMTrainerTrainUnit(
   NeuraMorphTrainer* that,
                GSet* trainedUnits,
       const VecLong* iInputs,
-      const VecLong* iOutputs,
-                bool flagSubDiv);
+      const VecLong* iOutputs);
 
 // Precompute the values of the NeuraMorph for each sample of the
 // GDataset for the NeuraMorphTrainer 'that'
@@ -1157,6 +1154,12 @@ bool NMTrainerCheckRedundantUnit(
   NeuraMorphTrainer* that,
      NeuraMorphUnit* unit,
                GSet* trainedUnits);
+
+// Return the set of inputs configuration to check during training
+// at a given depth
+GSet* NMTrainerGetInputsConfs(
+  NeuraMorphTrainer* that,
+                long iFirstNewInput);
 
 // ================ Functions implemetation ====================
 
@@ -1275,6 +1278,87 @@ void NeuraMorphTrainerFreeStatic(NeuraMorphTrainer* that) {
 
 }
 
+// Return the set of inputs configuration to check during training
+// at a given depth
+GSet* NMTrainerGetInputsConfs(
+  NeuraMorphTrainer* that,
+                long iFirstNewInput) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  // Declare the result set
+  GSet* confs = GSetCreate();
+
+  // Get the number of available inputs for the new unit
+  long nbAvailInputs =
+    NMGetNbInput(NMTrainerNeuraMorph(that)) +
+    NMGetNbHidden(NMTrainerNeuraMorph(that));
+
+  // Get the number of inputs per unit
+  long nbMaxInputsUnit =
+    MIN(
+      nbAvailInputs,
+      NMTrainerGetNbMaxInputsUnit(that));
+
+  // Loop on the number of inputs for the new unit
+  for (
+    long nbUnitInputs = 1;
+    nbUnitInputs <= nbMaxInputsUnit;
+    ++nbUnitInputs) {
+
+    // Loop on the possible input configurations for the new units
+    VecLong* iInputs = VecLongCreate(nbUnitInputs);
+    VecLong* iInputsBound = VecLongCreate(nbUnitInputs);
+    VecSetAll(
+      iInputsBound,
+      nbAvailInputs);
+    bool hasStepped = true;
+    do {
+
+      bool isValidInputConfig =
+        NMTrainerIsValidInputConfig(
+          iInputs,
+          iFirstNewInput);
+      if (isValidInputConfig == true) {
+
+        // Add the valid configuration to the set
+        GSetAppend(
+          confs,
+          VecClone(iInputs));
+
+      }
+
+      // Step to the next input configuration
+      hasStepped =
+        VecStep(
+          iInputs,
+          iInputsBound);
+
+    } while (hasStepped);
+
+    // Free memory
+    VecFree(&iInputs);
+    VecFree(&iInputsBound);
+
+  }
+
+  // Return the result set
+  return confs;
+
+}
+
 // Run the training process for the NeuraMorphTrainer 'that'
 void NMTrainerRun(NeuraMorphTrainer* that) {
 
@@ -1292,10 +1376,8 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
 
 #endif
 
-  // Declare a variable to memorize the minimum index needed in the
-  // inputs of the new unit to ensure we do not train twice the same
-  // unit
-  long iMinInput = 0;
+  // Declare a variable to memorize the index of the first new input
+  long iFirstNewInput = 0;
 
   // Loop on training depth
   for (
@@ -1320,73 +1402,43 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     // Precompute the values to speed up the training
     NMTrainerPrecomputeValues(that);
 
-    // Get the output indices
-    VecLong* iOutputs = NMGetVecIOutputs(NMTrainerNeuraMorph(that));
-
     // Declare a set to memorize the trained units
     GSet trainedUnits = GSetCreateStatic();
 
     // Set a flag to memorize if we are at the last depth
     bool isLastDepth = (iDepth == NMTrainerGetDepth(that));
 
-    // Get the number of inputs per unit
-    long nbMaxInputsUnit =
-      MIN(
-        nbAvailInputs,
-        NMTrainerGetNbMaxInputsUnit(that));
+    // Get the output indices
+    VecLong* iOutputs = NMGetVecIOutputs(NMTrainerNeuraMorph(that));
 
-    // Loop on the number of inputs for the new unit
-    for (
-      long nbUnitInputs = 1;
-      nbUnitInputs <= nbMaxInputsUnit;
-      ++nbUnitInputs) {
+    // Get the set of inputs configuration
+    GSet* confs =
+      NMTrainerGetInputsConfs(
+        that,
+        iFirstNewInput);
 
-      printf(
-        "Train units with %04ld input(s)\n",
-        nbUnitInputs);
+    // Loop on the inputs configuration
+    while (GSetNbElem(confs) > 0) {
 
-      // Loop on the possible input configurations for the new units
-      VecLong* iInputs = VecLongCreate(nbUnitInputs);
-      VecLong* iInputsBound = VecLongCreate(nbUnitInputs);
-      VecSetAll(
-        iInputsBound,
-        nbAvailInputs);
-      bool hasStepped = true;
-      do {
+      VecLong* iInputs = GSetPop(confs);
 
-        bool isValidInputConfig =
-          NMTrainerIsValidInputConfig(
-            iInputs,
-            iMinInput);
-        if (isValidInputConfig == true) {
 if(GSetTail(&trainedUnits)){
 VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&trainedUnits)));
 }
-          // Train the unit
-          NMTrainerTrainUnit(
-            that,
-            &trainedUnits,
-            iInputs,
-            iOutputs,
-            true);
-            //(iDepth == 1));
-            //isLastDepth);
-
-          }
-
-        // Step to the next input configuration
-        hasStepped =
-          VecStep(
-            iInputs,
-            iInputsBound);
-
-      } while (hasStepped);
+      // Train the unit
+      NMTrainerTrainUnit(
+        that,
+        &trainedUnits,
+        iInputs,
+        iOutputs);
 
       // Free memory
       VecFree(&iInputs);
-      VecFree(&iInputsBound);
 
     }
+
+    // Free memory
+    GSetFree(&confs);
 
     // If this is the last depth
     if (isLastDepth == true) {
@@ -1458,8 +1510,8 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
 
     }
 
-    // Update the minimum index of a valid configuration
-    iMinInput = nbAvailInputs;
+    // Update the index of first new input
+    iFirstNewInput = nbAvailInputs;
 
     // Free memory
     VecFree(&iOutputs);
@@ -1532,14 +1584,11 @@ bool NMTrainerIsValidInputConfig(
 
 // Train a new NeuraMorphUnit with the interface defined by 'iInputs'
 // and 'iOutputs', and add it to the set, sorted on its value
-// If 'flagSubdiv' is true, search down through subdivisions of the
-// inputs space
 void NMTrainerTrainUnit(
   NeuraMorphTrainer* that,
                GSet* trainedUnits,
       const VecLong* iInputs,
-      const VecLong* iOutputs,
-                bool flagSubDiv) {
+      const VecLong* iOutputs) {
 
 
 #if BUILDMODE == 0
@@ -1620,10 +1669,6 @@ void NMTrainerTrainUnit(
 
   }
 
-  // Get the max level of subdivision
-  int nbMaxLvlSubDiv =
-    flagSubDiv ? NMTrainerGetMaxLvlDiv(that) : 0;
-
   NeuraMorphUnit* unit =
     NeuraMorphUnitCreate(
       iInputs,
@@ -1637,7 +1682,7 @@ void NMTrainerTrainUnit(
       body,
       NULL,
       0,
-      nbMaxLvlSubDiv,
+      NMTrainerGetMaxLvlDiv(that),
       NMTrainerPrecomp(that));
 
   // If the training was succesfull

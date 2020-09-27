@@ -778,10 +778,10 @@ int main() {
       "./Validation/doc.tex",
       "w");
   DocHeader();
-  DocHeaderTab();
 
+  DocHeaderTab();
   RGBHSV();
-  DiabeteRisk();
+  /*DiabeteRisk();
   HCV();
   Amphibian();
   Iris();
@@ -792,7 +792,7 @@ int main() {
   DocHeaderTab();
   Arrythmia();
   //MNIST();
-  Annealing();
+  Annealing();*/
   DocFooterTab();
 
   DocFooter();
