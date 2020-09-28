@@ -21,49 +21,46 @@ nbDisplay: 5
 pca: 1
 Depth 1/5...
 Nb available inputs: 3
-<0,1>
-<0,2>
-<1,2>
-Burry 1 out of 3 unit(s) (best value: -0.168338)
+Burry 1 out of 3 unit(s) (best value: -0.160073)
 Depth 2/5...
 Nb available inputs: 6
-Burry 1 out of 1 unit(s) (best value: -0.163868)
+Burry 1 out of 1 unit(s) (best value: -0.138102)
 Depth 3/5...
 Nb available inputs: 9
-Burry 1 out of 1 unit(s) (best value: -0.163258)
+Burry 1 out of 1 unit(s) (best value: -0.123945)
 Depth 4/5...
 Nb available inputs: 12
-Burry 1 out of 1 unit(s) (best value: -0.157739)
+Burry 1 out of 1 unit(s) (best value: -0.115242)
 Depth 5/5...
 Nb available inputs: 15
-Add the last unit (value: -0.154973)
-Time NMTrainerRun: 0.663135s
+Add the last unit (value: -0.110739)
+Time NMTrainerRun: 0.560504s
 Bias prediction (min/avg/sigma/max) and accuracy:
-c.00 <0.000,0.042,0.000,0.426>
-c.01 <0.000,0.009,0.000,0.050>
-c.02 <0.004,0.176,0.000,0.742>
-.... <0.019,0.193,0.000,0.743>
+c.00 <0.000,0.116,0.318,3.942>
+c.01 <0.000,0.014,0.000,0.216>
+c.02 <0.002,0.380,0.974,9.884>
+.... <0.008,0.411,0.318,10.642>
 Bias training (min/avg/sigma/max) and accuracy:
-c.00 <0.000,0.044,0.000,0.585>
-c.01 <0.000,0.008,0.000,0.050>
-c.02 <0.001,0.135,0.000,0.613>
-.... <0.002,0.155,0.000,0.618>
+c.00 <0.000,0.030,0.000,0.361>
+c.01 <0.000,0.007,0.000,0.045>
+c.02 <0.000,0.098,0.000,0.547>
+.... <0.001,0.111,0.000,0.568>
 Samples of prediction:
 s.0
 Truth: <0.965,0.467,0.973>
-Pred : <0.901,0.466,0.794>
+Pred : <0.941,0.471,0.872>
 s.1
 Truth: <0.694,0.828,0.721>
-Pred : <0.722,0.820,0.750>
+Pred : <0.688,0.826,0.730>
 s.2
 Truth: <0.291,0.910,0.591>
-Pred : <0.267,0.900,0.787>
+Pred : <0.297,0.909,0.729>
 s.3
 Truth: <0.576,0.631,0.434>
-Pred : <0.558,0.622,0.766>
+Pred : <0.561,0.635,0.521>
 s.4
 Truth: <0.983,0.149,0.939>
-Pred : <0.419,0.162,0.728>
+Pred : <1.026,0.179,0.988>
 =============================================================
 https://archive.ics.uci.edu/ml/datasets/Early+stage+diabetes+risk+prediction+dataset.#
 Projection on the 18 first principal components.
@@ -87,132 +84,234 @@ nbDisplay: 5
 pca: 1
 Depth 1/5...
 Nb available inputs: 16
-<0,1>
-<0,2>
-<0,3>
-<0,4>
-<0,5>
-<0,6>
-<0,7>
-<0,8>
-<0,9>
-<0,10>
-<0,11>
-<0,12>
-<0,13>
-<0,14>
-<0,15>
-<1,2>
-<1,3>
-<1,4>
-<1,5>
-<1,6>
-<1,7>
-<1,8>
-<1,9>
-<1,10>
-<1,11>
-<1,12>
-<1,13>
-<1,14>
-<1,15>
-<2,3>
-<2,4>
-<2,5>
-<2,6>
-<2,7>
-<2,8>
-<2,9>
-<2,10>
-<2,11>
-<2,12>
-<2,13>
-<2,14>
-<2,15>
-<3,4>
-<3,5>
-<3,6>
-<3,7>
-<3,8>
-<3,9>
-<3,10>
-<3,11>
-<3,12>
-<3,13>
-<3,14>
-<3,15>
-<4,5>
-<4,6>
-<4,7>
-<4,8>
-<4,9>
-<4,10>
-<4,11>
-<4,12>
-<4,13>
-<4,14>
-<4,15>
-<5,6>
-<5,7>
-<5,8>
-<5,9>
-<5,10>
-<5,11>
-<5,12>
-<5,13>
-<5,14>
-<5,15>
-<6,7>
-<6,8>
-<6,9>
-<6,10>
-<6,11>
-<6,12>
-<6,13>
-<6,14>
-<6,15>
-<7,8>
-<7,9>
-<7,10>
-<7,11>
-<7,12>
-<7,13>
-<7,14>
-<7,15>
-<8,9>
-<8,10>
-<8,11>
-<8,12>
-<8,13>
-<8,14>
-<8,15>
-<9,10>
-<9,11>
-<9,12>
-<9,13>
-<9,14>
-<9,15>
-<10,11>
-<10,12>
-<10,13>
-<10,14>
-<10,15>
-<11,12>
-<11,13>
-<11,14>
-<11,15>
-<12,13>
-<12,14>
-<12,15>
-<13,14>
-<13,15>
-<14,15>
-Burry 7 out of 101 unit(s) (best value: -0.650328)
+Burry 5 out of 120 unit(s) (best value: -0.696922)
 Depth 2/5...
-Nb available inputs: 30
-Burry 4 out of 378 unit(s) (best value: -0.324929)
+Nb available inputs: 26
+Burry 10 out of 73 unit(s) (best value: -0.218583)
 Depth 3/5...
-Nb available inputs: 38
-Burry 2 out of 6 unit(s) (best value: -0.310473)
+Nb available inputs: 46
+Burry 10 out of 347 unit(s) (best value: -0.071183)
 Depth 4/5...
-Nb available inputs: 42
+Nb available inputs: 66
+Burry 10 out of 1312 unit(s) (best value: -0.024691)
+Depth 5/5...
+Nb available inputs: 86
+Add the last unit (value: -0.000587)
+Time NMTrainerRun: 31.579867s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.154,0.280,2.000> 92.31%
+c.01 <0.000,0.154,0.280,2.000> 92.31%
+.... <0.000,0.218,0.280,2.828> 92.31%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.000,0.000,0.000> 100.00%
+c.01 <0.000,0.000,0.000,0.000> 100.00%
+.... <0.000,0.000,0.000,0.000> 100.00%
+Samples of prediction:
+s.0
+Truth: <1.000,-1.000>
+Pred : <1.000,-1.000>
+s.1
+Truth: <-1.000,1.000>
+Pred : <-1.000,1.000>
+s.2
+Truth: <-1.000,1.000>
+Pred : <-1.000,1.000>
+s.3
+Truth: <1.000,-1.000>
+Pred : <1.000,-1.000>
+s.4
+Truth: <-1.000,1.000>
+Pred : <-1.000,1.000>
+=============================================================
+Iris dataset
+Projection on the 7 first principal components.
+nbTotalSample: 150
+nbInputs: 4
+nbOutputs: 3
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.950000
+depth: 6
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 10
+order: 2
+nbDisplay: 5
+pca: 1
+Depth 1/6...
+Nb available inputs: 4
+Burry 1 out of 6 unit(s) (best value: -0.447318)
+Depth 2/6...
+Nb available inputs: 7
+Burry 1 out of 1 unit(s) (best value: -3.017030)
+Depth 3/6...
+Nb available inputs: 10
+Burry 1 out of 1 unit(s) (best value: -0.246093)
+Depth 4/6...
+Nb available inputs: 13
+Burry 1 out of 1 unit(s) (best value: -0.260074)
+Depth 5/6...
+Nb available inputs: 16
+Burry 1 out of 1 unit(s) (best value: -0.565899)
+Depth 6/6...
+Nb available inputs: 19
+Add the last unit (value: -0.061170)
+Time NMTrainerRun: 0.004357s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.000,0.000,0.000> 100.00%
+c.01 <0.000,0.133,0.267,2.000> 93.33%
+c.02 <0.000,0.133,0.267,2.000> 93.33%
+.... <0.000,0.189,0.000,2.828> 93.33%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.000,0.000,0.000> 100.00%
+c.01 <0.000,0.015,0.086,2.000> 99.26%
+c.02 <0.000,0.015,0.086,2.000> 99.26%
+.... <0.000,0.021,0.000,2.828> 99.26%
+Samples of prediction:
+s.0
+Truth: <1.000,-1.000,-1.000>
+Pred : <1.000,-1.000,-1.000>
+s.1
+Truth: <-1.000,1.000,-1.000>
+Pred : <-1.000,1.000,-1.000>
+s.2
+Truth: <-1.000,1.000,-1.000>
+Pred : <-1.000,1.000,-1.000>
+s.3
+Truth: <-1.000,-1.000,1.000>
+Pred : <-1.000,-1.000,1.000>
+s.4
+Truth: <-1.000,1.000,-1.000>
+Pred : <-1.000,1.000,-1.000>
+=============================================================
+Abalone dataset
+Projection on the 11 first principal components.
+nbTotalSample: 4177
+nbInputs: 10
+nbOutputs: 1
+label: Abalone
+type: Regression
+pathDataset: ./Datasets/abalone.json
+percSampleEval: 10
+oneHot: 0
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.950000
+depth: 9
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 10
+order: 2
+nbDisplay: 5
+pca: 1
+Depth 1/9...
+Nb available inputs: 10
+Burry 2 out of 45 unit(s) (best value: -1.523411)
+Depth 2/9...
+Nb available inputs: 12
+Burry 2 out of 22 unit(s) (best value: -1.460320)
+Depth 3/9...
+Nb available inputs: 14
+Burry 1 out of 26 unit(s) (best value: -1.429583)
+Depth 4/9...
+Nb available inputs: 15
+Burry 1 out of 15 unit(s) (best value: -1.400167)
+Depth 5/9...
+Nb available inputs: 16
+Burry 1 out of 16 unit(s) (best value: -1.381037)
+Depth 6/9...
+Nb available inputs: 17
+Burry 1 out of 17 unit(s) (best value: -1.366346)
+Depth 7/9...
+Nb available inputs: 18
+Burry 2 out of 18 unit(s) (best value: -1.353562)
+Depth 8/9...
+Nb available inputs: 20
+Burry 2 out of 37 unit(s) (best value: -1.334667)
+Depth 9/9...
+Nb available inputs: 22
+Add the last unit (value: -1.323979)
+Time NMTrainerRun: 2.082941s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 <0.000,2958734675052395298291712.000,0.000,1233792325773894829637369856.000>
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 <0.000,1.324,1.057,11.253>
+Samples of prediction:
+s.0
+Truth: <8.000>
+Pred : <8.479>
+s.1
+Truth: <16.000>
+Pred : <10.593>
+s.2
+Truth: <11.000>
+Pred : <11.687>
+s.3
+Truth: <9.000>
+Pred : <8.638>
+s.4
+Truth: <12.000>
+Pred : <10.581>
+=============================================================
+Wisconsin diagnostic breast cancer dataset
+Projection on the 32 first principal components.
+nbTotalSample: 569
+nbInputs: 30
+nbOutputs: 2
+label: Breast cancer
+type: Classification
+pathDataset: ./Datasets/wdbc.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.950000
+depth: 4
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 10
+order: 2
+nbDisplay: 5
+pca: 1
+Depth 1/4...
+Nb available inputs: 30
+Burry 10 out of 435 unit(s) (best value: -0.223727)
+Depth 2/4...
+Nb available inputs: 50
+Burry 10 out of 566 unit(s) (best value: -0.087793)
+Depth 3/4...
+Nb available inputs: 70
+Burry 10 out of 414 unit(s) (best value: -0.021607)
+Depth 4/4...
+Nb available inputs: 90
+Add the last unit (value: -0.012631)
+Time NMTrainerRun: 43.671351s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.143,0.270,2.000> 92.86%
+c.01 <0.000,0.143,0.270,2.000> 92.86%
+.... <0.000,0.202,0.270,2.828> 92.86%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 <0.000,0.004,0.044,2.000> 99.81%
+c.01 <0.000,0.004,0.044,2.000> 99.81%
+.... <0.000,0.006,0.044,2.828> 99.81%
+Samples of prediction:
+s.0
+Truth: <-1.000,1.000>
+Pred : <-1.000,1.000>
+s.1
+Truth: <-1.000,1.000>
+Pred : <-1.000,1.000>
+s.2
+Truth: <-1.000,1.000>
+Pred : <-1.000,1.000>
+s.3
+Truth: <1.000,-1.000>
+Pred : <1.000,-1.000>
+s.4
+Truth: <1.000,-1.000>
+Pred : <1.000,-1.000>

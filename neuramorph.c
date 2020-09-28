@@ -1463,6 +1463,9 @@ GSet* NMTrainerGetInputsConfsB(
           iInputs,
           0);
 
+isValidInputConfig &= ((VecGet(iInputs,0)) % nbOutputs == 0);
+
+
       if (isValidInputConfig == true) {
 
         // Get the configuration
@@ -1888,14 +1891,13 @@ void NMTrainerTrainUnit(
         NMUnitGetValue(unit));
 
     } else {
-printf("A ");NMUnitPrintln(unit,stdout);
+
       NeuraMorphUnitFree(&unit);
 
     }
 
   } else {
 
-printf("B ");NMUnitPrintln(unit,stdout);
     NeuraMorphUnitFree(&unit);
     NeuraMorphUnitBodyFree(&body);
 
@@ -2278,7 +2280,8 @@ bool NMTrainerTrainBody(
   long nbMinSample =
     powi(
       NMTrainerGetOrder(that) + 2,
-      NMUnitGetNbInputs(unit) + 1);
+      NMUnitGetNbInputs(unit));
+      //NMUnitGetNbInputs(unit) + 1);
   if (GSetNbElem(&filteredSamples) >= nbMinSample) {
 
     // Calculate the transfer function for the body

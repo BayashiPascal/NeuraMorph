@@ -499,7 +499,7 @@ void Arrythmia() {
     .depth = 3,
     .maxLvlDiv = 2,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
+    .nbMaxUnitDepth = 2, //10,
     .order = 2,
     .nbDisplay = 5,
     .pcaFlag = true,
@@ -780,20 +780,20 @@ int main() {
   DocHeader();
 
   DocHeaderTab();
-  /*RGBHSV();
+  RGBHSV();
   DiabeteRisk();
-  HCV();
-  Amphibian();*/
+  //HCV();
+  //Amphibian();
   Iris();
-  /*Abalone();
+  Abalone();
   WisconsinDiagnosticBreastCancerDataset();
-  DocFooterTab();
+  //DocFooterTab();
 
-  DocHeaderTab();
-  Arrythmia();
+  //DocHeaderTab();
+  //Arrythmia();
   //MNIST();
-  Annealing();
-  */DocFooterTab();
+  //Annealing();
+  DocFooterTab();
 
   DocFooter();
   fclose(fpDoc);
