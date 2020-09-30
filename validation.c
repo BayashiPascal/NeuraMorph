@@ -448,7 +448,7 @@ void Iris() {
     .weakUnitThreshold = 0.95,
     .depth = 6,
     .maxLvlDiv = 0,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -472,7 +472,7 @@ void WisconsinDiagnosticBreastCancerDataset() {
     .weakUnitThreshold = 0.95,
     .depth = 4,
     .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -498,8 +498,8 @@ void Arrythmia() {
     .weakUnitThreshold = 0.95,
     .depth = 3,
     .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 2, //10,
+    .nbMaxInputsUnit = 3, //2,
+    .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
     .pcaFlag = true,
@@ -524,7 +524,7 @@ void Abalone() {
     .weakUnitThreshold = 0.95,
     .depth = 9,
     .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -548,7 +548,7 @@ void RGBHSV() {
     .weakUnitThreshold = 0.5,
     .depth = 5,
     .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -572,7 +572,7 @@ void DiabeteRisk() {
     .weakUnitThreshold = 0.95,
     .depth = 5,
     .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -596,7 +596,7 @@ void HCV() {
     .weakUnitThreshold = 0.95,
     .depth = 5,
     .maxLvlDiv = 1,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -620,7 +620,7 @@ void Amphibian() {
     .weakUnitThreshold = 0.95,
     .depth = 4,
     .maxLvlDiv = 0,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -644,7 +644,7 @@ void MNIST() {
     .weakUnitThreshold = 0.95,
     .depth = 2,
     .maxLvlDiv = 0,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
@@ -668,7 +668,7 @@ void Annealing() {
     .weakUnitThreshold = 0.95,
     .depth = 6,
     .maxLvlDiv = 1,
-    .nbMaxInputsUnit = 2,
+    .nbMaxInputsUnit = 3, //2,
     .nbMaxUnitDepth = 20,
     .order = 2,
     .nbDisplay = 5,
@@ -782,17 +782,17 @@ int main() {
   DocHeaderTab();
   RGBHSV();
   DiabeteRisk();
-  //HCV();
-  //Amphibian();
+  HCV();
+  Amphibian();
   Iris();
   Abalone();
   WisconsinDiagnosticBreastCancerDataset();
-  //DocFooterTab();
+  DocFooterTab();
 
-  //DocHeaderTab();
-  //Arrythmia();
+  DocHeaderTab();
+  Arrythmia();
   //MNIST();
-  //Annealing();
+  Annealing();
   DocFooterTab();
 
   DocFooter();

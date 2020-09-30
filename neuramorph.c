@@ -1577,7 +1577,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
 
     // Get the set of inputs configuration
     GSet* confs =
-      NMTrainerGetInputsConfsB(
+      NMTrainerGetInputsConfsA(
         that,
         iFirstNewInput);
     fprintf(
