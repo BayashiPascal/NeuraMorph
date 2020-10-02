@@ -511,30 +511,6 @@ void Train(TrainArg* arg) {
 
 }
 
-void Iris() {
-
-  TrainArg arg = {
-    .label = "Iris",
-    .type = "Classification",
-    .pathDataset = "./Datasets/iris.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = true,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 6,
-    .maxLvlDiv = 0,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .pcaFlag = true,
-    .streamInfo = stdout
-  };
-  Train(&arg);
-
-}
-
 void Arrythmia() {
 
   TrainArg arg = {
@@ -759,6 +735,36 @@ void WisconsinDiagnosticBreastCancerDataset() {
 
 }
 
+void Iris() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/iris.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Iris",
+    .type = "Classification",
+    .pathDataset = "./Datasets/iris.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.975,
+    .depth = 2,
+    .maxLvlDiv = 1,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 11,
+    .order = 1,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
 void Search() {
 
   FILE* fp =
@@ -781,7 +787,8 @@ void Search() {
     .order = 2,
     .nbDisplay = 5,
     .pcaFlag = true,
-    .streamInfo = stdout
+    .streamInfo = fp,
+    .fpDoc = fp
   };
   
   TrainArg arg = bestArg;
@@ -906,9 +913,9 @@ void Search() {
 
 int main() {
 
-  Search();
+  //Search();
   //WisconsinDiagnosticBreastCancerDataset();
-  //Iris();
+  Iris();
 
 
 /*

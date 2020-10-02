@@ -1,0 +1,484 @@
+Search depth 2
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 97.037033 0.038589
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 97.037033 0.016135
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.915000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 97.037033 0.015441
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.930000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 97.037033 0.015430
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.975000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 97.037033 0.015271
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.990000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 98.518524 0.126903
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 3
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 98.518524 0.126786
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.945000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 3
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+best: 96.000000 98.518524 0.126743
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.975000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 3
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 96.000000 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+best: 97.333336 99.259254 0.058393
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.975000
+depth: 2
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 11
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Search depth 3
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 97.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 73.333336 93.333336 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 80.000000 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 86.666664 94.666672 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000
+Potential best. Check influence of random seed
+Seed variation: 93.333336 96.000008 100.000000

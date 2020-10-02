@@ -1,0 +1,56 @@
+=============================================================
+http://archive.ics.uci.edu/ml/datasets/Iris/
+Projection on the 7 first principal components.
+nbTotalSample: 150
+nbInputs: 4
+nbOutputs: 3
+label: Iris
+type: Classification
+pathDataset: ./Datasets/iris.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.975000
+depth: 2
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 11
+order: 1
+nbDisplay: 5
+pca: 1
+Depth 1/2...
+Nb available inputs: 4
+Nb of configurations to try: 10
+Burry 2 out of 10 unit(s) (best value: -0.319438)
+Depth 2/2...
+Nb available inputs: 10
+Nb of configurations to try: 45
+Add the last unit (value: -0.098243)
+Time NMTrainerRun: 0.059390s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.000,0.000,0.000] 100.00%
+c.01 [0.000,0.000,0.000,0.000] 100.00%
+c.02 [0.000,0.000,0.000,0.000] 100.00%
+.... [0.000,0.000,0.000,0.000] 100.00%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.000,0.000,0.000] 100.00%
+c.01 [0.000,0.015,0.086,2.000] 99.26%
+c.02 [0.000,0.015,0.086,2.000] 99.26%
+.... [0.000,0.021,0.000,2.828] 99.26%
+Samples of prediction:
+s.0
+Truth: [1.000,-1.000,-1.000]
+Pred : [1.000,-1.000,-1.000]
+s.1
+Truth: [-1.000,1.000,-1.000]
+Pred : [-1.000,1.000,-1.000]
+s.2
+Truth: [-1.000,1.000,-1.000]
+Pred : [-1.000,1.000,-1.000]
+s.3
+Truth: [-1.000,-1.000,1.000]
+Pred : [-1.000,-1.000,1.000]
+s.4
+Truth: [-1.000,1.000,-1.000]
+Pred : [-1.000,1.000,-1.000]
