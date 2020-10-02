@@ -1549,7 +1549,8 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     that->curDepth <= NMTrainerGetDepth(that);
     ++(that->curDepth)) {
 
-    printf(
+    fprintf(
+      NMTrainerStreamInfo(that),
       "Depth %d/%d...\n",
       that->curDepth,
       NMTrainerGetDepth(that));
@@ -1559,7 +1560,8 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
       NMGetNbInput(NMTrainerNeuraMorph(that)) +
       NMGetNbHidden(NMTrainerNeuraMorph(that));
 
-    printf(
+    fprintf(
+      NMTrainerStreamInfo(that),
       "Nb available inputs: %ld\n",
       nbAvailInputs);
 
@@ -1581,7 +1583,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
         that,
         iFirstNewInput);
     fprintf(
-      stderr,
+      NMTrainerStreamInfo(that),
       "Nb of configurations to try: %ld\n",
       GSetNbElem(confs));
 
@@ -1591,7 +1593,7 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
       VecLong* iInputs = GSetPop(confs);
 
 if(GSetTail(&trainedUnits)){
-VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&trainedUnits)));
+VecPrint(iInputs,stderr);fprintf(stderr, " %d %f    \r", that->curDepth, NMUnitGetValue(GSetTail(&trainedUnits)));
 }
       // Train the unit
       NMTrainerTrainUnit(
@@ -1627,7 +1629,8 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
         &(NMTrainerNeuraMorph(that)->units),
         bestUnit);
 
-      printf(
+      fprintf(
+        NMTrainerStreamInfo(that),
         "Add the last unit (value: %f)\n",
         NMUnitGetValue(bestUnit));
       /*NMUnitPrintln(
@@ -1666,7 +1669,8 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %f    \r", NMUnitGetValue(GSetTail(&t
       }
 
       // Displayed the burried units
-      printf(
+      fprintf(
+        NMTrainerStreamInfo(that),
         "Burry %ld out of %ld unit(s) (best value: %f)\n",
         GSetNbElem(&trainedUnits),
         nbTrainedUnits,

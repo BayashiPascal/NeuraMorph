@@ -1,7 +1,7 @@
 {
    "dataSet": "Arrhythmia dataset",
    "dataSetType": "0",
-   "desc": "Arrhythmia dataset",
+   "desc": "https://archive.ics.uci.edu/ml/datasets/arrhythmia",
    "nbInputs": "279",
    "nbOutputs": "16",
    "dim": {

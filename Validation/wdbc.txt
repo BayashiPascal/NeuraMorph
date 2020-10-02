@@ -1,0 +1,66 @@
+=============================================================
+https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic
+Projection on the 32 first principal components.
+nbTotalSample: 569
+nbInputs: 30
+nbOutputs: 2
+label: Breast cancer
+type: Classification
+pathDataset: ./Datasets/wdbc.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 5
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 21
+order: 2
+nbDisplay: 5
+pca: 1
+Depth 1/5...
+Nb available inputs: 30
+Nb of configurations to try: 465
+Burry 21 out of 459 unit(s) (best value: -0.305095)
+Depth 2/5...
+Nb available inputs: 72
+Nb of configurations to try: 2163
+Burry 21 out of 2034 unit(s) (best value: -0.134180)
+Depth 3/5...
+Nb available inputs: 114
+Nb of configurations to try: 3927
+Burry 21 out of 3787 unit(s) (best value: -0.092757)
+Depth 4/5...
+Nb available inputs: 156
+Nb of configurations to try: 5691
+Burry 21 out of 5114 unit(s) (best value: -0.045175)
+Depth 5/5...
+Nb available inputs: 198
+Nb of configurations to try: 7455
+Add the last unit (value: -0.022925)
+Time NMTrainerRun: 17.073165s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.000,0.000,0.000] 100.00%
+c.01 [0.000,0.000,0.000,0.000] 100.00%
+.... [0.000,0.000,0.000,0.000] 100.00%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.008,0.062,2.000] 99.61%
+c.01 [0.000,0.008,0.062,2.000] 99.61%
+.... [0.000,0.011,0.062,2.828] 99.61%
+Samples of prediction:
+s.0
+Truth: [-1.000,1.000]
+Pred : [-1.000,1.000]
+s.1
+Truth: [-1.000,1.000]
+Pred : [-1.000,1.000]
+s.2
+Truth: [-1.000,1.000]
+Pred : [-1.000,1.000]
+s.3
+Truth: [1.000,-1.000]
+Pred : [1.000,-1.000]
+s.4
+Truth: [1.000,-1.000]
+Pred : [1.000,-1.000]

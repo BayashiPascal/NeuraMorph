@@ -8,8 +8,6 @@
 #include "neuramorph.h"
 #include "pbdataanalysis.h"
 
-FILE* fpDoc;
-
 typedef struct TrainArg {
 
   const char* label;
@@ -26,81 +24,84 @@ typedef struct TrainArg {
   int nbMaxUnitDepth;
   int order;
   FILE* streamInfo;
+  FILE* fpDoc;
   int nbDisplay;
   bool pcaFlag;
+  float accPred;
+  float accPredTrain;
+  float time;
 
 } TrainArg;
 
-void TrainArgPrint(const TrainArg* arg) {
+void TrainArgPrint(
+  const TrainArg* arg,
+  FILE* streamInfo) {
 
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "label: %s\n",
     arg->label);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "type: %s\n",
     arg->type);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "pathDataset: %s\n",
     arg->pathDataset);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "percSampleEval: %d\n",
     arg->percSampleEval);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "oneHot: %d\n",
     arg->oneHot);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "allHot: %d\n",
     arg->allHot);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "seed: %d\n",
     arg->seed);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "weakUnitThreshold: %f\n",
     arg->weakUnitThreshold);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "depth: %d\n",
     arg->depth);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "maxLvlDiv: %d\n",
     arg->maxLvlDiv);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "nbMaxInputsUnit: %d\n",
     arg->nbMaxInputsUnit);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "nbMaxUnitDepth: %d\n",
     arg->nbMaxUnitDepth);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "order: %d\n",
     arg->order);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "nbDisplay: %d\n",
     arg->nbDisplay);
   fprintf(
-    arg->streamInfo,
+    streamInfo,
     "pca: %d\n",
     arg->pcaFlag);
 
 }
 
-void Train(const TrainArg* arg) {
+void Train(TrainArg* arg) {
 
-  fprintf(
-    fpDoc,
-    "\\\\\n");
   fprintf(
     arg->streamInfo,
     "=============================================================\n");
@@ -142,16 +143,30 @@ void Train(const TrainArg* arg) {
     arg->streamInfo,
     "nbOutputs: %d\n",
     GDSGetNbOutputs(&dataset));
-  TrainArgPrint(arg);
+  TrainArgPrint(
+    arg,
+    arg->streamInfo);
 
   fprintf(
-    fpDoc,
-    "%s & %s & %d/%d & %ld/%d & ",
-    arg->label,
-    arg->type,
+    arg->fpDoc,
+    "Training parameters:\\\\\n" \
+    "\\begin{center}\n" \
+    "\\begin{tabular}{|l|l|}\n");
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "Nb inputs/outputs&%d/%d\\\\\n",
     GDSGetNbInputs(&dataset),
-    GDSGetNbOutputs(&dataset),
-    nbSample,
+    GDSGetNbOutputs(&dataset));
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "Nb samples&%ld\\\\\n",
+    nbSample);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "Percentage of training samples&%d\\%%\\\\\n",
     100 - arg->percSampleEval);
 
   VecLong2D split = VecLongCreateStatic2D();
@@ -181,6 +196,9 @@ void Train(const TrainArg* arg) {
       nm,
       &dataset);
 
+  NMTrainerSetStreamInfo(
+    &trainer,
+    arg->streamInfo);
   NMTrainerSetWeakThreshold(
     &trainer,
     arg->weakUnitThreshold);
@@ -207,11 +225,52 @@ void Train(const TrainArg* arg) {
     arg->streamInfo,
     "Time NMTrainerRun: %fs\n",
     timeUsed);
+  arg->time = timeUsed;
 
   fprintf(
-    fpDoc,
-    "%fs & \\makecell{",
+    arg->fpDoc,
+    "\\hline\n" \
+    "weakUnitThreshold&%f\\\\\n",
+    arg->weakUnitThreshold);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "depth&%d\\\\\n",
+    arg->depth);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "maxLvlDiv&%d\\\\\n",
+    arg->maxLvlDiv);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "nbMaxInputsUnit&%d\\\\\n",
+    arg->nbMaxInputsUnit);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "nbMaxUnitDepth&%d\\\\\n",
+    arg->nbMaxUnitDepth);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "order&%d\\\\\n",
+    arg->order);
+
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "Time training&%.1fs\\\\\n",
     timeUsed);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "\\end{tabular}\\\\\n");
+
+  fprintf(
+    arg->fpDoc,
+    "\\end{center}\\newline\n");
 
   int nbOutDisplay = GDSGetNbOutputs(&dataset);
   if (
@@ -222,13 +281,21 @@ void Train(const TrainArg* arg) {
 
   }
 
-  NMTrainerSetStreamInfo(
-    &trainer,
-    arg->streamInfo);
   NMTrainerEval(&trainer);
   fprintf(
     arg->streamInfo,
     "Bias prediction (min/avg/sigma/max) and accuracy:\n");
+
+  fprintf(
+    arg->fpDoc,
+    "Results:\n" \
+    "\\begin{center}\n" \
+    "\\begin{tabular}{|l|l|}\n");
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "\\makecell{Bias prediction (min/avg/sigma/max)\\\\and accuracy}&" \
+    "\\makecell{");
   for (
     int iOut = 0;
     iOut < nbOutDisplay;
@@ -241,7 +308,7 @@ void Train(const TrainArg* arg) {
         "c.%02d ",
         iOut);
       fprintf(
-        fpDoc,
+        arg->fpDoc,
         "c.%02d ",
         iOut);
 
@@ -251,7 +318,7 @@ void Train(const TrainArg* arg) {
         arg->streamInfo,
         ".... ");
       fprintf(
-        fpDoc,
+        arg->fpDoc,
         ".... ");
 
     }
@@ -261,22 +328,23 @@ void Train(const TrainArg* arg) {
       arg->streamInfo);
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
-      fpDoc);
-    float percCorrect =
-      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
-      (float)GDSGetSizeCat(
-        NMTrainerDataset(&trainer),
-        NMTrainerGetICatEval(&trainer));
+      arg->fpDoc);
     if (arg->oneHot || arg->allHot) {
 
+      float percCorrect =
+        (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+        (float)GDSGetSizeCat(
+          NMTrainerDataset(&trainer),
+          NMTrainerGetICatEval(&trainer)) * 100.0;
       fprintf(
         arg->streamInfo,
         " %.2f%%",
-        percCorrect * 100.0);
+        percCorrect);
       fprintf(
-        fpDoc,
+        arg->fpDoc,
         " %.2f\\%%",
-        percCorrect * 100.0);
+        percCorrect);
+      arg->accPred = percCorrect;
 
     }
 
@@ -285,25 +353,35 @@ void Train(const TrainArg* arg) {
       "\n");
 
     fprintf(
-      fpDoc,
-      "\\\\");
+      arg->fpDoc,
+      "\\\\\n");
 
   }
 
   fprintf(
-    fpDoc,
-    "} & \\makecell{");
+    arg->fpDoc,
+    "}\\\\\n\n");
 
-  NMTrainerSetICatEval(
+ NMTrainerSetICatEval(
     &trainer,
     0);
+  FILE* fp =
+    fopen(
+      "/dev/null",
+      "w");
   NMTrainerSetStreamInfo(
     &trainer,
-    NULL);
+    fp);
+  fclose(fp);
   NMTrainerEval(&trainer);
   fprintf(
     arg->streamInfo,
     "Bias training (min/avg/sigma/max) and accuracy:\n");
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "\\makecell{Bias training (min/avg/sigma/max)\\\\and accuracy}&" \
+    "\\makecell{");
   for (
     int iOut = 0;
     iOut < nbOutDisplay;
@@ -316,7 +394,7 @@ void Train(const TrainArg* arg) {
         "c.%02d ",
         iOut);
       fprintf(
-        fpDoc,
+        arg->fpDoc,
         "c.%02d ",
         iOut);
 
@@ -326,7 +404,7 @@ void Train(const TrainArg* arg) {
         arg->streamInfo,
         ".... ");
       fprintf(
-        fpDoc,
+        arg->fpDoc,
         ".... ");
 
     }
@@ -336,22 +414,23 @@ void Train(const TrainArg* arg) {
       arg->streamInfo);
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
-      fpDoc);
-    float percCorrect =
-      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
-      (float)GDSGetSizeCat(
-        NMTrainerDataset(&trainer),
-        NMTrainerGetICatTraining(&trainer));
+      arg->fpDoc);
     if (arg->oneHot || arg->allHot) {
 
+      float percCorrect =
+        (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+        (float)GDSGetSizeCat(
+          NMTrainerDataset(&trainer),
+          NMTrainerGetICatTraining(&trainer)) * 100.0;
       fprintf(
         arg->streamInfo,
         " %.2f%%",
-        percCorrect * 100.0);
+        percCorrect);
       fprintf(
-        fpDoc,
+        arg->fpDoc,
         " %.2f\\%%",
-        percCorrect * 100.0);
+        percCorrect);
+      arg->accPredTrain = percCorrect;
 
     }
 
@@ -359,14 +438,18 @@ void Train(const TrainArg* arg) {
       arg->streamInfo,
       "\n");
     fprintf(
-      fpDoc,
-      "\\\\");
+      arg->fpDoc,
+      "\\\\\n");
 
   }
-
   fprintf(
-    fpDoc,
-    "} ");
+    arg->fpDoc,
+    "}\\\\\n");
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "\\end{tabular}\\\n" \
+    "\\end{center}\n");
 
   fprintf(
     arg->streamInfo,
@@ -426,13 +509,6 @@ void Train(const TrainArg* arg) {
   NeuraMorphFree(&nm);
   GDataSetVecFloatFreeStatic(&dataset);
 
-  fprintf(
-    fpDoc,
-    "\\\\\n");
-  fprintf(
-    fpDoc,
-    "\\hline\n");
-
 }
 
 void Iris() {
@@ -457,32 +533,6 @@ void Iris() {
   };
   Train(&arg);
 
-}
-
-void WisconsinDiagnosticBreastCancerDataset() {
-
-  TrainArg arg = {
-    .label = "Breast cancer",
-    .type = "Classification",
-    .pathDataset = "./Datasets/wdbc.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = true,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 4,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .pcaFlag = true,
-    .streamInfo = stdout
-  };
-  Train(&arg);
-
-  // https://www.kaggle.com/uciml/breast-cancer-wisconsin-data/discussion/62297
-  // 99%
 }
 
 void Arrythmia() {
@@ -679,124 +729,201 @@ void Annealing() {
 
 }
 
-void DocHeader() {
+void WisconsinDiagnosticBreastCancerDataset() {
 
-  fprintf(
-    fpDoc,
-    "\\documentclass[8pt, a4paper]{article}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage[a4paper,bindingoffset=0.01in,left=0.01in,right=0.01in,top=0.01in,bottom=0.01in,footskip=.0in]{geometry}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{amsmath}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{amsfonts}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{amssymb}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{graphicx}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{float}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{listings}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{rotating}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{tikz}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{verbatim}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{lscape}\n");
-  fprintf(
-    fpDoc,
-    "\\usepackage{makecell}\n");
-  fprintf(
-    fpDoc,
-    "\\pdfgentounicode=1\n");
-  fprintf(
-    fpDoc,
-    "\\pdfmapline{+cyberb@Unicode@  <cyberbit.ttf}\n");
-  fprintf(
-    fpDoc,
-    "\\pagenumbering{gobble}\n");
-  fprintf(
-    fpDoc,
-    "\\begin{document}\n");
-  fprintf(
-    fpDoc,
-    "\\begin{landscape}\n");
+  FILE* fpDoc =
+    fopen(
+      "./Validation/wdbc.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Breast cancer",
+    .type = "Classification",
+    .pathDataset = "./Datasets/wdbc.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.9,
+    .depth = 5,
+    .maxLvlDiv = 1,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 21,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
 
 }
 
-void DocHeaderTab() {
+void Search() {
 
- fprintf(
-    fpDoc,
-    "\\begin{tabular}{|c|c|c|c|c|c|c|}\n");
-  fprintf(
-    fpDoc,
-    "\\hline\n");
-  fprintf(
-    fpDoc,
-    "Dataset & Category & Nb input/output & Nb sample/Perc. training & \\makecell{Time train.\\\\(cpu monothread)} & \\makecell{Acc. eval. per channel\\\\(min/avg/sigma/max)} & \\makecell{Acc. train. per channel\\\\(min/avg/sigma/max)}\\\\\n");
+  FILE* fp =
+    fopen(
+      "/dev/null",
+      "w");
+  TrainArg bestArg = {
+    .label = "Iris",
+    .type = "Classification",
+    .pathDataset = "./Datasets/iris.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 6,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  
+  TrainArg arg = bestArg;
+  float bestAcc = -1.0;
+  float bestAccTrain = -1.0;
+  float bestTime = -1.0;
+  for (
+    int depth = 2;
+    depth < 4;
+    ++depth) {
 
-}
+    printf(
+      "Search depth %d\n",
+      depth);
 
-void DocFooterTab() {
+    for (
+      int maxLvlDiv = 0;
+      maxLvlDiv < 3;
+      ++maxLvlDiv) {
 
-  fprintf(
-    fpDoc,
-    "\\end{tabular}\\newpage\n");
+      for (
+        int nbMaxUnitDepth = 1;
+        nbMaxUnitDepth < 22;
+        nbMaxUnitDepth += 10) {
 
-}
+        for (
+          int order = 1;
+          order < 4;
+          ++order) {
 
-void DocFooter() {
+          for (
+            float weakUnitThreshold = 0.9;
+            weakUnitThreshold < 0.999;
+            weakUnitThreshold += 0.015) {
 
-  fprintf(
-    fpDoc,
-    "\\end{landscape}\n");
-  fprintf(
-    fpDoc,
-    "\\end{document}\n");
+            arg.weakUnitThreshold = weakUnitThreshold;  
+            arg.order = order;  
+            arg.nbMaxUnitDepth = nbMaxUnitDepth;  
+            arg.maxLvlDiv = maxLvlDiv;  
+            arg.depth = depth;  
+            Train(&arg);
+
+            // Potential best
+            if (
+              bestAcc < 0.0 ||
+              bestAcc < arg.accPred ||
+              (ISEQUALF(bestAcc, arg.accPred) &&
+              bestAccTrain < arg.accPredTrain) ||
+              (ISEQUALF(bestAcc, arg.accPred) &&
+              ISEQUALF(bestAccTrain, arg.accPredTrain) &&
+              bestTime > arg.time)) {
+
+              printf("Potential best. Check influence of random seed\n");
+              TrainArg argCheck = arg;
+              float best = arg.accPred;
+              float minBest = best;
+              float maxBest = best;
+              for (
+                int seed = 1;
+                seed < 5;
+                ++seed) {
+
+                argCheck.seed = seed;
+                Train(&argCheck);
+                best += argCheck.accPred;
+                minBest =
+                  MIN(
+                    minBest,
+                    argCheck.accPred);
+                maxBest =
+                  MAX(
+                    maxBest,
+                    argCheck.accPred);
+
+              }
+
+              arg.accPred = best / 5.0;
+              printf(
+                "Seed variation: %f %f %f\n",
+                minBest,
+                arg.accPred,
+                maxBest);
+
+              // Real best
+              if (
+                bestAcc < 0.0 ||
+                bestAcc < arg.accPred ||
+                (ISEQUALF(bestAcc, arg.accPred) &&
+                bestAccTrain < arg.accPredTrain) ||
+                (ISEQUALF(bestAcc, arg.accPred) &&
+                ISEQUALF(bestAccTrain, arg.accPredTrain) &&
+                bestTime > arg.time)) {
+
+                bestArg = arg;
+                bestAcc = arg.accPred;
+                bestAccTrain = arg.accPredTrain;
+                bestTime = arg.time;
+                printf(
+                  "best: %f %f %f\n",
+                  bestAcc, bestAccTrain, bestTime);
+                TrainArgPrint(
+                  &bestArg,
+                  stdout);
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  fclose(fp);
 
 }
 
 int main() {
 
-  fpDoc =
-    fopen(
-      "./Validation/doc.tex",
-      "w");
-  DocHeader();
+  Search();
+  //WisconsinDiagnosticBreastCancerDataset();
+  //Iris();
 
-  DocHeaderTab();
+
+/*
   RGBHSV();
   DiabeteRisk();
   HCV();
   Amphibian();
-  Iris();
   Abalone();
-  WisconsinDiagnosticBreastCancerDataset();
   DocFooterTab();
 
   DocHeaderTab();
   Arrythmia();
   //MNIST();
   Annealing();
-  DocFooterTab();
-
-  DocFooter();
-  fclose(fpDoc);
+*/
 
   // Return success code
   return 0;

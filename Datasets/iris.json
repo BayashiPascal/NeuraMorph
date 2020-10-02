@@ -1,7 +1,7 @@
 {
    "dataSet": "Iris dataset",
    "dataSetType": "0",
-   "desc": "Iris dataset",
+   "desc": "http://archive.ics.uci.edu/ml/datasets/Iris/",
    "nbInputs": "4",
    "nbOutputs": "3",
    "dim": {

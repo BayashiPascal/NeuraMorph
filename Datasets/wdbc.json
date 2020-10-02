@@ -1,7 +1,7 @@
 {
    "dataSet": "Wisconsin diagnostic breast cancer dataset",
    "dataSetType": "0",
-   "desc": "Wisconsin diagnostic breast cancer dataset",
+   "desc": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic",
    "nbInputs": "30",
    "nbOutputs": "2",
    "dim": {
