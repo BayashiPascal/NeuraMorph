@@ -609,6 +609,30 @@ void DiabeteRisk() {
 
 }
 
+void AgaricusLepiota() {
+
+  TrainArg arg = {
+    .label = "AgaricusLepiota",
+    .type = "Classification",
+    .pathDataset = "./Datasets/agaricus-lepiota.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 5,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout
+  };
+  Train(&arg);
+
+}
+
 void HCV() {
 
   TrainArg arg = {
@@ -681,30 +705,6 @@ void MNIST() {
 
 }
 
-void Annealing() {
-
-  TrainArg arg = {
-    .label = "Annealing",
-    .type = "Classification",
-    .pathDataset = "./Datasets/annealing.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = true,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 6,
-    .maxLvlDiv = 1,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 20,
-    .order = 2,
-    .nbDisplay = 5,
-    .pcaFlag = true,
-    .streamInfo = stdout
-  };
-  Train(&arg);
-
-}
-
 void WisconsinDiagnosticBreastCancerDataset() {
 
   FILE* fpDoc =
@@ -765,6 +765,36 @@ void Iris() {
 
 }
 
+void Annealing() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/annealing.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Annealing",
+    .type = "Classification",
+    .pathDataset = "./Datasets/annealing.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.9,
+    .depth = 4,
+    .maxLvlDiv = 4,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
 void Search() {
 
   FILE* fp =
@@ -772,18 +802,18 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "Iris",
+    .label = "Annealing",
     .type = "Classification",
-    .pathDataset = "./Datasets/iris.json",
+    .pathDataset = "./Datasets/annealing.json",
     .seed = 0,
     .percSampleEval = 10,
     .oneHot = true,
     .allHot = false,
     .weakUnitThreshold = 0.95,
     .depth = 6,
-    .maxLvlDiv = 0,
+    .maxLvlDiv = 1,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
+    .nbMaxUnitDepth = 20,
     .order = 2,
     .nbDisplay = 5,
     .pcaFlag = true,
@@ -797,7 +827,7 @@ void Search() {
   float bestTime = -1.0;
   for (
     int depth = 2;
-    depth < 4;
+    depth < 10;
     ++depth) {
 
     printf(
@@ -806,23 +836,23 @@ void Search() {
 
     for (
       int maxLvlDiv = 0;
-      maxLvlDiv < 3;
+      maxLvlDiv < 5;
       ++maxLvlDiv) {
 
       for (
-        int nbMaxUnitDepth = 1;
-        nbMaxUnitDepth < 22;
+        int nbMaxUnitDepth = 3;
+        nbMaxUnitDepth < 4;
         nbMaxUnitDepth += 10) {
 
         for (
           int order = 1;
-          order < 4;
+          order < 5;
           ++order) {
 
           for (
             float weakUnitThreshold = 0.9;
             weakUnitThreshold < 0.999;
-            weakUnitThreshold += 0.015) {
+            weakUnitThreshold += 10.015) {
 
             arg.weakUnitThreshold = weakUnitThreshold;  
             arg.order = order;  
@@ -892,6 +922,7 @@ void Search() {
                 TrainArgPrint(
                   &bestArg,
                   stdout);
+                fflush(stdout);
 
               }
 
@@ -915,7 +946,8 @@ int main() {
 
   //Search();
   //WisconsinDiagnosticBreastCancerDataset();
-  Iris();
+  //Iris();
+  Annealing();
 
 
 /*
@@ -928,8 +960,8 @@ int main() {
 
   DocHeaderTab();
   Arrythmia();
+  AgaricusLepiota();
   //MNIST();
-  Annealing();
 */
 
   // Return success code

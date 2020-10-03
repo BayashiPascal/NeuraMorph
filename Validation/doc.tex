@@ -30,6 +30,7 @@ Validation has been performed by using NeuraMorph on data sets publicly availabl
 
 To avoid "lucky strike", results introduced here are produced with an instance of the NeuraMorph model selected amongst models produced with a systematic exploration of hyper parameters of the model, and based on its average of prediction accuracy over 5 different random splits of training/test samples.\\
 
+\newpage
 \section{Breast Cancer Wisconsin (Diagnostic) Data Set}
 
 Source: 
@@ -67,10 +68,11 @@ https://projecteuclid.org/euclid.aos/1016218223
 
 \subsection{Validation result}
 
-NeuraMorph performs better than the concurrent algorithm(s) on this data set.
+NeuraMorph performs better than the concurrent algorithms on this data set.
 
 
 
+\newpage
 \section{Iris Data Set}
 
 Source: 
@@ -109,15 +111,16 @@ Probabilistic neural network: 95.238\%
 
 Source:
 
-http://lab.fs.uni-lj.si/lasin/wp/IMIT_files/neural/doc/seminar8.pdf
+http://lab.fs.uni-lj.si/lasin/wp/IMIT\_files/neural/doc/seminar8.pdf
 
 \subsection{Validation result}
 
-NeuraMorph performs better than the concurrent algorithm(s) on this data set.
+NeuraMorph performs better than the concurrent algorithms on this data set.
 
 
 
 
+\newpage
 \section{Annealing Data Set}
 
 Source: 
@@ -126,7 +129,7 @@ https://archive.ics.uci.edu/ml/datasets/Annealing
 
 \subsection{NeuraMorph results}
 
-%\input{anneal.tex}
+\input{annealing.tex}
 
 \subsection{Concurrent results}
 
@@ -158,15 +161,16 @@ J48: 95.88\%\\
 
 Source:
 
-http://www.istpublications.com/temp/16_V_Kamalakkannan_Et_al_.pdf
+http://www.istpublications.com/temp/16\_V\_Kamalakkannan\_Et\_al\_.pdf
 
 \subsection{Validation result}
 
-NeuraMorph performs as well as the concurrent algorithm(s) on this data set.
+NeuraMorph performs worst than the concurrent algorithms on this data set.
 
 
 
 
+\newpage
 \section{Arrhythmia Data Set}
 
 Source: 
@@ -208,11 +212,57 @@ https://iopscience.iop.org/article/10.1088/1742-6596/1447/1/012014/pdf
 
 \subsection{Validation result}
 
-NeuraMorph performs as well as the concurrent algorithm(s) on this data set.
+NeuraMorph performs as well as the concurrent algorithms on this data set.
 
 
 
 
+\newpage
+\section{Agaricus Lepiota Data Set}
+
+Source: 
+
+https://archive.ics.uci.edu/ml/datasets/mushroom
+
+\subsection{NeuraMorph results}
+
+%\input{agaricus-lepiota.tex}
+
+\subsection{Concurrent results}
+
+\subsubsection{Additive logistic regression}
+
+\begin{quote}
+''J. Friedman, T. Hastie, R. Tibshirani (1998). Additive Logistic Regression: a Statistical View of Boosting. Stanford University.''
+\end{quote}
+
+Predictive accuracy: 100.0\%
+
+Source:
+
+https://www.openml.org/f/77
+https://projecteuclid.org/euclid.aos/1016218223
+
+\subsubsection{Decision tree}
+
+\begin{quote}
+''Agaricus Lepiota Analysis, Manikanda Prabhu M and Jerin Stanley Daniel J''
+\end{quote}
+
+Predictive accuracy: 99.0\%
+
+Source:
+
+https://rpubs.com/ManikandaPrabhuM/JerinDaniel-agaricuslepiota
+
+\subsection{Validation result}
+
+NeuraMorph performs  the concurrent algorithms on this data set.
+
+
+
+
+\newpage
 \section{}
 
 Source: 
