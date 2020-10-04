@@ -1051,17 +1051,44 @@ void NMEvaluate(
   // If the NeuraMorph is a one hot encoder
   if (NMGetFlagOneHot(that) == true) {
 
-    // Get the one hot
-    long oneHot = VecGetIMaxVal(that->outputs);
+    if (VecGetDim(that->outputs) > 1) {
 
-    // Convert the output values
-    VecSetAll(
-      that->outputs,
-      -1.0);
-    VecSet(
-      that->outputs,
-      oneHot,
-      1.0);
+      // Get the one hot
+      long oneHot = VecGetIMaxVal(that->outputs);
+
+      // Convert the output values
+      VecSetAll(
+        that->outputs,
+        -1.0);
+      VecSet(
+        that->outputs,
+        oneHot,
+        1.0);
+    
+    } else {
+
+      // Convert the output values
+      float valOut =
+        VecGet(
+          that->outputs,
+          0);
+      if (valOut > 0.0) {
+
+        VecSet(
+          that->outputs,
+          0,
+          1.0);
+
+      } else {
+
+        VecSet(
+          that->outputs,
+          0,
+          -1.0);
+
+      }
+
+    }
 
   } else if (NMGetFlagAllHot(that) == true) {
 
@@ -1613,11 +1640,19 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %d %f    \r", that->curDepth, NMUnitG
 
     if (GSetNbElem(&trainedUnits) == 0) {
 
-      NeuraMorphErr->_type = PBErrTypeRuntimeError;
+      /*NeuraMorphErr->_type = PBErrTypeRuntimeError;
       sprintf(
         NeuraMorphErr->_msg,
         "The set of trained units is empty.");
-      PBErrCatch(NeuraMorphErr);
+      PBErrCatch(NeuraMorphErr);*/
+
+      fprintf(
+        NMTrainerStreamInfo(that),
+        "The set of trained units is empty.\n");
+      VecFree(&iOutputs);
+      NMTrainerFreePrecomputed(that);
+      that->failed = true;
+      return;
 
     }
 
@@ -1702,6 +1737,8 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %d %f    \r", that->curDepth, NMUnitG
     NMTrainerFreePrecomputed(that);
 
   }
+
+  that->failed = false;
 
 }
 

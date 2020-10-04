@@ -1,0 +1,143 @@
+
+Search depth 2
+Potential best. Check influence of random seed
+Seed variation: 97.413788 97.758621 98.152710
+best: predAcc:97.758621 trainAcc:97.551971 trainTime:22.783758
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 3
+Potential best. Check influence of random seed
+Seed variation: 97.906403 98.522171 99.384239
+best: predAcc:98.522171 trainAcc:98.153725 trainTime:22.344685
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 3
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 4
+Potential best. Check influence of random seed
+Seed variation: 98.275864 98.916260 99.507393
+best: predAcc:98.916260 trainAcc:98.440918 trainTime:24.181524
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 4
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 5
+Potential best. Check influence of random seed
+Seed variation: 99.137932 99.556656 99.876846
+best: predAcc:99.556656 trainAcc:99.658096 trainTime:25.543560
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 5
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 99.261078 99.704430 99.876846
+best: predAcc:99.704430 trainAcc:99.753830 trainTime:40.010120
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 5
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 6
+Potential best. Check influence of random seed
+Seed variation: 99.384239 99.778328 100.000000
+best: predAcc:99.778328 trainAcc:99.917946 trainTime:27.270271
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 6
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 99.753693 99.901474 100.000000
+best: predAcc:99.901474 trainAcc:99.917946 trainTime:42.888317
+label: AgaricusLepiota
+type: Classification
+pathDataset: ./Datasets/agaricus-lepiota.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 10
+weakUnitThreshold: 0.800000
+depth: 6
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010

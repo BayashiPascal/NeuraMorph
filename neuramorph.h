@@ -389,6 +389,9 @@ typedef struct NeuraMorphTrainer {
   // Precision to evaluate accuracy
   float precAcc;
 
+  // Flag to memorize the failure of training
+  bool failed;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================

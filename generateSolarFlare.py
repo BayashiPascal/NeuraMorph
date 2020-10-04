@@ -1,4 +1,9 @@
-with open('./Datasets/dataset_116_solar-flare_2.csv') as f:
+path_data = './Datasets/dataset_116_solar-flare_2.csv'
+iFloatProps = [5,10,11,12]
+nbInProps = 10
+invalidProps = []
+
+with open(path_data) as f:
   res = ""
   row = f.readline()
   row = f.readline()
@@ -12,12 +17,9 @@ nbProps = len(data[0])
 distinctValProps = []
 for iProp in range(nbProps):
   distinctValProps.append(set([d[iProp] for d in data]))
-iFloatProps = [5,10,11,12]
-nbInProps = 10
 nbInCleanProps = 0
 nbOutCleanProps = 0
 dataClean = []
-invalidProps = []
 for iProp in range(nbProps):
   if len(distinctValProps[iProp]) > 1 and \
       iProp not in invalidProps:

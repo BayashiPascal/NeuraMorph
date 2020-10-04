@@ -72,10 +72,6 @@ void TrainArgPrint(
     arg->weakUnitThreshold);
   fprintf(
     streamInfo,
-    "precAcc: %f\n",
-    arg->precAcc);
-  fprintf(
-    streamInfo,
     "depth: %d\n",
     arg->depth);
   fprintf(
@@ -102,6 +98,10 @@ void TrainArgPrint(
     streamInfo,
     "pca: %d\n",
     arg->pcaFlag);
+  fprintf(
+    streamInfo,
+    "precAcc: %f\n",
+    arg->precAcc);
 
 }
 
@@ -227,6 +227,15 @@ void Train(TrainArg* arg) {
     arg->precAcc);
   double clockStart = clock();
   NMTrainerRun(&trainer);
+
+  if (trainer.failed) {
+    arg->accPred = -10.0;
+    NeuraMorphTrainerFreeStatic(&trainer);
+    NeuraMorphFree(&nm);
+    GDataSetVecFloatFreeStatic(&dataset);
+    return;
+  }
+
   double timeUsed = 
     ((double)(clock() - clockStart)) / CLOCKS_PER_SEC;
   fprintf(
@@ -240,6 +249,11 @@ void Train(TrainArg* arg) {
     "\\hline\n" \
     "weakUnitThreshold&%f\\\\\n",
     arg->weakUnitThreshold);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "precAcc&%f\\\\\n",
+    arg->precAcc);
   fprintf(
     arg->fpDoc,
     "\\hline\n" \
@@ -265,6 +279,21 @@ void Train(TrainArg* arg) {
     "\\hline\n" \
     "order&%d\\\\\n",
     arg->order);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "pca&%d\\\\\n",
+    arg->pcaFlag);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "oneHot&%d\\\\\n",
+    arg->oneHot);
+  fprintf(
+    arg->fpDoc,
+    "\\hline\n" \
+    "allHot&%d\\\\\n",
+    arg->allHot);
 
   fprintf(
     arg->fpDoc,
@@ -525,30 +554,6 @@ void Train(TrainArg* arg) {
 
 }
 
-void Abalone() {
-
-  TrainArg arg = {
-    .label = "Abalone",
-    .type = "Regression",
-    .pathDataset = "./Datasets/abalone.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = false,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 9,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .precAcc = PBMATH_EPSILON,
-    .pcaFlag = true,
-    .streamInfo = stdout
-  };
-  Train(&arg);
-
-}
 
 void RGBHSV() {
 
@@ -581,31 +586,6 @@ void DiabeteRisk() {
     .label = "Diabete",
     .type = "Classification",
     .pathDataset = "./Datasets/diabeteRisk.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = true,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 5,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .precAcc = PBMATH_EPSILON,
-    .pcaFlag = true,
-    .streamInfo = stdout
-  };
-  Train(&arg);
-
-}
-
-void AgaricusLepiota() {
-
-  TrainArg arg = {
-    .label = "AgaricusLepiota",
-    .type = "Classification",
-    .pathDataset = "./Datasets/agaricus-lepiota.json",
     .seed = 0,
     .percSampleEval = 10,
     .oneHot = true,
@@ -853,6 +833,122 @@ void SolarFlare() {
   Train(&arg);
   fclose(fpDoc);
 
+  fpDoc =
+    fopen(
+      "./Validation/solar-flare2.tex",
+      "w");
+  TrainArg arg2 = {
+    .label = "Solar Flare",
+    .type = "Regression",
+    .pathDataset = "./Datasets/solar-flare.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 2,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = 1.0,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg2);
+  fclose(fpDoc);
+
+}
+
+void Abalone() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/abalone.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Abalone",
+    .type = "Regression",
+    .pathDataset = "./Datasets/abalone.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 9,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = 0.5,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+  fpDoc =
+    fopen(
+      "./Validation/abalone2.tex",
+      "w");
+  TrainArg arg2 = {
+    .label = "Abalone",
+    .type = "Regression",
+    .pathDataset = "./Datasets/abalone.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = false,
+    .weakUnitThreshold = 0.95,
+    .depth = 9,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 10,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = 1.0,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg2);
+  fclose(fpDoc);
+
+}
+
+void AgaricusLepiota() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/agaricus-lepiota.tex",
+      "w");
+  TrainArg arg = {
+    .label = "AgaricusLepiota",
+    .type = "Classification",
+    .pathDataset = "./Datasets/agaricus-lepiota.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 6,
+    .maxLvlDiv = 1,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 1,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = false,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
 }
 
 void Search() {
@@ -862,22 +958,22 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "Solar Flare",
-    .type = "Regression",
-    .pathDataset = "./Datasets/solar-flare.json",
-    .seed = 0,
+    .label = "AgaricusLepiota",
+    .type = "Classification",
+    .pathDataset = "./Datasets/agaricus-lepiota.json",
+    .seed = 10,
     .percSampleEval = 10,
-    .oneHot = false,
+    .oneHot = true,
     .allHot = false,
     .weakUnitThreshold = 0.95,
-    .depth = 3,
+    .depth = 5,
     .maxLvlDiv = 2,
     .nbMaxInputsUnit = 2,
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
-    .precAcc = 0.5,
-    .pcaFlag = true,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = false,
     .streamInfo = fp,
     .fpDoc = fp
   };
@@ -1011,8 +1107,9 @@ int main() {
   //Iris();
   //Annealing();
   //Arrythmia();
-  //AgaricusLepiota();
-  SolarFlare();
+  AgaricusLepiota();
+  //SolarFlare();
+  //Abalone();
 
 
 /*
@@ -1020,7 +1117,6 @@ int main() {
   DiabeteRisk();
   HCV();
   Amphibian();
-  Abalone();
   DocFooterTab();
 
   DocHeaderTab();
