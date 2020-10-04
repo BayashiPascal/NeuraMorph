@@ -1,5 +1,5 @@
 path_data = './Datasets/abalone.data'
-iFloatProps = [1,2,3,4,5,6,7]
+iFloatProps = [1,2,3,4,5,6,7,8]
 nbInProps = 8
 invalidProps = []
 

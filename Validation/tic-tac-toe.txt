@@ -1,0 +1,330 @@
+
+Search depth 2
+Potential best. Check influence of random seed
+Seed variation: 60.000004 69.052628 71.578949
+best: predAcc:69.052628 trainAcc:73.464653 trainTime:0.043241
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 64.210526 72.000000 77.894737
+best: predAcc:72.000000 trainAcc:73.696411 trainTime:0.056591
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 67.368423 72.631577 76.842102
+best: predAcc:72.631577 trainAcc:76.940903 trainTime:0.083133
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 69.473686 73.473686 80.000000
+best: predAcc:73.473686 trainAcc:73.696411 trainTime:0.103391
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 69.473686 74.105270 78.947372
+best: predAcc:74.105270 trainAcc:76.940903 trainTime:0.120304
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 64.210526 72.210526 78.947372
+Potential best. Check influence of random seed
+Seed variation: 69.473686 72.842110 78.947372
+Potential best. Check influence of random seed
+Seed variation: 66.315788 73.263161 82.105263
+
+Search depth 3
+Potential best. Check influence of random seed
+Seed variation: 71.578949 72.631577 74.736839
+Potential best. Check influence of random seed
+Seed variation: 73.684212 75.368423 77.894737
+best: predAcc:75.368423 trainAcc:81.112396 trainTime:0.159661
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 3
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 74.736839 77.263161 82.105263
+best: predAcc:77.263161 trainAcc:82.155266 trainTime:0.169892
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 3
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 73.684212 76.631577 80.000000
+Potential best. Check influence of random seed
+Seed variation: 74.736839 78.736839 83.157898
+best: predAcc:78.736839 trainAcc:85.168015 trainTime:0.179064
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 3
+maxLvlDiv: 3
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 4
+Potential best. Check influence of random seed
+Seed variation: 64.210526 74.947365 78.947372
+Potential best. Check influence of random seed
+Seed variation: 76.842102 79.578949 84.210526
+best: predAcc:79.578949 trainAcc:82.850525 trainTime:0.114325
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 4
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 71.578949 77.894737 82.105263
+Potential best. Check influence of random seed
+Seed variation: 71.578949 77.052628 81.052628
+Potential best. Check influence of random seed
+Seed variation: 76.842102 81.052628 85.263153
+best: predAcc:81.052628 trainAcc:84.704521 trainTime:0.209194
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 4
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 77.894737 81.263161 85.263153
+best: predAcc:81.263161 trainAcc:86.095016 trainTime:0.224809
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 4
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 5
+Potential best. Check influence of random seed
+Seed variation: 71.578949 78.315788 82.105263
+Potential best. Check influence of random seed
+Seed variation: 78.947372 81.052635 86.315788
+Potential best. Check influence of random seed
+Seed variation: 81.052628 83.368416 88.421051
+best: predAcc:83.368416 trainAcc:86.326767 trainTime:0.318965
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 5
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+
+Search depth 6
+Potential best. Check influence of random seed
+Seed variation: 75.789474 81.894737 87.368423
+Potential best. Check influence of random seed
+Seed variation: 76.842102 80.631577 87.368423
+Potential best. Check influence of random seed
+Seed variation: 78.947372 82.315788 87.368423
+Potential best. Check influence of random seed
+Seed variation: 80.000000 82.315788 85.263153
+
+Search depth 7
+Potential best. Check influence of random seed
+Seed variation: 73.684212 80.000000 84.210526
+Potential best. Check influence of random seed
+Seed variation: 76.842102 81.052628 87.368423
+Potential best. Check influence of random seed
+Seed variation: 80.000000 81.263161 84.210526
+
+Search depth 8
+Potential best. Check influence of random seed
+Seed variation: 67.368423 80.210526 85.263153
+Potential best. Check influence of random seed
+Seed variation: 78.947372 80.842102 85.263153
+Potential best. Check influence of random seed
+Seed variation: 75.789474 80.210526 84.210526
+Potential best. Check influence of random seed
+Seed variation: 80.000000 82.736839 86.315788
+
+Search depth 9
+Potential best. Check influence of random seed
+Seed variation: 81.052628 87.157898 90.526321
+best: predAcc:87.157898 trainAcc:84.472771 trainTime:0.346434
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 9
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010
+Potential best. Check influence of random seed
+Seed variation: 76.842102 80.842110 85.263153
+Potential best. Check influence of random seed
+Seed variation: 77.894737 82.105263 87.368423
+
+Search depth 10
+Potential best. Check influence of random seed
+Seed variation: 91.578949 92.631584 95.789474
+best: predAcc:92.631584 trainAcc:88.180763 trainTime:0.417434
+label: TicTacToe
+type: Classification
+pathDataset: ./Datasets/tic-tac-toe.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 10
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 0
+precAcc: 0.000010

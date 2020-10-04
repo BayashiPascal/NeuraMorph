@@ -837,84 +837,8 @@ void SolarFlare() {
     fopen(
       "./Validation/solar-flare2.tex",
       "w");
-  TrainArg arg2 = {
-    .label = "Solar Flare",
-    .type = "Regression",
-    .pathDataset = "./Datasets/solar-flare.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = false,
-    .allHot = false,
-    .weakUnitThreshold = 0.8,
-    .depth = 2,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 3,
-    .order = 2,
-    .nbDisplay = 5,
-    .precAcc = 1.0,
-    .pcaFlag = true,
-    .streamInfo = stdout,
-    .fpDoc = fpDoc
-  };
-  Train(&arg2);
-  fclose(fpDoc);
-
-}
-
-void Abalone() {
-
-  FILE* fpDoc =
-    fopen(
-      "./Validation/abalone.tex",
-      "w");
-  TrainArg arg = {
-    .label = "Abalone",
-    .type = "Regression",
-    .pathDataset = "./Datasets/abalone.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = false,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 9,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .precAcc = 0.5,
-    .pcaFlag = true,
-    .streamInfo = stdout,
-    .fpDoc = fpDoc
-  };
-  Train(&arg);
-  fclose(fpDoc);
-
-  fpDoc =
-    fopen(
-      "./Validation/abalone2.tex",
-      "w");
-  TrainArg arg2 = {
-    .label = "Abalone",
-    .type = "Regression",
-    .pathDataset = "./Datasets/abalone.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = false,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 9,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .precAcc = 1.0,
-    .pcaFlag = true,
-    .streamInfo = stdout,
-    .fpDoc = fpDoc
-  };
+  TrainArg arg2 = arg;
+  arg2.precAcc = 1.0;
   Train(&arg2);
   fclose(fpDoc);
 
@@ -951,6 +875,77 @@ void AgaricusLepiota() {
 
 }
 
+void Abalone() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/abalone.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Abalone",
+    .type = "Regression",
+    .pathDataset = "./Datasets/abalone.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 2,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 1,
+    .nbDisplay = 5,
+    .precAcc = 0.5,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+  fpDoc =
+    fopen(
+      "./Validation/abalone2.tex",
+      "w");
+  TrainArg arg2 = arg;
+  arg2.precAcc = 1.0;
+  Train(&arg2);
+  fclose(fpDoc);
+
+}
+
+void TicTacToe() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/tic-tac-toe.tex",
+      "w");
+  TrainArg arg = {
+    .label = "TicTacToe",
+    .type = "Classification",
+    .pathDataset = "./Datasets/tic-tac-toe.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 7,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
 void Search() {
 
   FILE* fp =
@@ -958,23 +953,23 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "AgaricusLepiota",
+    .label = "TicTacToe",
     .type = "Classification",
-    .pathDataset = "./Datasets/agaricus-lepiota.json",
-    .seed = 10,
+    .pathDataset = "./Datasets/tic-tac-toe.json",
+    .seed = 0,
     .percSampleEval = 10,
     .oneHot = true,
     .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 5,
-    .maxLvlDiv = 2,
+    .weakUnitThreshold = 0.8,
+    .depth = 6,
+    .maxLvlDiv = 1,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 1,
     .nbDisplay = 5,
     .precAcc = PBMATH_EPSILON,
-    .pcaFlag = false,
-    .streamInfo = fp,
+    .pcaFlag = true,
+   .streamInfo = fp,
     .fpDoc = fp
   };
   
@@ -1107,9 +1102,10 @@ int main() {
   //Iris();
   //Annealing();
   //Arrythmia();
-  AgaricusLepiota();
+  //AgaricusLepiota();
   //SolarFlare();
   //Abalone();
+  TicTacToe();
 
 
 /*

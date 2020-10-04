@@ -1,0 +1,40 @@
+
+Search depth 2
+Potential best. Check influence of random seed
+Seed variation: 20.143885 24.124701 26.378897
+best: predAcc:24.124701 trainAcc:24.840425 trainTime:18.604881
+label: Abalone
+type: Regression
+pathDataset: ./Datasets/abalone.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 1
+precAcc: 0.500000
+Potential best. Check influence of random seed
+Seed variation: 23.980816 26.954433 30.695444
+best: predAcc:26.954433 trainAcc:26.914894 trainTime:24.653334
+label: Abalone
+type: Regression
+pathDataset: ./Datasets/abalone.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 1
+precAcc: 0.500000
