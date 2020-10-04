@@ -978,6 +978,57 @@ void NMTrainerSetICatEval(
 
 }
 
+// Get the precision for accuracy threshold of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+float NMTrainerGetPrecAcc(const NeuraMorphTrainer* that) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  return that->precAcc;
+
+}
+
+// Set the precision for accuracy threshold of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetPrecAcc(
+  NeuraMorphTrainer* that,
+               float precAcc) {
+
+#if BUILDMODE == 0
+
+  if (that == NULL) {
+
+    NeuraMorphErr->_type = PBErrTypeNullPointer;
+    sprintf(
+      NeuraMorphErr->_msg,
+      "'that' is null");
+    PBErrCatch(NeuraMorphErr);
+
+  }
+
+#endif
+
+  that->precAcc = precAcc;
+
+}
+
 // Get the weakness threshold of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0
 static inline

@@ -1,0 +1,140 @@
+Search depth 3
+Potential best. Check influence of random seed
+Seed variation: 57.777779 65.333328 71.111115
+best: 65.333328 61.425060 73.417641
+label: Arrhythmia
+type: Classification
+pathDataset: ./Datasets/arrhythmia.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 3
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 55.555557 66.222221 73.333336
+best: 66.222221 64.127769 59.464840
+label: Arrhythmia
+type: Classification
+pathDataset: ./Datasets/arrhythmia.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 3
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 2
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 55.555557 64.888893 71.111115
+Potential best. Check influence of random seed
+Seed variation: 51.111115 61.777782 71.111115
+Search depth 4
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+best: 66.666672 62.407864 67.058456
+label: Arrhythmia
+type: Classification
+pathDataset: ./Datasets/arrhythmia.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 4
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 55.555557 66.666672 73.333336
+best: 66.666672 64.373466 61.311035
+label: Arrhythmia
+type: Classification
+pathDataset: ./Datasets/arrhythmia.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.900000
+depth: 4
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 1
+order: 2
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 53.333336 64.888893 71.111115
+Potential best. Check influence of random seed
+Seed variation: 48.888889 61.333332 68.888893
+Potential best. Check influence of random seed
+Seed variation: 37.777779 60.888893 73.333336
+Search depth 5
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 66.222221 75.555557
+Potential best. Check influence of random seed
+Seed variation: 55.555557 65.777786 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 62.222229 71.111115
+Potential best. Check influence of random seed
+Seed variation: 44.444447 61.333336 73.333336
+Search depth 6
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 65.777786 75.555557
+Potential best. Check influence of random seed
+Seed variation: 55.555557 65.333336 71.111115
+Potential best. Check influence of random seed
+Seed variation: 46.666668 60.444447 66.666672
+Search depth 7
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 65.777786 75.555557
+Potential best. Check influence of random seed
+Seed variation: 55.555557 65.777786 75.555557
+Search depth 8
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 65.333336 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 64.000000 75.555557
+Potential best. Check influence of random seed
+Seed variation: 46.666668 57.333336 66.666672
+Potential best. Check influence of random seed
+Seed variation: 42.222221 60.000000 68.888893
+Search depth 9
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 65.777779 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 64.444443 73.333336
+Potential best. Check influence of random seed
+Seed variation: 46.666668 61.777782 68.888893
+Search depth 10
+Potential best. Check influence of random seed
+Seed variation: 57.777779 66.666672 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 65.333336 73.333336
+Potential best. Check influence of random seed
+Seed variation: 51.111115 64.000000 73.333336
+Potential best. Check influence of random seed
+Seed variation: 44.444447 60.000000 66.666672

@@ -1,0 +1,93 @@
+
+Search depth 2
+Potential best. Check influence of random seed
+Seed variation: 88.050316 89.371071 91.509438
+best: predAcc:89.371071 trainAcc:91.979164 trainTime:0.362181
+label: Solar Flare
+type: Regression
+pathDataset: ./Datasets/solar-flare.json
+percSampleEval: 10
+oneHot: 0
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+precAcc: 0.500000
+depth: 2
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 88.050316 90.377357 94.339622
+best: predAcc:90.377357 trainAcc:93.229164 trainTime:0.820652
+label: Solar Flare
+type: Regression
+pathDataset: ./Datasets/solar-flare.json
+percSampleEval: 10
+oneHot: 0
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+precAcc: 0.500000
+depth: 2
+maxLvlDiv: 1
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 88.364777 89.811317 94.339622
+Potential best. Check influence of random seed
+Seed variation: 88.050316 90.691818 94.339622
+best: predAcc:90.691818 trainAcc:92.916664 trainTime:1.000325
+label: Solar Flare
+type: Regression
+pathDataset: ./Datasets/solar-flare.json
+percSampleEval: 10
+oneHot: 0
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+precAcc: 0.500000
+depth: 2
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 2
+nbDisplay: 5
+pca: 1
+Potential best. Check influence of random seed
+Seed variation: 88.679237 90.377350 94.654091
+Potential best. Check influence of random seed
+Seed variation: 88.050316 89.937111 92.452827
+Potential best. Check influence of random seed
+Seed variation: 88.993713 90.440254 94.654091
+
+Search depth 3
+Potential best. Check influence of random seed
+Seed variation: 88.679237 90.314461 92.452827
+Potential best. Check influence of random seed
+Seed variation: 88.364777 90.000000 91.509438
+
+Search depth 4
+Potential best. Check influence of random seed
+Seed variation: 88.050316 90.628922 94.654091
+Potential best. Check influence of random seed
+Seed variation: 88.050316 89.999992 92.452827
+Potential best. Check influence of random seed
+Seed variation: 89.308174 90.628929 93.396233
+
+Search depth 5
+
+Search depth 6
+
+Search depth 7
+
+Search depth 8
+
+Search depth 9
+
+Search depth 10

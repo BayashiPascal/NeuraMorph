@@ -1219,6 +1219,7 @@ NeuraMorphTrainer NeuraMorphTrainerCreateStatic(
   that.iCatTraining = 0;
   that.iCatEval = 1;
   that.weakUnitThreshold = 0.9;
+  that.precAcc = PBMATH_EPSILON;
   that.preComp = GSetCreateStatic();
   that.lowInputs = NULL;
   that.highInputs = NULL;
@@ -1660,8 +1661,9 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %d %f    \r", that->curDepth, NMUnitG
       // Discard the weakest units
       long nbTrainedUnits = GSetNbElem(&trainedUnits);
       while (
-        GSetElemGetSortVal(GSetHeadElem(&trainedUnits)) < threshold
-        || GSetNbElem(&trainedUnits) > NMTrainerGetNbMaxUnitDepth(that)) {
+        GSetNbElem(&trainedUnits) > 1 &&
+        (GSetElemGetSortVal(GSetHeadElem(&trainedUnits)) < threshold ||
+        GSetNbElem(&trainedUnits) > NMTrainerGetNbMaxUnitDepth(that))) {
 
         NeuraMorphUnit* unit = GSetPop(&trainedUnits);
         NeuraMorphUnitFree(&unit);
@@ -2938,7 +2940,9 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
     }
 
-    if (fabs(bias) < PBMATH_EPSILON) {
+    if (
+      NMGetFlagOneHot(NMTrainerNeuraMorph(that)) == true &&
+      fabs(bias) < NMTrainerGetPrecAcc(that)) {
 
       ++(that->nbCorrect[nbOutput]);
 
@@ -3012,9 +3016,15 @@ void NMTrainerEval(NeuraMorphTrainer* that) {
 
       }
 
-      if (fabs(bias) < PBMATH_EPSILON) {
+      if (fabs(bias) < NMTrainerGetPrecAcc(that)) {
 
         ++(that->nbCorrect[iOut]);
+
+        if (NMGetFlagOneHot(NMTrainerNeuraMorph(that)) == false) {
+
+          ++(that->nbCorrect[nbOutput]);
+
+        }
 
       }
 

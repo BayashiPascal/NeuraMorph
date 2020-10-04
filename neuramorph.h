@@ -386,6 +386,9 @@ typedef struct NeuraMorphTrainer {
   // Current depth during training
   int curDepth;
 
+  // Precision to evaluate accuracy
+  float precAcc;
+
 } NeuraMorphTrainer;
 
 // ================ Functions declaration ====================
@@ -497,6 +500,21 @@ static inline
 void NMTrainerSetNbMaxInputsUnit(
   NeuraMorphTrainer* that,
                  int nbMaxInputsUnit);
+
+// Get the precision for accuracy threshold of the NeuraMorphTrainer 'that'
+#if BUILDMODE != 0
+static inline
+#endif
+float NMTrainerGetPrecAcc(const NeuraMorphTrainer* that);
+
+// Set the precision for accuracy threshold of the NeuraMorphTrainer 'that'
+// to 'iCat'
+#if BUILDMODE != 0
+static inline
+#endif
+void NMTrainerSetPrecAcc(
+  NeuraMorphTrainer* that,
+               float precAcc);
 
 // Get the weakness threshold of the NeuraMorphTrainer 'that'
 #if BUILDMODE != 0

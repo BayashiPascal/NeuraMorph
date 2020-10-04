@@ -30,6 +30,7 @@ typedef struct TrainArg {
   float accPred;
   float accPredTrain;
   float time;
+  float precAcc;
 
 } TrainArg;
 
@@ -69,6 +70,10 @@ void TrainArgPrint(
     streamInfo,
     "weakUnitThreshold: %f\n",
     arg->weakUnitThreshold);
+  fprintf(
+    streamInfo,
+    "precAcc: %f\n",
+    arg->precAcc);
   fprintf(
     streamInfo,
     "depth: %d\n",
@@ -217,6 +222,9 @@ void Train(TrainArg* arg) {
   NMTrainerSetOrder(
     &trainer,
     arg->order);
+  NMTrainerSetPrecAcc(
+    &trainer,
+    arg->precAcc);
   double clockStart = clock();
   NMTrainerRun(&trainer);
   double timeUsed = 
@@ -273,9 +281,7 @@ void Train(TrainArg* arg) {
     "\\end{center}\\newline\n");
 
   int nbOutDisplay = GDSGetNbOutputs(&dataset);
-  if (
-    nbOutDisplay > 1 &&
-    arg->allHot == false) {
+  if (nbOutDisplay > 1) {
 
     ++nbOutDisplay;
 
@@ -329,24 +335,28 @@ void Train(TrainArg* arg) {
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
       arg->fpDoc);
-    if (arg->oneHot || arg->allHot) {
 
-      float percCorrect =
-        (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
-        (float)GDSGetSizeCat(
-          NMTrainerDataset(&trainer),
-          NMTrainerGetICatEval(&trainer)) * 100.0;
-      fprintf(
-        arg->streamInfo,
-        " %.2f%%",
-        percCorrect);
-      fprintf(
-        arg->fpDoc,
-        " %.2f\\%%",
-        percCorrect);
-      arg->accPred = percCorrect;
+    float percCorrect =
+      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+      (float)GDSGetSizeCat(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatEval(&trainer)) * 100.0;
+    if (
+      arg->oneHot == false &&
+      iOut == GDSGetNbOutputs(&dataset)) {
+
+      percCorrect /= (float)GDSGetNbOutputs(&dataset);
 
     }
+    fprintf(
+      arg->streamInfo,
+      " %.2f%%",
+      percCorrect);
+    fprintf(
+      arg->fpDoc,
+      " %.2f\\%%",
+      percCorrect);
+    arg->accPred = percCorrect;
 
     fprintf(
       arg->streamInfo,
@@ -415,24 +425,28 @@ void Train(TrainArg* arg) {
     VecPrint(
       NMTrainerResEval(&trainer)[iOut],
       arg->fpDoc);
-    if (arg->oneHot || arg->allHot) {
 
-      float percCorrect =
-        (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
-        (float)GDSGetSizeCat(
-          NMTrainerDataset(&trainer),
-          NMTrainerGetICatTraining(&trainer)) * 100.0;
-      fprintf(
-        arg->streamInfo,
-        " %.2f%%",
-        percCorrect);
-      fprintf(
-        arg->fpDoc,
-        " %.2f\\%%",
-        percCorrect);
-      arg->accPredTrain = percCorrect;
+    float percCorrect =
+      (float)NMTrainerGetNbCorrect(&trainer)[iOut] /
+      (float)GDSGetSizeCat(
+        NMTrainerDataset(&trainer),
+        NMTrainerGetICatTraining(&trainer)) * 100.0;
+    if (
+      arg->oneHot == false &&
+      iOut == GDSGetNbOutputs(&dataset)) {
+
+      percCorrect /= (float)GDSGetNbOutputs(&dataset);
 
     }
+    fprintf(
+      arg->streamInfo,
+      " %.2f%%",
+      percCorrect);
+    fprintf(
+      arg->fpDoc,
+      " %.2f\\%%",
+      percCorrect);
+    arg->accPredTrain = percCorrect;
 
     fprintf(
       arg->streamInfo,
@@ -511,32 +525,6 @@ void Train(TrainArg* arg) {
 
 }
 
-void Arrythmia() {
-
-  TrainArg arg = {
-    .label = "Arrythmia",
-    .type = "Classification",
-    .pathDataset = "./Datasets/arrhythmia.json",
-    .seed = 0,
-    .percSampleEval = 10,
-    .oneHot = true,
-    .allHot = false,
-    .weakUnitThreshold = 0.95,
-    .depth = 3,
-    .maxLvlDiv = 2,
-    .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 10,
-    .order = 2,
-    .nbDisplay = 5,
-    .pcaFlag = true,
-    .streamInfo = stdout
-  };
-  Train(&arg);
-
-  // https://www.hindawi.com/journals/cmmm/2018/7310496/
-  // 81.11% when used with 80/20 data split and 92.07% using 90/10 data split
-}
-
 void Abalone() {
 
   TrainArg arg = {
@@ -554,6 +542,7 @@ void Abalone() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout
   };
@@ -578,6 +567,7 @@ void RGBHSV() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout
   };
@@ -602,6 +592,7 @@ void DiabeteRisk() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout
   };
@@ -626,6 +617,7 @@ void AgaricusLepiota() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout
   };
@@ -650,6 +642,7 @@ void HCV() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout
   };
@@ -674,6 +667,7 @@ void Amphibian() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout
   };
@@ -698,6 +692,7 @@ void MNIST() {
     .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = false,
     .streamInfo = stdout
   };
@@ -726,6 +721,7 @@ void WisconsinDiagnosticBreastCancerDataset() {
     .nbMaxUnitDepth = 21,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout,
     .fpDoc = fpDoc
@@ -756,6 +752,7 @@ void Iris() {
     .nbMaxUnitDepth = 11,
     .order = 1,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
     .streamInfo = stdout,
     .fpDoc = fpDoc
@@ -786,6 +783,69 @@ void Annealing() {
     .nbMaxUnitDepth = 3,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void Arrythmia() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/arrhythmia.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Arrythmia",
+    .type = "Classification",
+    .pathDataset = "./Datasets/arrhythmia.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.9,
+    .depth = 4,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 1,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void SolarFlare() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/solar-flare.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Solar Flare",
+    .type = "Regression",
+    .pathDataset = "./Datasets/solar-flare.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = false,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 2,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = 0.5,
     .pcaFlag = true,
     .streamInfo = stdout,
     .fpDoc = fpDoc
@@ -802,20 +862,21 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "Annealing",
-    .type = "Classification",
-    .pathDataset = "./Datasets/annealing.json",
+    .label = "Solar Flare",
+    .type = "Regression",
+    .pathDataset = "./Datasets/solar-flare.json",
     .seed = 0,
     .percSampleEval = 10,
-    .oneHot = true,
+    .oneHot = false,
     .allHot = false,
     .weakUnitThreshold = 0.95,
-    .depth = 6,
-    .maxLvlDiv = 1,
+    .depth = 3,
+    .maxLvlDiv = 2,
     .nbMaxInputsUnit = 2,
-    .nbMaxUnitDepth = 20,
+    .nbMaxUnitDepth = 10,
     .order = 2,
     .nbDisplay = 5,
+    .precAcc = 0.5,
     .pcaFlag = true,
     .streamInfo = fp,
     .fpDoc = fp
@@ -825,32 +886,33 @@ void Search() {
   float bestAcc = -1.0;
   float bestAccTrain = -1.0;
   float bestTime = -1.0;
+  float minBest = -1.0;
   for (
     int depth = 2;
-    depth < 10;
+    depth < 11;
     ++depth) {
 
     printf(
-      "Search depth %d\n",
+      "\nSearch depth %d\n",
       depth);
 
     for (
       int maxLvlDiv = 0;
-      maxLvlDiv < 5;
+      maxLvlDiv < 4;
       ++maxLvlDiv) {
 
       for (
         int nbMaxUnitDepth = 3;
-        nbMaxUnitDepth < 4;
+        nbMaxUnitDepth < 11;
         nbMaxUnitDepth += 10) {
 
         for (
           int order = 1;
-          order < 5;
+          order < 4;
           ++order) {
 
           for (
-            float weakUnitThreshold = 0.9;
+            float weakUnitThreshold = 0.8;
             weakUnitThreshold < 0.999;
             weakUnitThreshold += 10.015) {
 
@@ -864,7 +926,7 @@ void Search() {
             // Potential best
             if (
               bestAcc < 0.0 ||
-              bestAcc < arg.accPred ||
+              minBest < arg.accPred ||
               (ISEQUALF(bestAcc, arg.accPred) &&
               bestAccTrain < arg.accPredTrain) ||
               (ISEQUALF(bestAcc, arg.accPred) &&
@@ -874,7 +936,7 @@ void Search() {
               printf("Potential best. Check influence of random seed\n");
               TrainArg argCheck = arg;
               float best = arg.accPred;
-              float minBest = best;
+              minBest = best;
               float maxBest = best;
               for (
                 int seed = 1;
@@ -917,7 +979,7 @@ void Search() {
                 bestAccTrain = arg.accPredTrain;
                 bestTime = arg.time;
                 printf(
-                  "best: %f %f %f\n",
+                  "best: predAcc:%f trainAcc:%f trainTime:%f\n",
                   bestAcc, bestAccTrain, bestTime);
                 TrainArgPrint(
                   &bestArg,
@@ -947,7 +1009,10 @@ int main() {
   //Search();
   //WisconsinDiagnosticBreastCancerDataset();
   //Iris();
-  Annealing();
+  //Annealing();
+  //Arrythmia();
+  //AgaricusLepiota();
+  SolarFlare();
 
 
 /*
@@ -959,8 +1024,6 @@ int main() {
   DocFooterTab();
 
   DocHeaderTab();
-  Arrythmia();
-  AgaricusLepiota();
   //MNIST();
 */
 
