@@ -1,0 +1,47 @@
+=============================================================
+https://www.openml.org/d/56
+Projection on the 49 first principal components.
+nbTotalSample: 435
+nbInputs: 48
+nbOutputs: 1
+label: Vote Data Set
+type: Classification
+pathDataset: ./Datasets/vote.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 1
+maxLvlDiv: 0
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 1
+precAcc: 0.000010
+Depth 1/1...
+Nb available inputs: 48
+Nb of configurations to try: 1176
+Add the last unit (value: -0.138220)
+Time NMTrainerRun: 0.286286s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.093,0.218,2.000] 95.35%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.087,0.209,2.000] 95.66%
+Samples of prediction:
+s.0
+Truth: [-1.000]
+Pred : [-1.000]
+s.1
+Truth: [-1.000]
+Pred : [-1.000]
+s.2
+Truth: [1.000]
+Pred : [1.000]
+s.3
+Truth: [1.000]
+Pred : [1.000]
+s.4
+Truth: [1.000]
+Pred : [1.000]

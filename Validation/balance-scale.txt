@@ -1,0 +1,65 @@
+=============================================================
+http://archive.ics.uci.edu/ml/datasets/balance+scale
+Projection on the 7 first principal components.
+nbTotalSample: 625
+nbInputs: 4
+nbOutputs: 3
+label: Balance Scale Data Set
+type: Classification
+pathDataset: ./Datasets/balance-scale.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 4
+maxLvlDiv: 3
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 1
+nbDisplay: 5
+pca: 1
+precAcc: 0.000010
+Depth 1/4...
+Nb available inputs: 4
+Nb of configurations to try: 10
+Burry 1 out of 10 unit(s) (best value: -0.265786)
+Depth 2/4...
+Nb available inputs: 7
+Nb of configurations to try: 18
+Burry 3 out of 18 unit(s) (best value: -0.168051)
+Depth 3/4...
+Nb available inputs: 16
+Nb of configurations to try: 108
+Burry 3 out of 107 unit(s) (best value: -0.068500)
+Depth 4/4...
+Nb available inputs: 25
+Nb of configurations to try: 189
+Add the last unit (value: -0.017920)
+Time NMTrainerRun: 0.354869s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.032,0.128,2.000] 98.39%
+c.01 [0.000,0.000,0.000,0.000] 100.00%
+c.02 [0.000,0.032,0.128,2.000] 98.39%
+.... [0.000,0.046,0.128,2.828] 98.39%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.007,0.060,2.000] 99.64%
+c.01 [0.000,0.000,0.000,0.000] 100.00%
+c.02 [0.000,0.007,0.060,2.000] 99.64%
+.... [0.000,0.010,0.060,2.828] 99.64%
+Samples of prediction:
+s.0
+Truth: [-1.000,1.000,-1.000]
+Pred : [-1.000,1.000,-1.000]
+s.1
+Truth: [-1.000,1.000,-1.000]
+Pred : [-1.000,1.000,-1.000]
+s.2
+Truth: [-1.000,1.000,-1.000]
+Pred : [-1.000,1.000,-1.000]
+s.3
+Truth: [-1.000,-1.000,1.000]
+Pred : [-1.000,-1.000,1.000]
+s.4
+Truth: [-1.000,-1.000,1.000]
+Pred : [-1.000,-1.000,1.000]

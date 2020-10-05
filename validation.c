@@ -946,6 +946,192 @@ void TicTacToe() {
 
 }
 
+void PenDigits() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/pendigits.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Pen Digits",
+    .type = "Classification",
+    .pathDataset = "./Datasets/pendigits.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 4,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void ImageSegmentation() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/segmentation.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Image Segmentation",
+    .type = "Classification",
+    .pathDataset = "./Datasets/segmentation.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 1,
+    .maxLvlDiv = 3,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void Dermatology() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/dermatology.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Dermatology Data Set",
+    .type = "Classification",
+    .pathDataset = "./Datasets/dermatology.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 1,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 2,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void PageBlocks() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/page-blocks.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Page Blocks Data Set",
+    .type = "Classification",
+    .pathDataset = "./Datasets/page-blocks.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 1,
+    .maxLvlDiv = 2,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 3,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void BalanceScale() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/balance-scale.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Balance Scale Data Set",
+    .type = "Classification",
+    .pathDataset = "./Datasets/balance-scale.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 4,
+    .maxLvlDiv = 3,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 1,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
+void Vote() {
+
+  FILE* fpDoc =
+    fopen(
+      "./Validation/vote.tex",
+      "w");
+  TrainArg arg = {
+    .label = "Vote Data Set",
+    .type = "Classification",
+    .pathDataset = "./Datasets/vote.json",
+    .seed = 0,
+    .percSampleEval = 10,
+    .oneHot = true,
+    .allHot = false,
+    .weakUnitThreshold = 0.8,
+    .depth = 1,
+    .maxLvlDiv = 0,
+    .nbMaxInputsUnit = 2,
+    .nbMaxUnitDepth = 3,
+    .order = 1,
+    .nbDisplay = 5,
+    .precAcc = PBMATH_EPSILON,
+    .pcaFlag = true,
+    .streamInfo = stdout,
+    .fpDoc = fpDoc
+  };
+  Train(&arg);
+  fclose(fpDoc);
+
+}
+
 void Search() {
 
   FILE* fp =
@@ -953,23 +1139,23 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "TicTacToe",
+    .label = "Vote Data Set",
     .type = "Classification",
-    .pathDataset = "./Datasets/tic-tac-toe.json",
+    .pathDataset = "./Datasets/vote.json",
     .seed = 0,
     .percSampleEval = 10,
     .oneHot = true,
     .allHot = false,
     .weakUnitThreshold = 0.8,
-    .depth = 6,
-    .maxLvlDiv = 1,
+    .depth = 7,
+    .maxLvlDiv = 0,
     .nbMaxInputsUnit = 2,
     .nbMaxUnitDepth = 3,
-    .order = 1,
+    .order = 2,
     .nbDisplay = 5,
     .precAcc = PBMATH_EPSILON,
     .pcaFlag = true,
-   .streamInfo = fp,
+    .streamInfo = fp,
     .fpDoc = fp
   };
   
@@ -979,7 +1165,7 @@ void Search() {
   float bestTime = -1.0;
   float minBest = -1.0;
   for (
-    int depth = 2;
+    int depth = 1;
     depth < 11;
     ++depth) {
 
@@ -1105,7 +1291,13 @@ int main() {
   //AgaricusLepiota();
   //SolarFlare();
   //Abalone();
-  TicTacToe();
+  //TicTacToe();
+  //PenDigits();
+  //ImageSegmentation();
+  //Dermatology();
+  //PageBlocks();
+  //BalanceScale();
+  Vote();
 
 
 /*

@@ -1,0 +1,57 @@
+=============================================================
+https://www.openml.org/d/30
+Projection on the 15 first principal components.
+nbTotalSample: 5473
+nbInputs: 10
+nbOutputs: 5
+label: Page Blocks Data Set
+type: Classification
+pathDataset: ./Datasets/page-blocks.json
+percSampleEval: 10
+oneHot: 1
+allHot: 0
+seed: 0
+weakUnitThreshold: 0.800000
+depth: 1
+maxLvlDiv: 2
+nbMaxInputsUnit: 2
+nbMaxUnitDepth: 3
+order: 3
+nbDisplay: 5
+pca: 1
+precAcc: 0.000010
+Depth 1/1...
+Nb available inputs: 10
+Nb of configurations to try: 55
+Add the last unit (value: -0.176705)
+Time NMTrainerRun: 0.877507s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.033,0.128,2.000] 98.35%
+c.01 [0.000,0.029,0.121,2.000] 98.54%
+c.02 [0.000,0.007,0.061,2.000] 99.63%
+c.03 [0.000,0.062,0.176,2.000] 96.89%
+c.04 [0.000,0.022,0.105,2.000] 98.90%
+.... [0.000,0.109,0.128,2.828] 96.16%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.027,0.116,2.000] 98.66%
+c.01 [0.000,0.020,0.101,2.000] 98.98%
+c.02 [0.000,0.007,0.059,2.000] 99.65%
+c.03 [0.000,0.062,0.176,2.000] 96.89%
+c.04 [0.000,0.017,0.092,2.000] 99.15%
+.... [0.000,0.094,0.116,2.828] 96.67%
+Samples of prediction:
+s.0
+Truth: [-1.000,-1.000,-1.000,1.000,-1.000]
+Pred : [-1.000,-1.000,-1.000,1.000,-1.000]
+s.1
+Truth: [-1.000,-1.000,-1.000,1.000,-1.000]
+Pred : [-1.000,-1.000,-1.000,1.000,-1.000]
+s.2
+Truth: [-1.000,-1.000,-1.000,1.000,-1.000]
+Pred : [-1.000,-1.000,-1.000,1.000,-1.000]
+s.3
+Truth: [-1.000,-1.000,-1.000,1.000,-1.000]
+Pred : [-1.000,-1.000,-1.000,1.000,-1.000]
+s.4
+Truth: [-1.000,1.000,-1.000,-1.000,-1.000]
+Pred : [-1.000,1.000,-1.000,-1.000,-1.000]
