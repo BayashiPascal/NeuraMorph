@@ -1139,9 +1139,9 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "Vote Data Set",
+    .label = "Pen Digits",
     .type = "Classification",
-    .pathDataset = "./Datasets/vote.json",
+    .pathDataset = "./Datasets/pendigits.json",
     .seed = 0,
     .percSampleEval = 10,
     .oneHot = true,
@@ -1165,7 +1165,7 @@ void Search() {
   float bestTime = -1.0;
   float minBest = -1.0;
   for (
-    int depth = 1;
+    int depth = 3;
     depth < 11;
     ++depth) {
 
@@ -1288,15 +1288,15 @@ int main() {
   //Iris();
   //Annealing();
   //Arrythmia();
-  //AgaricusLepiota();
-  //SolarFlare();
-  //Abalone();
-  //TicTacToe();
-  //PenDigits();
-  //ImageSegmentation();
-  //Dermatology();
-  //PageBlocks();
-  //BalanceScale();
+  AgaricusLepiota();
+  SolarFlare();
+  Abalone();
+  TicTacToe();
+  PenDigits();
+  ImageSegmentation();
+  Dermatology();
+  PageBlocks();
+  BalanceScale();
   Vote();
 
 

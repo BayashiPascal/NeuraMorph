@@ -1596,14 +1596,25 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
     // Precompute the values to speed up the training
     NMTrainerPrecomputeValues(that);
 
-    // Declare a set to memorize the trained units
-    GSet trainedUnits = GSetCreateStatic();
-
     // Set a flag to memorize if we are at the last depth
     bool isLastDepth = (that->curDepth == NMTrainerGetDepth(that));
 
     // Get the output indices
     VecLong* iOutputs = NMGetVecIOutputs(NMTrainerNeuraMorph(that));
+
+    // Declare a set to memorize the trained units per output
+    GSet* trainedUnits =
+      PBErrMalloc(
+        NeuraMorphErr,
+        sizeof(GSet) * NMGetNbOutput(NMTrainerNeuraMorph(that)));
+    for (
+      int iOut = 0;
+      iOut < NMGetNbOutput(NMTrainerNeuraMorph(that));
+      ++iOut) {
+
+      trainedUnits[iOut] = GSetCreateStatic();
+
+    }
 
     // Get the set of inputs configuration
     GSet* confs =
@@ -1620,112 +1631,144 @@ void NMTrainerRun(NeuraMorphTrainer* that) {
 
       VecLong* iInputs = GSetPop(confs);
 
-if(GSetTail(&trainedUnits)){
+/*if(GSetTail(&trainedUnits)){
 VecPrint(iInputs,stderr);fprintf(stderr, " %d %f    \r", that->curDepth, NMUnitGetValue(GSetTail(&trainedUnits)));
-}
-      // Train the unit
-      NMTrainerTrainUnit(
-        that,
-        &trainedUnits,
-        iInputs,
-        iOutputs);
+}*/
+      // Declare a vector to hold the output index of the trained unit
+      VecLong* iOutput = VecLongCreate(1);
+
+      // Loop on the outputs
+      for (
+        int iOut = 0;
+        iOut < NMGetNbOutput(NMTrainerNeuraMorph(that));
+        ++iOut) {
+
+        long jOut =
+          VecGet(
+            iOutputs,
+            iOut);
+        VecSet(
+          iOutput,
+          0,
+          jOut);
+
+        // Train the unit
+        NMTrainerTrainUnit(
+          that,
+          trainedUnits + iOut,
+          iInputs,
+          iOutput);
+
+      }
 
       // Free memory
       VecFree(&iInputs);
+      VecFree(&iOutput);
 
     }
 
     // Free memory
     GSetFree(&confs);
 
-    if (GSetNbElem(&trainedUnits) == 0) {
+    // Loop on the outputs
+    for (
+      int iOut = 0;
+      iOut < NMGetNbOutput(NMTrainerNeuraMorph(that));
+      ++iOut) {
 
-      /*NeuraMorphErr->_type = PBErrTypeRuntimeError;
-      sprintf(
-        NeuraMorphErr->_msg,
-        "The set of trained units is empty.");
-      PBErrCatch(NeuraMorphErr);*/
+      if (GSetNbElem(trainedUnits + iOut) == 0) {
 
-      fprintf(
-        NMTrainerStreamInfo(that),
-        "The set of trained units is empty.\n");
-      VecFree(&iOutputs);
-      NMTrainerFreePrecomputed(that);
-      that->failed = true;
-      return;
+        /*NeuraMorphErr->_type = PBErrTypeRuntimeError;
+        sprintf(
+          NeuraMorphErr->_msg,
+          "The set of trained units is empty.");
+        PBErrCatch(NeuraMorphErr);*/
 
-    }
-
-    // If this is the last depth
-    if (isLastDepth == true) {
-
-      // Add the best of all units to the NeuraMorph
-      NeuraMorphUnit* bestUnit = GSetDrop(&trainedUnits);
-      GSetAppend(
-        &(NMTrainerNeuraMorph(that)->units),
-        bestUnit);
-
-      fprintf(
-        NMTrainerStreamInfo(that),
-        "Add the last unit (value: %f)\n",
-        NMUnitGetValue(bestUnit));
-      /*NMUnitPrintln(
-        bestUnit,
-        stdout);*/
-
-      // Discard all other units
-      while (GSetNbElem(&trainedUnits) > 0) {
-
-        NeuraMorphUnit* unit = GSetPop(&trainedUnits);
-        NeuraMorphUnitFree(&unit);
+        fprintf(
+          NMTrainerStreamInfo(that),
+          "The set of trained units is empty.\n");
+        VecFree(&iOutputs);
+        free(trainedUnits);
+        NMTrainerFreePrecomputed(that);
+        that->failed = true;
+        return;
 
       }
 
-    // Else, this is not the last depth
-    } else {
+      // If this is the last depth
+      if (isLastDepth == true) {
 
-      // Get the value of the weakest and strongest units
-      float weakVal = GSetElemGetSortVal(GSetHeadElem(&trainedUnits));
-      float strongVal = GSetElemGetSortVal(GSetTailElem(&trainedUnits));
+        // Add the best of all units to the NeuraMorph
+        NeuraMorphUnit* bestUnit = GSetDrop(trainedUnits + iOut);
+        GSetAppend(
+          &(NMTrainerNeuraMorph(that)->units),
+          bestUnit);
 
-      // Get the threshold to discard the weakest units
-      float threshold =
-        weakVal + (strongVal - weakVal) *
-        NMTrainerGetWeakThreshold(that);
+        fprintf(
+          NMTrainerStreamInfo(that),
+          "Add the last unit (value: %f)\n",
+          NMUnitGetValue(bestUnit));
+        /*NMUnitPrintln(
+          bestUnit,
+          stdout);*/
 
-      // Discard the weakest units
-      long nbTrainedUnits = GSetNbElem(&trainedUnits);
-      while (
-        GSetNbElem(&trainedUnits) > 1 &&
-        (GSetElemGetSortVal(GSetHeadElem(&trainedUnits)) < threshold ||
-        GSetNbElem(&trainedUnits) > NMTrainerGetNbMaxUnitDepth(that))) {
+        // Discard all other units
+        while (GSetNbElem(trainedUnits + iOut) > 0) {
 
-        NeuraMorphUnit* unit = GSetPop(&trainedUnits);
-        NeuraMorphUnitFree(&unit);
+          NeuraMorphUnit* unit = GSetPop(trainedUnits + iOut);
+          NeuraMorphUnitFree(&unit);
+
+        }
+
+      // Else, this is not the last depth
+      } else {
+
+        // Get the value of the weakest and strongest units
+        float weakVal =
+          GSetElemGetSortVal(GSetHeadElem(trainedUnits + iOut));
+        float strongVal =
+          GSetElemGetSortVal(GSetTailElem(trainedUnits + iOut));
+
+        // Get the threshold to discard the weakest units
+        float threshold =
+          weakVal + (strongVal - weakVal) *
+          NMTrainerGetWeakThreshold(that);
+
+        // Discard the weakest units
+        long nbTrainedUnits = GSetNbElem(trainedUnits + iOut);
+        while (
+          GSetNbElem(trainedUnits + iOut) > 1 &&
+          (GSetElemGetSortVal(GSetHeadElem(trainedUnits + iOut)) < threshold ||
+          GSetNbElem(trainedUnits + iOut) > NMTrainerGetNbMaxUnitDepth(that))) {
+
+          NeuraMorphUnit* unit = GSetPop(trainedUnits + iOut);
+          NeuraMorphUnitFree(&unit);
+
+        }
+
+        // Displayed the burried units
+        fprintf(
+          NMTrainerStreamInfo(that),
+          "Burry %ld out of %ld unit(s) (best value: %f)\n",
+          GSetNbElem(trainedUnits + iOut),
+          nbTrainedUnits,
+          NMUnitGetValue(GSetTail(trainedUnits + iOut)));
+        /*GSetIterForward iter = GSetIterForwardCreateStatic(&trainedUnits);
+        do {
+
+          NeuraMorphUnit* unit = GSetIterGet(&iter);
+          NMUnitPrintln(
+            unit,
+            stdout);
+
+        } while (GSetIterStep(&iter));*/
+
+        // Burry the remaining units
+        NMBurryUnits(
+          NMTrainerNeuraMorph(that),
+          trainedUnits + iOut);
 
       }
-
-      // Displayed the burried units
-      fprintf(
-        NMTrainerStreamInfo(that),
-        "Burry %ld out of %ld unit(s) (best value: %f)\n",
-        GSetNbElem(&trainedUnits),
-        nbTrainedUnits,
-        NMUnitGetValue(GSetTail(&trainedUnits)));
-      /*GSetIterForward iter = GSetIterForwardCreateStatic(&trainedUnits);
-      do {
-
-        NeuraMorphUnit* unit = GSetIterGet(&iter);
-        NMUnitPrintln(
-          unit,
-          stdout);
-
-      } while (GSetIterStep(&iter));*/
-
-      // Burry the remaining units
-      NMBurryUnits(
-        NMTrainerNeuraMorph(that),
-        &trainedUnits);
 
     }
 
@@ -1733,6 +1776,7 @@ VecPrint(iInputs,stderr);fprintf(stderr, " %d %f    \r", that->curDepth, NMUnitG
     iFirstNewInput = nbAvailInputs;
 
     // Free memory
+    free(trainedUnits);
     VecFree(&iOutputs);
     NMTrainerFreePrecomputed(that);
 
