@@ -1,7 +1,9 @@
-Search depth 2
-Potential best. Check influence of random seed
-Seed variation: 70.886078 77.721519 81.012657
-best: 77.721519 78.303200 1.727210
+=============================================================
+https://archive.ics.uci.edu/ml/datasets/Annealing
+Projection on the 82 first principal components.
+nbTotalSample: 798
+nbInputs: 77
+nbOutputs: 5
 label: Annealing
 type: Classification
 pathDataset: ./Datasets/annealing.json
@@ -9,206 +11,75 @@ percSampleEval: 10
 oneHot: 1
 allHot: 0
 seed: 0
-weakUnitThreshold: 0.900000
-depth: 2
-maxLvlDiv: 0
-nbMaxInputsUnit: 2
-nbMaxUnitDepth: 3
-order: 1
-nbDisplay: 5
-pca: 1
-Potential best. Check influence of random seed
-Seed variation: 78.481010 82.784805 84.810127
-best: 82.784805 80.945763 2.963887
-label: Annealing
-type: Classification
-pathDataset: ./Datasets/annealing.json
-percSampleEval: 10
-oneHot: 1
-allHot: 0
-seed: 0
-weakUnitThreshold: 0.900000
-depth: 2
-maxLvlDiv: 0
-nbMaxInputsUnit: 2
-nbMaxUnitDepth: 3
-order: 2
-nbDisplay: 5
-pca: 1
-Potential best. Check influence of random seed
-Seed variation: 78.481010 88.354431 92.405060
-best: 88.354431 90.959671 3.945791
-label: Annealing
-type: Classification
-pathDataset: ./Datasets/annealing.json
-percSampleEval: 10
-oneHot: 1
-allHot: 0
-seed: 0
-weakUnitThreshold: 0.900000
-depth: 2
-maxLvlDiv: 0
-nbMaxInputsUnit: 2
-nbMaxUnitDepth: 3
-order: 3
-nbDisplay: 5
-pca: 1
-Potential best. Check influence of random seed
-Seed variation: 75.949364 85.063293 89.873413
-Potential best. Check influence of random seed
-Seed variation: 84.810127 89.620255 92.405060
-best: 89.620255 90.959671 7.769905
-label: Annealing
-type: Classification
-pathDataset: ./Datasets/annealing.json
-percSampleEval: 10
-oneHot: 1
-allHot: 0
-seed: 0
-weakUnitThreshold: 0.900000
-depth: 2
-maxLvlDiv: 1
-nbMaxInputsUnit: 2
-nbMaxUnitDepth: 3
-order: 3
-nbDisplay: 5
-pca: 1
-Potential best. Check influence of random seed
-Seed variation: 82.278481 88.860756 94.936714
-Potential best. Check influence of random seed
-Seed variation: 79.746834 89.113922 92.405060
-Potential best. Check influence of random seed
-Seed variation: 83.544304 88.860756 92.405060
-Potential best. Check influence of random seed
-Seed variation: 75.949364 87.088608 91.139236
-Potential best. Check influence of random seed
-Seed variation: 84.810127 88.860756 92.405060
-Potential best. Check influence of random seed
-Seed variation: 68.354431 84.303795 91.139236
-Potential best. Check influence of random seed
-Seed variation: 75.949364 84.050636 89.873413
-Potential best. Check influence of random seed
-Seed variation: 83.544304 87.848099 89.873413
-Potential best. Check influence of random seed
-Seed variation: 79.746834 90.632912 93.670883
-best: 90.632912 95.827538 7.256341
-label: Annealing
-type: Classification
-pathDataset: ./Datasets/annealing.json
-percSampleEval: 10
-oneHot: 1
-allHot: 0
-seed: 0
-weakUnitThreshold: 0.900000
-depth: 2
-maxLvlDiv: 4
-nbMaxInputsUnit: 2
-nbMaxUnitDepth: 3
-order: 2
-nbDisplay: 5
-pca: 1
-Potential best. Check influence of random seed
-Seed variation: 64.556961 83.291145 92.405060
-Search depth 3
-Potential best. Check influence of random seed
-Seed variation: 77.215187 85.063286 91.139236
-Potential best. Check influence of random seed
-Seed variation: 81.012657 88.860756 92.405060
-Potential best. Check influence of random seed
-Seed variation: 81.012657 89.873413 92.405060
-Potential best. Check influence of random seed
-Seed variation: 84.810127 89.620255 92.405060
-Potential best. Check influence of random seed
-Seed variation: 83.544304 90.126579 94.936714
-Potential best. Check influence of random seed
-Seed variation: 86.075951 89.367088 91.139236
-Potential best. Check influence of random seed
-Seed variation: 78.481010 88.860764 93.670883
-Potential best. Check influence of random seed
-Seed variation: 87.341774 91.392403 93.670883
-best: 91.392403 96.801117 10.460028
-label: Annealing
-type: Classification
-pathDataset: ./Datasets/annealing.json
-percSampleEval: 10
-oneHot: 1
-allHot: 0
-seed: 0
-weakUnitThreshold: 0.900000
-depth: 3
-maxLvlDiv: 4
-nbMaxInputsUnit: 2
-nbMaxUnitDepth: 3
-order: 2
-nbDisplay: 5
-pca: 1
-Search depth 4
-Potential best. Check influence of random seed
-Seed variation: 88.607597 90.886070 92.405060
-Potential best. Check influence of random seed
-Seed variation: 82.278481 88.101265 92.405060
-Potential best. Check influence of random seed
-Seed variation: 84.810127 91.139236 93.670883
-Potential best. Check influence of random seed
-Seed variation: 84.810127 90.379745 94.936714
-Potential best. Check influence of random seed
-Seed variation: 74.683548 87.341766 92.405060
-Potential best. Check influence of random seed
-Seed variation: 89.873413 92.151894 94.936714
-best: 92.151894 97.496521 14.357901
-label: Annealing
-type: Classification
-pathDataset: ./Datasets/annealing.json
-percSampleEval: 10
-oneHot: 1
-allHot: 0
-seed: 0
-weakUnitThreshold: 0.900000
+weakUnitThreshold: 0.800000
 depth: 4
-maxLvlDiv: 4
+maxLvlDiv: 3
 nbMaxInputsUnit: 2
 nbMaxUnitDepth: 3
 order: 2
 nbDisplay: 5
 pca: 1
-Potential best. Check influence of random seed
-Seed variation: 84.810127 89.113922 92.405060
-Search depth 5
-Potential best. Check influence of random seed
-Seed variation: 83.544304 88.101273 92.405060
-Potential best. Check influence of random seed
-Seed variation: 82.278481 89.873413 92.405060
-Potential best. Check influence of random seed
-Seed variation: 86.075951 90.126579 92.405060
-Potential best. Check influence of random seed
-Seed variation: 86.075951 91.139236 93.670883
-Search depth 6
-Potential best. Check influence of random seed
-Seed variation: 83.544304 88.101265 92.405060
-Potential best. Check influence of random seed
-Seed variation: 82.278481 89.873413 92.405060
-Potential best. Check influence of random seed
-Seed variation: 86.075951 90.126579 92.405060
-Potential best. Check influence of random seed
-Seed variation: 87.341774 90.886070 92.405060
-Search depth 7
-Potential best. Check influence of random seed
-Seed variation: 82.278481 89.620255 92.405060
-Potential best. Check influence of random seed
-Seed variation: 83.544304 91.392410 94.936714
-Search depth 8
-Potential best. Check influence of random seed
-Seed variation: 86.075951 89.620255 92.405060
-Potential best. Check influence of random seed
-Seed variation: 82.278481 89.620255 92.405060
-Potential best. Check influence of random seed
-Seed variation: 88.607597 90.886070 92.405060
-Potential best. Check influence of random seed
-Seed variation: 79.746834 89.367088 93.670883
-Search depth 9
-Potential best. Check influence of random seed
-Seed variation: 84.810127 90.126579 94.936714
-Potential best. Check influence of random seed
-Seed variation: 84.810127 91.392410 93.670883
-Potential best. Check influence of random seed
-Seed variation: 89.873413 91.898727 94.936714
+precAcc: 0.000010
+Depth 1/4...
+Nb available inputs: 77
+Nb of configurations to try: 3003
+Burry 2 out of 1664 unit(s) (best value: -0.341921)
+Burry 2 out of 1045 unit(s) (best value: -0.230915)
+Burry 3 out of 703 unit(s) (best value: -0.012566)
+Burry 3 out of 808 unit(s) (best value: -0.042601)
+Burry 3 out of 1371 unit(s) (best value: -0.095267)
+Depth 2/4...
+Nb available inputs: 90
+Nb of configurations to try: 1092
+Burry 3 out of 565 unit(s) (best value: -0.238644)
+Burry 3 out of 561 unit(s) (best value: -0.127111)
+Burry 3 out of 551 unit(s) (best value: -0.006653)
+Burry 3 out of 555 unit(s) (best value: -0.013566)
+Burry 3 out of 561 unit(s) (best value: -0.000076)
+Depth 3/4...
+Nb available inputs: 105
+Nb of configurations to try: 1470
+Burry 3 out of 613 unit(s) (best value: -0.118046)
+Burry 3 out of 602 unit(s) (best value: -0.075916)
+Burry 3 out of 598 unit(s) (best value: -0.005181)
+Burry 3 out of 598 unit(s) (best value: -0.007716)
+Burry 3 out of 608 unit(s) (best value: -0.000007)
+Depth 4/4...
+Nb available inputs: 120
+Nb of configurations to try: 1695
+Add the last unit (value: -0.104412)
+Add the last unit (value: -0.060731)
+Add the last unit (value: -0.004350)
+Add the last unit (value: -0.005566)
+Add the last unit (value: -0.000001)
+Time NMTrainerRun: 44.275656s
+Bias prediction (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.051,0.160,2.000] 97.47%
+c.01 [0.000,0.051,0.160,2.000] 97.47%
+c.02 [0.000,0.000,0.000,0.000] 100.00%
+c.03 [0.000,0.051,0.160,2.000] 97.47%
+c.04 [0.000,0.000,0.000,0.000] 100.00%
+.... [0.000,0.107,0.160,2.828] 96.20%
+Bias training (min/avg/sigma/max) and accuracy:
+c.00 [0.000,0.028,0.118,2.000] 98.61%
+c.01 [0.000,0.022,0.106,2.000] 98.89%
+c.02 [0.000,0.003,0.037,2.000] 99.86%
+c.03 [0.000,0.003,0.037,2.000] 99.86%
+c.04 [0.000,0.000,0.000,0.000] 100.00%
+.... [0.000,0.039,0.118,2.828] 98.61%
+Samples of prediction:
+s.0
+Truth: [1.000,-1.000,-1.000,-1.000,-1.000]
+Pred : [1.000,-1.000,-1.000,-1.000,-1.000]
+s.1
+Truth: [1.000,-1.000,-1.000,-1.000,-1.000]
+Pred : [1.000,-1.000,-1.000,-1.000,-1.000]
+s.2
+Truth: [-1.000,1.000,-1.000,-1.000,-1.000]
+Pred : [-1.000,1.000,-1.000,-1.000,-1.000]
+s.3
+Truth: [-1.000,-1.000,-1.000,-1.000,1.000]
+Pred : [-1.000,-1.000,-1.000,-1.000,1.000]
+s.4
+Truth: [1.000,-1.000,-1.000,-1.000,-1.000]
+Pred : [1.000,-1.000,-1.000,-1.000,-1.000]

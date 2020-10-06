@@ -756,9 +756,9 @@ void Annealing() {
     .percSampleEval = 10,
     .oneHot = true,
     .allHot = false,
-    .weakUnitThreshold = 0.9,
+    .weakUnitThreshold = 0.8,
     .depth = 4,
-    .maxLvlDiv = 4,
+    .maxLvlDiv = 3,
     .nbMaxInputsUnit = 2,
     .nbMaxUnitDepth = 3,
     .order = 2,
@@ -1139,16 +1139,16 @@ void Search() {
       "/dev/null",
       "w");
   TrainArg bestArg = {
-    .label = "Pen Digits",
+    .label = "Annealing",
     .type = "Classification",
-    .pathDataset = "./Datasets/pendigits.json",
+    .pathDataset = "./Datasets/annealing.json",
     .seed = 0,
     .percSampleEval = 10,
     .oneHot = true,
     .allHot = false,
-    .weakUnitThreshold = 0.8,
-    .depth = 7,
-    .maxLvlDiv = 0,
+    .weakUnitThreshold = 0.9,
+    .depth = 4,
+    .maxLvlDiv = 4,
     .nbMaxInputsUnit = 2,
     .nbMaxUnitDepth = 3,
     .order = 2,
@@ -1165,7 +1165,7 @@ void Search() {
   float bestTime = -1.0;
   float minBest = -1.0;
   for (
-    int depth = 3;
+    int depth = 1;
     depth < 11;
     ++depth) {
 
@@ -1286,18 +1286,18 @@ int main() {
   //Search();
   //WisconsinDiagnosticBreastCancerDataset();
   //Iris();
-  //Annealing();
+  Annealing();
   //Arrythmia();
-  AgaricusLepiota();
-  SolarFlare();
-  Abalone();
-  TicTacToe();
-  PenDigits();
-  ImageSegmentation();
-  Dermatology();
-  PageBlocks();
-  BalanceScale();
-  Vote();
+  //AgaricusLepiota();
+  //SolarFlare();
+  //Abalone();
+  //TicTacToe();
+  //PenDigits();
+  //ImageSegmentation();
+  //Dermatology();
+  //PageBlocks();
+  //BalanceScale();
+  //Vote();
 
 
 /*
