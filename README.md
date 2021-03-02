@@ -1,6 +1,8 @@
 # NeuraMorph
 NeuraMorph is a C library providing structures and functions to implement a neural network.
 
+!!! This repository is a primitive and incomplete version of the NeuraMorph algorithm. The actual algorithm is still under development in a private repository and will be publicize if/when it reaches sufficient performance !!! 
+
 ## How to install this repository
 1) Create a directory which will contains this repository and all the repositories it is depending on. Lets call it "Repos"
 2) Download the master branch of this repository into "Repos". Unzip it if necessary.
